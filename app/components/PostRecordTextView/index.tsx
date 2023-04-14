@@ -6,11 +6,11 @@ import {
 import { ReactNode } from 'react'
 import Link from 'next/link'
 
-interface PostViewContent {
+interface PostRecordTextViewProps {
   post: PostView
 }
 
-export const PostViewContent = (props: PostViewContent) => {
+export const PostRecordTextView = (props: PostRecordTextViewProps) => {
   const { post } = props
   const record = post.record as Record
   const elements: ReactNode[] = []
