@@ -12,8 +12,17 @@ import {
   faRetweet,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Avatar, Card, Col, Row, Spacer, styled, Text } from '@nextui-org/react'
-import Link from 'next/link'
+import {
+  Avatar,
+  Card,
+  Col,
+  Link,
+  Row,
+  Spacer,
+  styled,
+  Text,
+} from '@nextui-org/react'
+import NextLink from 'next/link'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { makeConsecutiveUnits, makeUnit, utx } from 'utx'
 import { PostRecordTextView } from '../PostRecordTextView'
@@ -85,11 +94,25 @@ const Post = (props: PostProps) => {
   const updateElapsed = useCallback(() => {
     const elapsed = Date.now() - time.getTime()
     setElapsed(elapsed)
+
+    return elapsed
   }, [time])
 
   useEffect(() => {
     updateElapsed()
-  }, [updateElapsed])
+
+    const id = setInterval(() => {
+      const elapsed = updateElapsed()
+
+      if (elapsed > 6000) {
+        clearInterval(id)
+      }
+    }, 1000)
+
+    return () => {
+      clearInterval(id)
+    }
+  }, [time, updateElapsed])
 
   return (
     <Row align="stretch" css={{ position: 'relative' }}>
@@ -101,17 +124,21 @@ const Post = (props: PostProps) => {
       <Col>
         <PostInfo>
           <AuthorDisplayName>
-            <Link href={`/profile/${post.author.handle}`}>
-              {post.author.displayName}
-            </Link>
+            <NextLink href={`/profile/${post.author.handle}`}>
+              <Link color="text">{post.author.displayName}</Link>
+            </NextLink>
           </AuthorDisplayName>
-          <AuthorHandle>@{post.author.handle}</AuthorHandle>
+          <AuthorHandle>
+            <NextLink href={`/profile/${post.author.handle}`}>
+              <Link color="text">@{post.author.handle}</Link>
+            </NextLink>
+          </AuthorHandle>
           <PostDate>
             {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
           </PostDate>
         </PostInfo>
         <PostRecordTextView post={post} />
-        <Row css={{ mt: '$4', mb: '$10' }} align="center">
+        <Row css={{ mt: '$6', mb: hasReply ? '$10' : '$0' }} align="center">
           <Col>
             <PostAction>
               <FontAwesomeIcon icon={faComment} color="#787F85" />
