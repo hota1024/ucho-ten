@@ -14,25 +14,19 @@ export const PostViewContent = (props: PostViewContent) => {
   const record = post.record as Record
   const elements: ReactNode[] = []
 
-  if (record.entities) {
+  if (record.facets && record.facets.length > 0) { // facetsがある場合にのみ処理する
     const text = record.text
-
-    for (let i = 0; i < text.length; ++i) {
-      const entity = record.entities.find((entity) => entity.index.start === i)
-
-      if (entity) {
-        const { start, end } = entity.index
-
-        const link = text.slice(start, end)
-        elements.push(<a href={entity.value}>{link}</a>)
-
-        i = end
-      } else if (text[i] === '\n') {
-        elements.push(<br />)
-      } else {
-        elements.push(<>{text[i]}</>)
-      }
+    let i = 0
+    for (const facet of record.facets) {
+      const { byteStart, byteEnd } = facet.index
+      // URL以外のテキストを追加
+      elements.push(<>{text.substring(i, byteStart)}</>)
+      // URLにaタグを追加
+      elements.push(<a href={facet.features[0].uri}>{text.substring(byteStart, byteEnd)}</a>)
+      i = byteEnd
     }
+    // 最後のURL以降のテキストを追加
+    elements.push(<>{text.substring(i)}</>)
   } else {
     elements.push(<>{record.text}</>)
   }
