@@ -1,4 +1,5 @@
 import { Providers } from './providers'
+import 'react-medium-image-zoom/dist/styles.css'
 
 export default function RootLayout({
   children,

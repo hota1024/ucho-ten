@@ -34,7 +34,13 @@ const HomePage: NextPage = () => {
   return (
     <>
       <Container>
-        <div style={{ display: 'flex', flexFlow: 'column', gap: '16px' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexFlow: 'column',
+            gap: '16px',
+          }}
+        >
           {feeds.map((feed, key) => (
             <FeedView key={key} feed={feed} />
           ))}

@@ -1,8 +1,9 @@
+import { ViewImage } from '@atproto/api/dist/client/types/app/bsky/embed/images'
 import {
   FeedViewPost,
   PostView,
 } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
-import { Record } from '@atproto/api/dist/client/types/app/bsky/feed/like'
+import { Record } from '@atproto/api/dist/client/types/app/bsky/feed/post'
 import {
   faComment,
   faHeart as faHeartRegular,
@@ -16,6 +17,8 @@ import {
   Avatar,
   Card,
   Col,
+  Grid,
+  Image,
   Link,
   Row,
   Spacer,
@@ -26,6 +29,7 @@ import NextLink from 'next/link'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { makeConsecutiveUnits, makeUnit, utx } from 'utx'
 import { PostRecordTextView } from '../PostRecordTextView'
+import Zoom from 'react-medium-image-zoom'
 
 const PostInfo = styled('div', {
   display: 'flex',
@@ -87,6 +91,11 @@ const Post = (props: PostProps) => {
   const { post, hasReply, showReplyCount, showRepostCount, showLikeCount } =
     props
   const record = post.record as Record
+  const images = (post.embed?.images ?? []) as ViewImage[]
+
+  if (images.length > 0) {
+    console.log({ images })
+  }
 
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => new Date(record.createdAt), [record.createdAt])
@@ -137,7 +146,45 @@ const Post = (props: PostProps) => {
             {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
           </PostDate>
         </PostInfo>
+
         <PostRecordTextView post={post} />
+
+        {images.length > 0 && (
+          <Grid.Container
+            css={{
+              m: 0,
+              mt: '$4',
+              p: 0,
+              width: '100%',
+              gap: '$4',
+              flexFlow: 'row',
+            }}
+          >
+            {images.map((image, key) => (
+              <Grid key={key} xs={6} css={{ p: 0 }}>
+                <Zoom>
+                  <Image
+                    src={image.fullsize}
+                    alt={image.alt}
+                    css={{ borderRadius: '$xs' }}
+                  />
+                </Zoom>
+              </Grid>
+            ))}
+            {images.map((image, key) => (
+              <Grid key={key} xs={6} css={{ p: 0 }}>
+                <Zoom>
+                  <Image
+                    src={image.fullsize}
+                    alt={image.alt}
+                    css={{ borderRadius: '$xs' }}
+                  />
+                </Zoom>
+              </Grid>
+            ))}
+          </Grid.Container>
+        )}
+
         <Row css={{ mt: '$6', mb: hasReply ? '$10' : '$0' }} align="center">
           <Col>
             <PostAction>
