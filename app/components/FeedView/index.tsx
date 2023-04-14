@@ -93,10 +93,6 @@ const Post = (props: PostProps) => {
   const record = post.record as Record
   const images = (post.embed?.images ?? []) as ViewImage[]
 
-  if (images.length > 0) {
-    console.log({ images })
-  }
-
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => new Date(record.createdAt), [record.createdAt])
 
