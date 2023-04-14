@@ -3,7 +3,7 @@ import {
   Entity,
   Record,
 } from '@atproto/api/dist/client/types/app/bsky/feed/post'
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import Link from 'next/link'
 
 interface PostRecordTextViewProps {
@@ -32,6 +32,29 @@ export const PostRecordTextView = (props: PostRecordTextViewProps) => {
     }
     // 最後のURL以降のテキストを追加
     elements.push(<>{text.slice(i)}</>)
+  }else if (record.entities && record.entities.length > 0) { // entitiesがある場合にのみ処理する
+    const text = record.text
+    let i = 0
+    for (const entity of record.entities) {
+      const { start, end } = entity.index
+      // URLにaタグまたはlinkタグを追加
+      if (entity.type === "app.bsky.richtext.entity#mention") {
+        elements.push(<Link href={`/profile/${text.slice(start+1 , end)}`}>{text.slice(start, end)}</Link>)
+      } else if (entity.type === "link") {
+        elements.push(<a href={text.slice(start, end)}>{text.slice(start, end)}</a>)
+      }
+      // URL以外のテキストを追加
+      // elements.push(<>{text.slice(end)}</>)
+
+      let sliced_sentence = text.slice(end)
+      elements.push(<>{sliced_sentence.split('\n').map((line, index) => (
+          <React.Fragment key={index}>
+            {line}
+            <br />
+          </React.Fragment>
+      ))}</>)
+      i = end
+    }
   } else {
     elements.push(<>{record.text}</>)
   }
