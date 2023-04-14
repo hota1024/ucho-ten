@@ -1,20 +1,12 @@
-import { globalCss, reset } from '@/stitches.config'
+import { NextUIProvider } from '@nextui-org/react'
 import type { AppProps } from 'next/app'
 
-const globalStyles = globalCss({
-  '*': {
-    margin: 0,
-    padding: 0,
-    boxSizing: 'border-box',
-  },
-})
-
 function MyApp({ Component, pageProps }: AppProps) {
-  globalStyles()
-
   return (
     <>
-      <Component {...pageProps} />
+      <NextUIProvider>
+        <Component {...pageProps} />
+      </NextUIProvider>
     </>
   )
 }
