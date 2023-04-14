@@ -38,6 +38,7 @@ const PostInfo = styled('div', {
 })
 
 const AuthorDisplayName = styled('div', {
+  color: '$gray700',
   fontWeight: 'bold',
 })
 
@@ -128,16 +129,18 @@ const Post = (props: PostProps) => {
       <Spacer x={1} />
       <Col>
         <PostInfo>
-          <AuthorDisplayName>
-            <NextLink href={`/profile/${post.author.handle}`}>
-              <Link color="text">{post.author.displayName}</Link>
-            </NextLink>
-          </AuthorDisplayName>
-          <AuthorHandle>
-            <NextLink href={`/profile/${post.author.handle}`}>
-              <Link color="text">@{post.author.handle}</Link>
-            </NextLink>
-          </AuthorHandle>
+          <NextLink
+            style={{ display: 'block' }}
+            href={`/profile/${post.author.handle}`}
+          >
+            <AuthorDisplayName>{post.author.displayName}</AuthorDisplayName>
+          </NextLink>
+          <NextLink
+            style={{ display: 'block' }}
+            href={`/profile/${post.author.handle}`}
+          >
+            <AuthorHandle>@{post.author.handle}</AuthorHandle>
+          </NextLink>
           <PostDate>
             {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
           </PostDate>
