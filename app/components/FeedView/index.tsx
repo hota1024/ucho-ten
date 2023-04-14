@@ -185,7 +185,7 @@ const Post = (props: PostProps) => {
           </Grid.Container>
         )}
 
-        <Row css={{ mt: '$6', mb: hasReply ? '$10' : '$0' }} align="center">
+        <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
           <Col>
             <PostAction>
               <FontAwesomeIcon icon={faComment} color="#787F85" />
