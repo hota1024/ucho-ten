@@ -15,6 +15,7 @@
     "@next/font": "^13.0.2",
     "@nextui-org/react": "^1.0.0-beta.12",
     "@vercel/og": "^0.0.20",
+    "jotai": "^2.0.4",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"
