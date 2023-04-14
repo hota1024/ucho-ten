@@ -31,7 +31,16 @@ export const PostRecordTextView = (props: PostRecordTextViewProps) => {
       i = byteEnd
     }
     // 最後のURL以降のテキストを追加
-    elements.push(<>{text.slice(i)}</>)
+    //elements.push(<>{text.slice(i)}</>)
+    let sliced_sentence = text.slice(i)
+    elements.push(<>{sliced_sentence.split('\n').map((line, index) => (
+        <React.Fragment key={index}>
+          {line}
+          <br />
+        </React.Fragment>
+    ))}</>)
+
+
   }else if (record.entities && record.entities.length > 0) { // entitiesがある場合にのみ処理する
     const text = record.text
     let i = 0
@@ -56,7 +65,13 @@ export const PostRecordTextView = (props: PostRecordTextViewProps) => {
       i = end
     }
   } else {
-    elements.push(<>{record.text}</>)
+    let sliced_sentence = record.text
+    elements.push(<>{sliced_sentence.split('\n').map((line, index) => (
+        <React.Fragment key={index}>
+          {line}
+          <br />
+        </React.Fragment>
+    ))}</>)
   }
 
   return <div>{elements}</div>
