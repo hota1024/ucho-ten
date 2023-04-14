@@ -18,7 +18,8 @@
     "jotai": "^2.0.4",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "utx": "^0.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",

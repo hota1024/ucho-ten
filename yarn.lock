@@ -2770,6 +2770,11 @@ use-sync-external-store@1.2.0:
   resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz#7dbefd6ef3fe4e767a0cf5d7287aacfb5846928a"
   integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
 
+utx@^0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/utx/-/utx-0.0.0.tgz#85d872226b7f854ec82bf850f7ed77784fe9b48d"
+  integrity sha512-UyC7hPrOpssiCKvrwfrsJXoWPuV9IzGd7BG5MZu3kHRrQCuBdRINu08p90E4nQsN8FQMaFuBvwTtS8aT4fKAxg==
+
 which-boxed-primitive@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/which-boxed-primitive/-/which-boxed-primitive-1.0.2.tgz#13757bc89b209b049fe5d86430e21cf40a89a8e6"
