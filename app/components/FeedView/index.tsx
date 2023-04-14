@@ -171,17 +171,6 @@ const Post = (props: PostProps) => {
                 </Zoom>
               </Grid>
             ))}
-            {images.map((image, key) => (
-              <Grid key={key} xs={6} css={{ p: 0 }}>
-                <Zoom>
-                  <Image
-                    src={image.fullsize}
-                    alt={image.alt}
-                    css={{ borderRadius: '$xs' }}
-                  />
-                </Zoom>
-              </Grid>
-            ))}
           </Grid.Container>
         )}
 
