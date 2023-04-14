@@ -4,6 +4,7 @@ import {
   Record,
 } from '@atproto/api/dist/client/types/app/bsky/feed/post'
 import { ReactNode } from 'react'
+import Link from 'next/link'
 
 interface PostViewContent {
   post: PostView
@@ -20,13 +21,17 @@ export const PostViewContent = (props: PostViewContent) => {
     for (const facet of record.facets) {
       const { byteStart, byteEnd } = facet.index
       // URL以外のテキストを追加
-      elements.push(<>{text.substring(i, byteStart)}</>)
-      // URLにaタグを追加
-      elements.push(<a href={facet.features[0].uri}>{text.substring(byteStart, byteEnd)}</a>)
+      elements.push(<>{text.slice(i, byteStart)}</>)
+      // URLにaタグまたはlinkタグを追加
+      if (facet.features[0].$type === "app.bsky.richtext.facet#mention") {
+        elements.push(<Link href={`/profile/${text.slice(byteStart+1 , byteEnd)}`}>{text.slice(byteStart, byteEnd)}</Link>)
+      } else if (facet.features[0].$type === "app.bsky.richtext.facet#link") {
+        elements.push(<a href={facet.features[0].uri as string}>{text.slice(byteStart, byteEnd)}</a>)
+      }
       i = byteEnd
     }
     // 最後のURL以降のテキストを追加
-    elements.push(<>{text.substring(i)}</>)
+    elements.push(<>{text.slice(i)}</>)
   } else {
     elements.push(<>{record.text}</>)
   }
