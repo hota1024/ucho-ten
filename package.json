@@ -21,7 +21,6 @@
     "react-dom": "latest"
   },
   "devDependencies": {
-    "@stitches/react": "^1.2.8",
     "@types/node": "^18.11.9",
     "@types/react": "^18.0.25",
     "eslint": "^8.26.0",
