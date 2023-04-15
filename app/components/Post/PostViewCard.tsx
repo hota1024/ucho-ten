@@ -7,6 +7,7 @@ import { Post } from './Post'
 import { AppBskyEmbedRecord } from '@atproto/api'
 import { useAgent } from '@/atoms/agent'
 import { useState } from 'react'
+import {isRTL} from "@react-aria/i18n/src/utils";
 
 interface PostProps {
   post: PostView
@@ -35,6 +36,7 @@ export const PostViewCard = (props: PostProps) => {
   const embed = post.embed as unknown as AppBskyEmbedRecord.ViewRecord
   const [agent] = useAgent()
   const [isLiked, setIsLiked] = useState(!!post.viewer?.like)
+  const [isReposted, setIsReposted] = useState(!!post.viewer?.repost)
 
   const handleLikeClick = async () => {
     if (!agent) {
@@ -76,14 +78,36 @@ export const PostViewCard = (props: PostProps) => {
     if (!agent) {
       return
     }
-    let reposter_list = await agent.getRepostedBy({
-      uri: post.uri,
-      cid: post.cid,
+
+    setIsReposted((v) => {
+      if (v) {
+        return false
+      } else {
+        return true
+      }
     })
-    console.log()
-    let repost_result = await agent.repost(post.uri, post.cid)
-    console.log(repost_result)
-    return
+    const post = await onFetch()
+
+    if (post.viewer?.repost) {
+      await agent.deleteRepost(post.viewer?.repost)
+    } else {
+      await agent.repost(post.uri, post.cid)
+    }
+
+    await onFetch()
+
+    //let r = await agent.like(post.uri, post.cid)
+    // let is_already_like = await agent.getLikes({ uri: post.uri, cid: post.cid })
+    // let my_did = await agent.session?.did
+    // console.log(is_already_like)
+    // console.log(my_did)
+    // for (let i = 0; i < is_already_like.data.likes.length; i++) {
+    //   console.log(is_already_like.data.likes[i].did)
+    //   if (is_already_like.data.likes[i].actor.did !== my_did) {
+    //     await agent.like(post.uri, post.cid)
+    //     return
+    //   }
+    // }
   }
 
   return (
@@ -95,7 +119,13 @@ export const PostViewCard = (props: PostProps) => {
       reasonRepost={reasonRepost}
       hasReply={hasReply}
       replyCount={post.replyCount}
-      repostCount={post.repostCount}
+      repostCount={
+        isReposted
+          ? (post.repostCount ? post.repostCount - 1 : 0) + 1
+          : post.repostCount
+          ? post.repostCount - 1
+          : 0
+    }
       likeCount={
         isLiked
           ? (post.likeCount ? post.likeCount - 1 : 0) + 1
@@ -107,7 +137,7 @@ export const PostViewCard = (props: PostProps) => {
       showRepostCount={showRepostCount}
       showLikeCount={showLikeCount}
       isLiked={isLiked}
-      isReposted={true}
+      isReposted={isReposted}
       onLikeClick={() => {
         handleLikeClick()
       }}
