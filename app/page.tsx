@@ -88,7 +88,7 @@ const HomePage: NextPage = () => {
           loadMore={updateFeed}
           hasMore={hasMore}
           loader={<>loading...</>}
-          threshold={2000}
+          threshold={2500}
           useWindow={false}
         >
           {feeds.map((feed, key) => (
