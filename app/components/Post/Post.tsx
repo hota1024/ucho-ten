@@ -10,7 +10,7 @@ import {
 } from '@fortawesome/free-regular-svg-icons'
 import {
   faHeart as faHeartSolid,
-  faRetweet,
+  faRetweet as faRetweetSolid,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -110,7 +110,9 @@ interface PostProps {
   showLikeCount?: boolean
 
   isLiked?: boolean
+  isReposted?: boolean
   onLikeClick?: () => void
+  onRepostClick?: () => void
 }
 
 export const Post = (props: PostProps) => {
@@ -130,8 +132,10 @@ export const Post = (props: PostProps) => {
     showRepostCount,
     showLikeCount,
     isLiked,
+    isReposted,
   } = props
   const onLikeClick = props.onLikeClick ?? (() => {})
+  const onRepostClick = props.onRepostClick ?? (() => {})
 
   const images = AppBskyEmbedImages.isView(embed) ? embed.images ?? [] : []
 
@@ -274,8 +278,10 @@ export const Post = (props: PostProps) => {
               </PostAction>
             </Col>
             <Col>
-              <PostAction>
-                <FontAwesomeIcon icon={faRetweet} color="#787F85" />
+              <PostAction onClick={onRepostClick}>
+                <FontAwesomeIcon icon={faRetweetSolid}
+                                 //color="#787F85"
+                                 color={isReposted ? '#36BA7A' : '#787F85'}/>
                 {showRepostCount && repostCount}
               </PostAction>
             </Col>
