@@ -15,8 +15,10 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   Avatar,
+  Button,
   Card,
   Col,
+  Container,
   Grid,
   Image,
   Link,
@@ -24,6 +26,8 @@ import {
   Spacer,
   styled,
   Text,
+  Tooltip,
+  User,
 } from '@nextui-org/react'
 import NextLink from 'next/link'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -124,7 +128,38 @@ const Post = (props: PostProps) => {
     <Row align="stretch" css={{ position: 'relative' }}>
       {hasReply && <ReplyLine />}
       <div>
-        <Avatar squared src={post.author.avatar} size="lg" />
+        <Tooltip
+          placement="right"
+          content={
+            <Container
+              css={{
+                mw: '400px',
+                width: '100%',
+                borderRadius: '$lg',
+                p: '$sm',
+              }}
+            >
+              <Row justify="space-between" align="center">
+                <Col span={7}>
+                  <User
+                    squared
+                    src={post.author.avatar}
+                    size="lg"
+                    name={post.author.displayName}
+                    description={`@${post.author.handle}`}
+                  />
+                </Col>
+                <Col span={3}>
+                  <Button auto rounded css={{ ml: '$10' }}>
+                    フォロー
+                  </Button>
+                </Col>
+              </Row>
+            </Container>
+          }
+        >
+          <Avatar squared src={post.author.avatar} size="lg" />
+        </Tooltip>
       </div>
       <Spacer x={1} />
       <Col>
