@@ -39,7 +39,7 @@ export const PostViewCard = (props: PostProps) => {
       hasReply={hasReply}
       replyCount={post.replyCount}
       repostCount={post.repostCount}
-      likeCount={post.replyCount}
+      likeCount={post.likeCount}
       showReplyCount={showReplyCount}
       showRepostCount={showRepostCount}
       showLikeCount={showLikeCount}
