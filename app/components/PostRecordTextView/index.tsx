@@ -1,4 +1,7 @@
-import { PostView } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
+import {
+  FeedViewPost,
+  PostView,
+} from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 import {
   Entity,
   Record,
@@ -6,14 +9,15 @@ import {
 import React, { ReactNode } from 'react'
 import Link from 'next/link'
 import reactStringReplace from 'react-string-replace'
+import { ViewRecord } from '@atproto/api/dist/client/types/app/bsky/embed/record'
+import { AppBskyFeedPost } from '@atproto/api'
 
 interface PostRecordTextViewProps {
-  post: PostView
+  record: Record
 }
 
 export const PostRecordTextView = (props: PostRecordTextViewProps) => {
-  const { post } = props
-  const record = post.record as Record
+  const { record } = props
   let elements: ReactNode[] = []
 
   if (record.facets && record.facets.length > 0) {
