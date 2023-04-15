@@ -2455,6 +2455,11 @@ react-medium-image-zoom@^5.1.3:
   resolved "https://registry.yarnpkg.com/react-medium-image-zoom/-/react-medium-image-zoom-5.1.3.tgz#f45484096ecfbc69477d5fccf70ba5e39beced70"
   integrity sha512-/d/J3DA49wUi2NY53ix7HNzIp8zPNxrp+1Yz3Eej9oqxUwmZhmWU4TV2obwm8aLKMdD22ffGVuXBk2vSWA46Zw==
 
+react-string-replace@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-string-replace/-/react-string-replace-1.1.0.tgz#a3f7b458e697e77d70b0ea663caf38ab38f7cc17"
+  integrity sha512-N6RalSDFGbOHs0IJi1H611WbZsvk3ZT47Jl2JEXFbiS3kTwsdCYij70Keo/tWtLy7sfhDsYm7CwNM/WmjXIaMw==
+
 react@latest:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"

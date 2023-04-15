@@ -5,6 +5,7 @@ import {
 } from '@atproto/api/dist/client/types/app/bsky/feed/post'
 import React, { ReactNode } from 'react'
 import Link from 'next/link'
+import reactStringReplace from "react-string-replace";
 
 interface PostRecordTextViewProps {
   post: PostView
@@ -19,39 +20,27 @@ export const PostRecordTextView = (props: PostRecordTextViewProps) => {
     // facetsがある場合にのみ処理する
     const text = record.text
     let i = 0
-    for (const facet of record.facets) {
-      const { byteStart, byteEnd } = facet.index
-      // URL以外のテキストを追加
-      elements.push(<>{text.slice(i, byteStart)}</>)
-      // URLにaタグまたはlinkタグを追加
-      if (facet.features[0].$type === 'app.bsky.richtext.facet#mention') {
-        elements.push(
-          <Link href={`/profile/${text.slice(byteStart + 1, byteEnd)}`}>
-            {text.slice(byteStart, byteEnd)}
-          </Link>
-        )
-      } else if (facet.features[0].$type === 'app.bsky.richtext.facet#link') {
-        elements.push(
-          <a href={facet.features[0].uri as string}>
-            {text.slice(byteStart, byteEnd)}
-          </a>
-        )
-      }
-      i = byteEnd
-    }
-    // 最後のURL以降のテキストを追加
-    //elements.push(<>{text.slice(i)}</>)
-    let sliced_sentence = text.slice(i)
     elements.push(
-      <>
-        {sliced_sentence.split('\n').map((line, index) => (
-          <React.Fragment key={index}>
-            {line}
-            <br />
-          </React.Fragment>
-        ))}
-      </>
-    )
+        <>
+          {text.split('\n').map((line, i) => (
+              <p key={i}>
+                {reactStringReplace(line, /(@\S+|https?:\/\/\S+)/g, (match, j) => {
+                  if (match.startsWith('@')) {
+                    const domain = match.substring(1); // remove "@" symbol from match
+                    return <a key={j} href={`/profile/${domain}`}>{match}</a>;
+                  } else if (match.startsWith('http')) {
+                    return <a key={j} href={match}>{match}</a>;
+                  } else {
+                    return match;
+                  }
+                })}
+              </p>
+          ))}
+        </>
+    );
+
+
+
   } else if (record.entities && record.entities.length > 0) {
     // entitiesがある場合にのみ処理する
     const text = record.text
