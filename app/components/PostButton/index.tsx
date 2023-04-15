@@ -3,6 +3,8 @@ import { faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Modal, Text, Textarea } from '@nextui-org/react'
 import { useState } from 'react'
+import { RichText } from '@atproto/api'
+
 
 export interface PostButtonProps {}
 
@@ -12,9 +14,15 @@ export const PostButton = (props: PostButtonProps) => {
   const [content, setContent] = useState('')
 
   const post = async () => {
-    console.log(content)
-    await agent?.post({
-      text: content,
+    if (!agent){
+      return
+    }
+    const rt = new RichText({text: content})
+    await rt.detectFacets(agent)
+    console.log(rt)
+    await agent.post({
+      text: rt.text,
+      facets: rt.facets,
     })
     setDialog(false)
   }
@@ -38,7 +46,7 @@ export const PostButton = (props: PostButtonProps) => {
           <Textarea
             placeholder="投稿内容"
             rows={8}
-            value={content}
+            //value={content}
             maxLength={300}
             onChange={(e) => setContent(e.target.value)}
           />
