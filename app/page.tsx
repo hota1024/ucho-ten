@@ -1,21 +1,41 @@
 'use client'
 
-import { BskyAgent } from '@atproto/api'
 import { FeedViewPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
-import {
-  Button,
-  Container,
-  Grid,
-  Modal,
-  Row,
-  Spacer,
-  Textarea,
-} from '@nextui-org/react'
+import { Row, styled } from '@nextui-org/react'
 import { NextPage } from 'next'
 import { useCallback, useEffect, useState } from 'react'
 import { FeedView } from './components/FeedView'
+import { LogoutButton } from './components/LogoutButton'
 import { PostButton } from './components/PostButton'
 import { useRequiredSession } from './lib/hooks/useRequiredSession'
+
+const Container = styled('div', {
+  maxWidth: '1200px',
+  width: '100%',
+  margin: '0 auto',
+
+  display: 'grid',
+  gridTemplateColumns: '300px auto 300px',
+  gap: '$6',
+})
+
+const TimelineContainer = styled('div', {
+  maxHeight: '100dvh',
+  overflowY: 'scroll',
+})
+
+const LeftActionsContainer = styled('div', {
+  display: 'flex',
+  flexFlow: 'column',
+  gap: '$8',
+})
+
+const UchoTen = styled('div', {
+  marginTop: '$8',
+  fontSize: '2rem',
+  fontWeight: 'bold',
+  textAlign: 'center',
+})
 
 /**
  * Home page.
@@ -43,20 +63,19 @@ const HomePage: NextPage = () => {
 
   return (
     <Container>
-      <Grid.Container>
-        <Grid xs={2}>
-          <PostButton />
-        </Grid>
-        <Grid xs={6}>
-          <Container>
-            {feeds.map((feed, key) => (
-              <Row key={key} css={{ my: '$8' }}>
-                <FeedView feed={feed} />
-              </Row>
-            ))}
-          </Container>
-        </Grid>
-      </Grid.Container>
+      <LeftActionsContainer>
+        <UchoTen>Ucho-ten</UchoTen>
+        <PostButton />
+        <LogoutButton />
+      </LeftActionsContainer>
+      <TimelineContainer>
+        {feeds.map((feed, key) => (
+          <Row key={key} css={{ my: '$8' }}>
+            <FeedView feed={feed} />
+          </Row>
+        ))}
+      </TimelineContainer>
+      <div></div>
     </Container>
   )
 }
