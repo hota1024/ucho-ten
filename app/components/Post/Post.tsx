@@ -75,6 +75,7 @@ const PostAction = styled('div', {
   gap: '$4',
   fontWeight: '$medium',
   color: '$gray700',
+  cursor: 'pointer',
 })
 
 const ReplyLine = styled('div', {
