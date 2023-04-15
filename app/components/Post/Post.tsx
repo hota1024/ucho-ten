@@ -107,6 +107,9 @@ interface PostProps {
   showReplyCount?: boolean
   showRepostCount?: boolean
   showLikeCount?: boolean
+
+  isLiked?: boolean
+  onLikeClick?: () => void
 }
 
 export const Post = (props: PostProps) => {
@@ -125,7 +128,10 @@ export const Post = (props: PostProps) => {
     showReplyCount,
     showRepostCount,
     showLikeCount,
+    isLiked,
   } = props
+  const onLikeClick = props.onLikeClick ?? (() => {})
+
   const images = AppBskyEmbedImages.isView(embed) ? embed.images ?? [] : []
 
   const [elapsed, setElapsed] = useState<number>()
@@ -273,8 +279,11 @@ export const Post = (props: PostProps) => {
               </PostAction>
             </Col>
             <Col>
-              <PostAction>
-                <FontAwesomeIcon icon={faHeartRegular} color="#787F85" />
+              <PostAction onClick={onLikeClick}>
+                <FontAwesomeIcon
+                  icon={isLiked ? faHeartSolid : faHeartRegular}
+                  color={isLiked ? '#F31260' : '#787F85'}
+                />
                 {showLikeCount && likeCount}
               </PostAction>
             </Col>
