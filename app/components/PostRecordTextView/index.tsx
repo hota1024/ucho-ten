@@ -5,7 +5,7 @@ import {
 } from '@atproto/api/dist/client/types/app/bsky/feed/post'
 import React, { ReactNode } from 'react'
 import Link from 'next/link'
-import reactStringReplace from "react-string-replace";
+import reactStringReplace from 'react-string-replace'
 
 interface PostRecordTextViewProps {
   post: PostView
@@ -21,26 +21,31 @@ export const PostRecordTextView = (props: PostRecordTextViewProps) => {
     const text = record.text
     let i = 0
     elements.push(
-        <>
-          {text.split('\n').map((line, i) => (
-              <p key={i}>
-                {reactStringReplace(line, /(@\S+|https?:\/\/\S+)/g, (match, j) => {
-                  if (match.startsWith('@')) {
-                    const domain = match.substring(1); // remove "@" symbol from match
-                    return <Link key={j} href={`/profile/${domain}`}>{match}</Link>;
-                  } else if (match.startsWith('http')) {
-                    return <a key={j} href={match}>{match}</a>;
-                  } else {
-                    return match;
-                  }
-                })}
-              </p>
-          ))}
-        </>
-    );
-
-
-
+      <>
+        {text.split('\n').map((line, i) => (
+          <p key={i}>
+            {reactStringReplace(line, /(@\S+|https?:\/\/\S+)/g, (match, j) => {
+              if (match.startsWith('@')) {
+                const domain = match.substring(1) // remove "@" symbol from match
+                return (
+                  <Link key={j} href={`/profile/${domain}`}>
+                    {match}
+                  </Link>
+                )
+              } else if (match.startsWith('http')) {
+                return (
+                  <a key={j} href={match}>
+                    {match}
+                  </a>
+                )
+              } else {
+                return match
+              }
+            })}
+          </p>
+        ))}
+      </>
+    )
   } else if (record.entities && record.entities.length > 0) {
     // entitiesがある場合にのみ処理する
     const text = record.text
