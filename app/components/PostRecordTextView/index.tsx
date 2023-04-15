@@ -38,7 +38,7 @@ export const PostRecordTextView = (props: PostRecordTextViewProps) => {
                 )
               } else if (match.startsWith('http')) {
                 return (
-                  <a key={j} href={match}>
+                  <a key={j} href={match} target="_blank" rel="noopener noreferrer">
                     {match}
                   </a>
                 )
@@ -65,7 +65,7 @@ export const PostRecordTextView = (props: PostRecordTextViewProps) => {
         )
       } else if (entity.type === 'link') {
         elements.push(
-          <a href={text.slice(start, end)}>{text.slice(start, end)}</a>
+          <a href={text.slice(start, end)} target="_blank" rel="noopener noreferrer">{text.slice(start, end)}</a>
         )
       }
       // URL以外のテキストを追加
