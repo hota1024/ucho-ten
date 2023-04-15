@@ -1,4 +1,3 @@
-import { ViewImage } from '@atproto/api/dist/client/types/app/bsky/embed/images'
 import { Record } from '@atproto/api/dist/client/types/app/bsky/feed/post'
 import {
   FeedViewPost,
@@ -33,7 +32,7 @@ import Zoom from 'react-medium-image-zoom'
 import { utx, makeConsecutiveUnits, makeUnit } from 'utx'
 import { PostRecordTextView } from '../PostRecordTextView'
 import { ProfileViewBasic } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
-import { AppBskyEmbedRecord } from '@atproto/api'
+import { AppBskyEmbedRecord, AppBskyEmbedImages } from '@atproto/api'
 
 const RepostByLabel = styled('div', {
   fontSize: '$sm',
@@ -127,7 +126,7 @@ export const Post = (props: PostProps) => {
     showRepostCount,
     showLikeCount,
   } = props
-  const images = (record.embed?.images ?? []) as ViewImage[]
+  const images = AppBskyEmbedImages.isView(embed) ? embed.images ?? [] : []
 
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
