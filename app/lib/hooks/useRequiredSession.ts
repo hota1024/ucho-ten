@@ -11,7 +11,11 @@ export const useRequiredSession = () => {
     const sessionJson = localStorage.getItem('session')
 
     if (!sessionJson) {
-      router.push('/login')
+      if (router) {
+        router.push('/login')
+      } else {
+        location.href = '/login'
+      }
       return
     }
 
