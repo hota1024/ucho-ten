@@ -8,6 +8,7 @@ import { FeedView } from './components/FeedView'
 import { LogoutButton } from './components/LogoutButton'
 import { PostButton } from './components/PostButton'
 import { useRequiredSession } from './lib/hooks/useRequiredSession'
+import InfiniteScroll from 'react-infinite-scroller'
 
 const Container = styled('div', {
   maxWidth: '1200px',
@@ -44,18 +45,32 @@ const HomePage: NextPage = () => {
   const { agent } = useRequiredSession()
 
   const [feeds, setFeeds] = useState<FeedViewPost[]>([])
+  const [cursor, setCursor] = useState<string>()
+  const [hasMore, setHasMore] = useState(true)
+  console.log(feeds.length)
 
   const updateFeed = useCallback(async () => {
     if (agent) {
-      const result = await agent.getTimeline()
-      setFeeds(result.data.feed)
-      console.log('fetched feed', result.data.feed)
+      const result = await agent.getTimeline({
+        cursor,
+      })
+
+      setFeeds((feeds) => [...feeds, ...result.data.feed])
+      setCursor(result.data.cursor)
+
+      console.log(cursor, 'fetched feed', result.data.feed)
+
+      if (!result.data.cursor) {
+        setHasMore(false)
+      }
     }
-  }, [agent])
+  }, [agent, cursor])
 
   useEffect(() => {
-    updateFeed()
-  }, [updateFeed])
+    if (window) {
+      console.log('initial load')
+    }
+  }, [])
 
   if (!agent) {
     return <>loading...</>
@@ -69,11 +84,19 @@ const HomePage: NextPage = () => {
         <LogoutButton />
       </LeftActionsContainer>
       <TimelineContainer>
-        {feeds.map((feed, key) => (
-          <Row key={key} css={{ my: '$8' }}>
-            <FeedView feed={feed} />
-          </Row>
-        ))}
+        <InfiniteScroll
+          loadMore={updateFeed}
+          hasMore={hasMore}
+          loader={<>loading...</>}
+          threshold={2000}
+          useWindow={false}
+        >
+          {feeds.map((feed, key) => (
+            <Row key={key} css={{ my: '$8' }}>
+              <FeedView feed={feed} />
+            </Row>
+          ))}
+        </InfiniteScroll>
       </TimelineContainer>
       <div></div>
     </Container>
