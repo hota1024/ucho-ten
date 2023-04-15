@@ -2,6 +2,7 @@ import { ViewImage } from '@atproto/api/dist/client/types/app/bsky/embed/images'
 import {
   FeedViewPost,
   PostView,
+  ReasonRepost,
 } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 import { Record } from '@atproto/api/dist/client/types/app/bsky/feed/post'
 import {
@@ -35,6 +36,12 @@ import { makeConsecutiveUnits, makeUnit, utx } from 'utx'
 import { PostRecordTextView } from '../PostRecordTextView'
 import Zoom from 'react-medium-image-zoom'
 
+const RepostByLabel = styled('div', {
+  fontSize: '$sm',
+  fontWeight: 'bold',
+  color: '$gray700',
+})
+
 const PostInfo = styled('div', {
   display: 'flex',
   alignItems: 'flex-end',
@@ -42,7 +49,7 @@ const PostInfo = styled('div', {
 })
 
 const AuthorDisplayName = styled('div', {
-  color: '$gray700',
+  color: '$text',
   fontWeight: 'bold',
 })
 
@@ -86,6 +93,8 @@ const ReplyLine = styled('div', {
 
 interface PostProps {
   post: PostView
+  reasonRepost: ReasonRepost
+
   hasReply?: boolean
   showReplyCount?: boolean
   showRepostCount?: boolean
@@ -93,8 +102,14 @@ interface PostProps {
 }
 
 const Post = (props: PostProps) => {
-  const { post, hasReply, showReplyCount, showRepostCount, showLikeCount } =
-    props
+  const {
+    post,
+    reasonRepost,
+    hasReply,
+    showReplyCount,
+    showRepostCount,
+    showLikeCount,
+  } = props
   const record = post.record as Record
   const images = (post.embed?.images ?? []) as ViewImage[]
 
@@ -163,6 +178,11 @@ const Post = (props: PostProps) => {
       </div>
       <Spacer x={1} />
       <Col>
+        {reasonRepost && (
+          <RepostByLabel>
+            {reasonRepost.by.displayName}さんがリポスト
+          </RepostByLabel>
+        )}
         <PostInfo>
           <NextLink
             style={{ display: 'block' }}
@@ -249,6 +269,7 @@ export const FeedView = (props: FeedViewProps) => {
               <Post
                 hasReply
                 post={feed.reply.parent}
+                reasonRepost={feed.reason as ReasonRepost}
                 showLikeCount
                 showReplyCount
                 showRepostCount
@@ -257,6 +278,7 @@ export const FeedView = (props: FeedViewProps) => {
             <PostContainer>
               <Post
                 post={feed.post}
+                reasonRepost={feed.reason as ReasonRepost}
                 showLikeCount
                 showReplyCount
                 showRepostCount
@@ -267,6 +289,7 @@ export const FeedView = (props: FeedViewProps) => {
           <PostContainer>
             <Post
               post={feed.post}
+              reasonRepost={feed.reason as ReasonRepost}
               showLikeCount
               showReplyCount
               showRepostCount
