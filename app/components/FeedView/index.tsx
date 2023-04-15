@@ -1,8 +1,12 @@
+import { useAgent } from '@/atoms/agent'
+import { AppBskyFeedDefs, AppBskyFeedGetPostThread, AtUri } from '@atproto/api'
 import {
   FeedViewPost,
+  PostView,
   ReasonRepost,
 } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 import { Card, styled } from '@nextui-org/react'
+import { useState } from 'react'
 import { PostViewCard } from '../Post'
 
 const PostContainer = styled('div', {
@@ -14,7 +18,27 @@ export interface FeedViewProps {
 }
 
 export const FeedView = (props: FeedViewProps) => {
-  const { feed } = props
+  const [agent] = useAgent()
+  const [feed, setFeed] = useState(props.feed)
+  console.log(feed)
+
+  const fetchFeed = async () => {
+    if (!agent) {
+      throw new Error('agent is not ready')
+    }
+
+    const thread = await agent.getPostThread({
+      uri: feed.post.uri,
+    })
+
+    const post = thread.data.thread
+
+    if (AppBskyFeedDefs.isThreadViewPost(post)) {
+      setFeed(post)
+    }
+
+    return post.post
+  }
 
   return (
     <>
@@ -29,6 +53,7 @@ export const FeedView = (props: FeedViewProps) => {
                 showLikeCount
                 showReplyCount
                 showRepostCount
+                onFetch={fetchFeed}
               />
             </PostContainer>
             <PostContainer>
@@ -38,6 +63,7 @@ export const FeedView = (props: FeedViewProps) => {
                 showLikeCount
                 showReplyCount
                 showRepostCount
+                onFetch={fetchFeed}
               />
             </PostContainer>
           </>
@@ -49,6 +75,7 @@ export const FeedView = (props: FeedViewProps) => {
               showLikeCount
               showReplyCount
               showRepostCount
+              onFetch={fetchFeed}
             />
           </PostContainer>
         )}
