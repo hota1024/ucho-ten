@@ -1,5 +1,7 @@
 import { useAgent } from '@/atoms/agent'
-import { Button, Modal, Textarea } from '@nextui-org/react'
+import { faPenToSquare } from '@fortawesome/free-regular-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, Modal, Text, Textarea } from '@nextui-org/react'
 import { useState } from 'react'
 
 export interface PostButtonProps {}
@@ -19,16 +21,25 @@ export const PostButton = (props: PostButtonProps) => {
 
   return (
     <>
-      <Button css={{ width: '100%' }} onPress={() => setDialog(true)}>
+      <Button
+        css={{ width: '100%' }}
+        onPress={() => setDialog(true)}
+        icon={<FontAwesomeIcon icon={faPenToSquare} size="lg" />}
+      >
         投稿
       </Button>
       <Modal open={dialog} onClose={() => setDialog(false)} closeButton>
-        <Modal.Header>投稿する</Modal.Header>
+        <Modal.Header>
+          <Text size="$lg" b>
+            投稿する
+          </Text>
+        </Modal.Header>
         <Modal.Body>
           <Textarea
             placeholder="投稿内容"
             rows={8}
             value={content}
+            maxLength={300}
             onChange={(e) => setContent(e.target.value)}
           />
         </Modal.Body>
