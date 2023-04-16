@@ -115,6 +115,7 @@ interface PostProps {
   onLikeClick?: () => void
   onRepostClick?: () => void
 
+  isFollowing?: boolean
   onFollowClick?: () => void
   onFetch: () => PostView
 }
@@ -137,19 +138,19 @@ export const Post = (props: PostProps) => {
     showLikeCount,
     isLiked,
     isReposted,
+    isFollowing,
     onFetch,
   } = props
-  const [agent] = useAgent()
   const onLikeClick = props.onLikeClick ?? (() => {})
   const onRepostClick = props.onRepostClick ?? (() => {})
   const onFollowClick = props.onFollowClick ?? (() => {})
 
+  const [agent] = useAgent()
+  const [followHover, setFollowHover] = useState(false)
+
   const images = AppBskyEmbedImages.isView(embed) ? embed.images ?? [] : []
 
   const [elapsed, setElapsed] = useState<number>()
-  const [following, setFollowing] = useState<boolean>(
-    !!author.viewer?.following
-  )
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
 
   const updateElapsed = useCallback(() => {
@@ -176,35 +177,6 @@ export const Post = (props: PostProps) => {
       clearInterval(id)
     }
   }, [time, updateElapsed])
-
-  const follow = async () => {
-    if (!agent) {
-      return
-    }
-    //const my_followings = await agent.getFollows()
-
-    console.log('follow')
-    //my did
-    const my_did = agent.session!.did
-    console.log(my_did)
-
-    const profile = await agent.getProfile({
-      actor: author.did,
-    })
-    console.log(profile)
-
-    if (profile.data.viewer) {
-      if (profile.data.viewer.following) {
-        setFollowing(false)
-        await agent.deleteFollow(profile.data.viewer.following)
-      } else {
-        setFollowing(true)
-        await agent.follow(author.did)
-      }
-    }
-
-    await onFetch()
-  }
 
   return (
     <Row
@@ -242,13 +214,19 @@ export const Post = (props: PostProps) => {
                 <Col span={7}>
                   <Button
                     auto
-                    onClick={() => follow()}
+                    onClick={onFollowClick}
+                    onMouseOver={() => setFollowHover(true)}
+                    onMouseLeave={() => setFollowHover(false)}
                     rounded
-                    bordered={!following}
-                    color={following ? 'error' : 'primary'}
+                    bordered={isFollowing}
+                    color={isFollowing && followHover ? 'error' : 'primary'}
                     css={{ ml: '$10' }}
                   >
-                    {following ? 'フォロー中' : 'フォロー'}
+                    {isFollowing
+                      ? followHover
+                        ? 'フォロー解除'
+                        : 'フォロー中'
+                      : 'フォロー'}
                   </Button>
                 </Col>
               </Row>

@@ -38,7 +38,9 @@ export const PostViewCard = (props: PostProps) => {
   const [isLiked, setIsLiked] = useState(!!post.viewer?.like)
   const [likeCount, setLikeCount] = useState(post.likeCount ?? 0)
   const [isReposted, setIsReposted] = useState(!!post.viewer?.repost)
+  const [isFollowing, setIsFollowing] = useState(!!post.viewer?.following)
   const [repostCount, setRepostCount] = useState(post.repostCount ?? 0)
+  const [followLoading, setFollowLoading] = useState(false)
 
   const handleLikeClick = async () => {
     if (!agent) {
@@ -105,6 +107,39 @@ export const PostViewCard = (props: PostProps) => {
     // }
   }
 
+  const handleFollowClick = async () => {
+    if (!agent || followLoading) {
+      return
+    }
+
+    const { author } = post
+
+    setIsFollowing((v) => !v)
+
+    //my did
+    const my_did = agent.session!.did
+    console.log(my_did)
+
+    setFollowLoading(true)
+    const profile = await agent.getProfile({
+      actor: author.did,
+    })
+    console.log(profile)
+
+    if (profile.data.viewer) {
+      if (profile.data.viewer.following) {
+        setIsFollowing(false)
+        await agent.deleteFollow(profile.data.viewer.following)
+      } else {
+        setIsFollowing(true)
+        await agent.follow(author.did)
+      }
+    }
+
+    await onFetch()
+    setFollowLoading(false)
+  }
+
   return (
     <Post
       record={record}
@@ -121,12 +156,10 @@ export const PostViewCard = (props: PostProps) => {
       showLikeCount={showLikeCount}
       isLiked={isLiked}
       isReposted={isReposted}
-      onLikeClick={() => {
-        handleLikeClick()
-      }}
-      onRepostClick={() => {
-        handleRepostClick()
-      }}
+      isFollowing={isFollowing}
+      onLikeClick={handleLikeClick}
+      onRepostClick={handleRepostClick}
+      onFollowClick={handleFollowClick}
       onFetch={onFetch}
     />
   )
