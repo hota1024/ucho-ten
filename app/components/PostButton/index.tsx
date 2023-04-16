@@ -1,30 +1,23 @@
 import { useAgent } from '@/atoms/agent'
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Modal, Text, Textarea } from '@nextui-org/react'
+import { Button } from '@nextui-org/react'
 import { useState } from 'react'
-import { RichText } from '@atproto/api'
-
+import { PostModal } from '../PostModal'
+import { PostRecordPost } from '@/types/posts'
 
 export interface PostButtonProps {}
 
 export const PostButton = (props: PostButtonProps) => {
   const [agent] = useAgent()
   const [dialog, setDialog] = useState(false)
-  const [content, setContent] = useState('')
 
-  const post = async () => {
-    if (!agent){
+  const post = async (record: PostRecordPost) => {
+    if (!agent) {
       return
     }
-    const rt = new RichText({text: content})
-    await rt.detectFacets(agent)
-    console.log(rt)
-    await agent.post({
-      text: rt.text,
-      facets: rt.facets,
-    })
-    setDialog(false)
+
+    await agent.post(record)
   }
 
   return (
@@ -36,30 +29,11 @@ export const PostButton = (props: PostButtonProps) => {
       >
         投稿
       </Button>
-      <Modal open={dialog} onClose={() => setDialog(false)} closeButton>
-        <Modal.Header>
-          <Text size="$lg" b>
-            投稿する
-          </Text>
-        </Modal.Header>
-        <Modal.Body>
-          <Textarea
-            placeholder="投稿内容"
-            rows={8}
-            //value={content}
-            maxLength={300}
-            onChange={(e) => setContent(e.target.value)}
-          />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button auto flat onPress={() => setDialog(false)}>
-            キャンセル
-          </Button>
-          <Button auto onClick={post}>
-            投稿
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <PostModal
+        open={dialog}
+        onClose={() => setDialog(false)}
+        onSubmit={post}
+      />
     </>
   )
 }

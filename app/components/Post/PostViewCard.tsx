@@ -4,10 +4,12 @@ import {
   ReasonRepost,
 } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 import { Post } from './Post'
-import { AppBskyEmbedRecord } from '@atproto/api'
+import { AppBskyEmbedRecord, ComAtprotoRepoStrongRef } from '@atproto/api'
 import { useAgent } from '@/atoms/agent'
 import { useState } from 'react'
 import { isRTL } from '@react-aria/i18n/src/utils'
+import { PostModal } from '../PostModal'
+import { PostRecordPost } from '@/types/posts'
 
 interface PostProps {
   post: PostView
@@ -41,6 +43,7 @@ export const PostViewCard = (props: PostProps) => {
   const [isFollowing, setIsFollowing] = useState(!!post.viewer?.following)
   const [repostCount, setRepostCount] = useState(post.repostCount ?? 0)
   const [followLoading, setFollowLoading] = useState(false)
+  const [replyDialog, setReplyDialog] = useState(false)
 
   const handleLikeClick = async () => {
     if (!agent) {
@@ -92,19 +95,6 @@ export const PostViewCard = (props: PostProps) => {
 
     post = await onFetch()
     setRepostCount(post.repostCount ?? 0)
-
-    //let r = await agent.like(post.uri, post.cid)
-    // let is_already_like = await agent.getLikes({ uri: post.uri, cid: post.cid })
-    // let my_did = await agent.session?.did
-    // console.log(is_already_like)
-    // console.log(my_did)
-    // for (let i = 0; i < is_already_like.data.likes.length; i++) {
-    //   console.log(is_already_like.data.likes[i].did)
-    //   if (is_already_like.data.likes[i].actor.did !== my_did) {
-    //     await agent.like(post.uri, post.cid)
-    //     return
-    //   }
-    // }
   }
 
   const handleFollowClick = async () => {
@@ -140,27 +130,57 @@ export const PostViewCard = (props: PostProps) => {
     setFollowLoading(false)
   }
 
+  const handleReplyClick = () => {
+    setReplyDialog(true)
+  }
+
+  const onReplySubmit = async (postRecord: PostRecordPost) => {
+    if (!agent) {
+      return
+    }
+
+    const parent: ComAtprotoRepoStrongRef.Main = {
+      uri: post.uri,
+      cid: post.cid,
+    }
+
+    postRecord.reply = {
+      root: record.reply?.root ?? parent,
+      parent,
+    }
+
+    await agent.post(postRecord)
+  }
+
   return (
-    <Post
-      record={record}
-      embed={embed}
-      author={post.author}
-      createdAt={record.createdAt}
-      reasonRepost={reasonRepost}
-      hasReply={hasReply}
-      replyCount={post.replyCount}
-      repostCount={repostCount}
-      likeCount={likeCount}
-      showReplyCount={showReplyCount}
-      showRepostCount={showRepostCount}
-      showLikeCount={showLikeCount}
-      isLiked={isLiked}
-      isReposted={isReposted}
-      isFollowing={isFollowing}
-      onLikeClick={handleLikeClick}
-      onRepostClick={handleRepostClick}
-      onFollowClick={handleFollowClick}
-      onFetch={onFetch}
-    />
+    <>
+      <Post
+        record={record}
+        embed={embed}
+        author={post.author}
+        createdAt={record.createdAt}
+        reasonRepost={reasonRepost}
+        hasReply={hasReply}
+        replyCount={post.replyCount}
+        repostCount={repostCount}
+        likeCount={likeCount}
+        showReplyCount={showReplyCount}
+        showRepostCount={showRepostCount}
+        showLikeCount={showLikeCount}
+        isLiked={isLiked}
+        isReposted={isReposted}
+        isFollowing={isFollowing}
+        onLikeClick={handleLikeClick}
+        onRepostClick={handleRepostClick}
+        onFollowClick={handleFollowClick}
+        onReplyClick={handleReplyClick}
+      />
+      <PostModal
+        open={replyDialog}
+        onClose={() => setReplyDialog(false)}
+        onSubmit={onReplySubmit}
+        parentPostView={post}
+      />
+    </>
   )
 }

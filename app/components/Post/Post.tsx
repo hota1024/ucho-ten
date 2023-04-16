@@ -102,6 +102,8 @@ interface PostProps {
 
   hideActions?: boolean
 
+  disableTooltip?: boolean
+
   replyCount?: number
   repostCount?: number
   likeCount?: number
@@ -117,7 +119,8 @@ interface PostProps {
 
   isFollowing?: boolean
   onFollowClick?: () => void
-  onFetch: () => PostView
+
+  onReplyClick?: () => void
 }
 
 export const Post = (props: PostProps) => {
@@ -133,13 +136,14 @@ export const Post = (props: PostProps) => {
     repostCount,
     likeCount,
     hideActions,
+    disableTooltip,
     showReplyCount,
     showRepostCount,
     showLikeCount,
     isLiked,
     isReposted,
     isFollowing,
-    onFetch,
+    onReplyClick,
   } = props
   const onLikeClick = props.onLikeClick ?? (() => {})
   const onRepostClick = props.onRepostClick ?? (() => {})
@@ -192,6 +196,7 @@ export const Post = (props: PostProps) => {
       <div>
         <Tooltip
           placement="right"
+          isDisabled={disableTooltip}
           content={
             <Container
               css={{
@@ -245,7 +250,9 @@ export const Post = (props: PostProps) => {
         )}
         <PostInfo>
           <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
-            <AuthorDisplayName>{author.displayName}</AuthorDisplayName>
+            <AuthorDisplayName>
+              {author.displayName ?? `@${author.handle}`}
+            </AuthorDisplayName>
           </Link>
           <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
             <AuthorHandle>@{author.handle}</AuthorHandle>
@@ -264,7 +271,6 @@ export const Post = (props: PostProps) => {
               author={(embed.record as Record).author as ProfileViewBasic}
               isEmbed
               hideActions
-              onFetch={onFetch}
             />
           </>
         )}
@@ -297,7 +303,7 @@ export const Post = (props: PostProps) => {
         {!hideActions && (
           <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
             <Col>
-              <PostAction>
+              <PostAction onClick={onReplyClick}>
                 <FontAwesomeIcon icon={faComment} color="#787F85" />
                 {showReplyCount && replyCount}
               </PostAction>
