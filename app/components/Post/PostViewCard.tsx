@@ -124,7 +124,7 @@ export const PostViewCard = (props: PostProps) => {
           ? (post.repostCount ? post.repostCount - 1 : 0) + 1
           : post.repostCount
           ? post.repostCount - 1
-          : 0
+          : post.repostCount
     }
       likeCount={
         isLiked
