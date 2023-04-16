@@ -88,9 +88,9 @@ const PostAction = styled('div', {
 })
 
 const ReplyLine = styled('div', {
-  position: 'absolute',
+  position: 'relative',
   borderLeft: '2px solid $gray700',
-  left: 22,
+  left: 24,
   top: 50,
   bottom: 2,
 })
