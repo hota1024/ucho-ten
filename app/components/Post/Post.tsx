@@ -33,7 +33,7 @@ import { utx, makeConsecutiveUnits, makeUnit } from 'utx'
 import { PostRecordTextView } from '../PostRecordTextView'
 import { ProfileViewBasic } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
 import { AppBskyEmbedRecord, AppBskyEmbedImages } from '@atproto/api'
-import {useAgent} from "@/atoms/agent";
+import { useAgent } from '@/atoms/agent'
 
 const RepostByLabel = styled('div', {
   fontSize: '$sm',
@@ -115,7 +115,6 @@ interface PostProps {
   onLikeClick?: () => void
   onRepostClick?: () => void
 
-  isFollowed?: boolean
   onFollowClick?: () => void
   onFetch: () => PostView
 }
@@ -138,7 +137,6 @@ export const Post = (props: PostProps) => {
     showLikeCount,
     isLiked,
     isReposted,
-    isFollowed,
     onFetch,
   } = props
   const [agent] = useAgent()
@@ -149,6 +147,9 @@ export const Post = (props: PostProps) => {
   const images = AppBskyEmbedImages.isView(embed) ? embed.images ?? [] : []
 
   const [elapsed, setElapsed] = useState<number>()
+  const [following, setFollowing] = useState<boolean>(
+    !!author.viewer?.following
+  )
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
 
   const updateElapsed = useCallback(() => {
@@ -177,20 +178,32 @@ export const Post = (props: PostProps) => {
   }, [time, updateElapsed])
 
   const follow = async () => {
-    if(!agent){
+    if (!agent) {
       return
     }
     //const my_followings = await agent.getFollows()
 
-
     console.log('follow')
     //my did
-    const my_did = agent.session.did
+    const my_did = agent.session!.did
     console.log(my_did)
-    const my_following_list = await agent.getFollows({actor: my_did, limit: 100})
 
-    console.log(my_following_list)
+    const profile = await agent.getProfile({
+      actor: author.did,
+    })
+    console.log(profile)
 
+    if (profile.data.viewer) {
+      if (profile.data.viewer.following) {
+        setFollowing(false)
+        await agent.deleteFollow(profile.data.viewer.following)
+      } else {
+        setFollowing(true)
+        await agent.follow(author.did)
+      }
+    }
+
+    await onFetch()
   }
 
   return (
@@ -227,8 +240,15 @@ export const Post = (props: PostProps) => {
                   />
                 </Col>
                 <Col span={7}>
-                  <Button auto onClick={() => follow()} rounded css={{ ml: '$10' }}>
-                    フォロー
+                  <Button
+                    auto
+                    onClick={() => follow()}
+                    rounded
+                    bordered={!following}
+                    color={following ? 'error' : 'primary'}
+                    css={{ ml: '$10' }}
+                  >
+                    {following ? 'フォロー中' : 'フォロー'}
                   </Button>
                 </Col>
               </Row>
@@ -266,6 +286,7 @@ export const Post = (props: PostProps) => {
               author={(embed.record as Record).author as ProfileViewBasic}
               isEmbed
               hideActions
+              onFetch={onFetch}
             />
           </>
         )}
@@ -305,9 +326,11 @@ export const Post = (props: PostProps) => {
             </Col>
             <Col>
               <PostAction onClick={onRepostClick}>
-                <FontAwesomeIcon icon={faRetweetSolid}
-                                 //color="#787F85"
-                                 color={isReposted ? '#36BA7A' : '#787F85'}/>
+                <FontAwesomeIcon
+                  icon={faRetweetSolid}
+                  //color="#787F85"
+                  color={isReposted ? '#36BA7A' : '#787F85'}
+                />
                 {showRepostCount && repostCount}
               </PostAction>
             </Col>

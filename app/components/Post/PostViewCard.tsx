@@ -7,7 +7,7 @@ import { Post } from './Post'
 import { AppBskyEmbedRecord } from '@atproto/api'
 import { useAgent } from '@/atoms/agent'
 import { useState } from 'react'
-import {isRTL} from "@react-aria/i18n/src/utils";
+import { isRTL } from '@react-aria/i18n/src/utils'
 
 interface PostProps {
   post: PostView
@@ -125,7 +125,7 @@ export const PostViewCard = (props: PostProps) => {
           : post.repostCount
           ? post.repostCount - 1
           : post.repostCount
-    }
+      }
       likeCount={
         isLiked
           ? (post.likeCount ? post.likeCount - 1 : 0) + 1
@@ -144,6 +144,7 @@ export const PostViewCard = (props: PostProps) => {
       onRepostClick={() => {
         handleRepostClick()
       }}
+      onFetch={onFetch}
     />
   )
 }
