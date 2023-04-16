@@ -33,6 +33,7 @@ import { utx, makeConsecutiveUnits, makeUnit } from 'utx'
 import { PostRecordTextView } from '../PostRecordTextView'
 import { ProfileViewBasic } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
 import { AppBskyEmbedRecord, AppBskyEmbedImages } from '@atproto/api'
+import {useAgent} from "@/atoms/agent";
 
 const RepostByLabel = styled('div', {
   fontSize: '$sm',
@@ -113,6 +114,10 @@ interface PostProps {
   isReposted?: boolean
   onLikeClick?: () => void
   onRepostClick?: () => void
+
+  isFollowed?: boolean
+  onFollowClick?: () => void
+  onFetch: () => PostView
 }
 
 export const Post = (props: PostProps) => {
@@ -133,9 +138,13 @@ export const Post = (props: PostProps) => {
     showLikeCount,
     isLiked,
     isReposted,
+    isFollowed,
+    onFetch,
   } = props
+  const [agent] = useAgent()
   const onLikeClick = props.onLikeClick ?? (() => {})
   const onRepostClick = props.onRepostClick ?? (() => {})
+  const onFollowClick = props.onFollowClick ?? (() => {})
 
   const images = AppBskyEmbedImages.isView(embed) ? embed.images ?? [] : []
 
@@ -166,6 +175,23 @@ export const Post = (props: PostProps) => {
       clearInterval(id)
     }
   }, [time, updateElapsed])
+
+  const follow = async () => {
+    if(!agent){
+      return
+    }
+    //const my_followings = await agent.getFollows()
+
+
+    console.log('follow')
+    //my did
+    const my_did = agent.session.did
+    console.log(my_did)
+    const my_following_list = await agent.getFollows({actor: my_did, limit: 100})
+
+    console.log(my_following_list)
+
+  }
 
   return (
     <Row
@@ -201,7 +227,7 @@ export const Post = (props: PostProps) => {
                   />
                 </Col>
                 <Col span={7}>
-                  <Button auto rounded css={{ ml: '$10' }}>
+                  <Button auto onClick={() => follow()} rounded css={{ ml: '$10' }}>
                     フォロー
                   </Button>
                 </Col>
@@ -216,7 +242,7 @@ export const Post = (props: PostProps) => {
       <Col>
         {reasonRepost && (
           <RepostByLabel>
-            {reasonRepost.by.displayName}さんがリポスト
+            {reasonRepost.by.displayName} さんがリポスト
           </RepostByLabel>
         )}
         <PostInfo>
