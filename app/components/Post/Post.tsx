@@ -200,7 +200,7 @@ export const Post = (props: PostProps) => {
                     description={`@${author.handle}`}
                   />
                 </Col>
-                <Col span={3}>
+                <Col span={7}>
                   <Button auto rounded css={{ ml: '$10' }}>
                     フォロー
                   </Button>
