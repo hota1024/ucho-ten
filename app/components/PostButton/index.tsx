@@ -19,11 +19,23 @@ export const PostButton = (props: PostButtonProps) => {
 
     await agent.post(record)
   }
+    const styles = {
+        button: {
+            color: '$white',
+            backgroundColor: '$blue500',
+            border: '2px solid $blue500', // 変更
+            '&:hover': {
+                color: '$blue500',
+                backgroundColor: '$white',
+                border: '2px solid $blue500', // 変更
+            },
+        },
+    }
 
   return (
     <>
       <Button
-        css={{ width: '100%' }}
+        css={styles.button}
         onPress={() => setDialog(true)}
         icon={<FontAwesomeIcon icon={faPenToSquare} size="lg" />}
       >

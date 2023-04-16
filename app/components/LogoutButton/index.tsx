@@ -12,9 +12,21 @@ export const LogoutButton = () => {
     localStorage.removeItem('session')
     window.location.href = '/login'
   }
+  const styles = {
+    button: {
+      color: '$error',
+      backgroundColor: '$white',
+      borderColor: '$error',
+      '&:hover': {
+        color: '$white',
+        backgroundColor: '$error',
+      },
+    },
+  }
 
   return (
     <Button
+      css={styles.button}
       bordered
       color="error"
       onPress={logout}
