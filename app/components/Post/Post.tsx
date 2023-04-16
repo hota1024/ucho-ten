@@ -235,7 +235,7 @@ export const Post = (props: PostProps) => {
                     rounded
                     bordered={isFollowing}
                     color={isFollowing && followHover ? 'error' : 'primary'}
-                    css={{ ml: '$10' }}
+                    css={{ ml: '$10', width: `5ch` }}
                   >
                     {isFollowing
                       ? followHover
