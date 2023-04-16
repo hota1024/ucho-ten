@@ -26,8 +26,13 @@ export const useRequiredSession = () => {
       await agent.resumeSession(session)
 
       setAgent(agent)
-    } catch {
-      router.push('/login')
+    } catch (error) {
+      console.error(error)
+      if (router) {
+        router.push('/login')
+      } else {
+        location.href = '/login'
+      }
     }
   }, [router, setAgent])
 
