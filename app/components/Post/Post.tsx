@@ -59,14 +59,22 @@ const AuthorHandle = styled('div', {
 const PostDate = styled('div', {
   color: '$gray700',
   fontSize: '$sm',
+  lineHeight: '1.55',
+  '&:hover': {
+    textDecoration: 'underline',
+  },
+  '& a': {
+    color: '$gray700',
+  },
 })
+
 
 const timeUnit = utx(
   makeConsecutiveUnits([
-    makeUnit(1000, '秒'),
-    makeUnit(60, '分'),
-    makeUnit(60, '時'),
-    makeUnit(24, '日'),
+    makeUnit(1000, 'sec'),
+    makeUnit(60, 'm'),
+    makeUnit(60, 'h'),
+    makeUnit(24, 'd'),
   ])
 )
 
@@ -88,6 +96,7 @@ const ReplyLine = styled('div', {
 })
 
 interface PostProps {
+  uri?: string
   reasonRepost?: ReasonRepost
 
   author: ProfileViewBasic
@@ -125,6 +134,7 @@ interface PostProps {
 
 export const Post = (props: PostProps) => {
   const {
+    uri,
     reasonRepost,
     author,
     record,
@@ -187,7 +197,7 @@ export const Post = (props: PostProps) => {
       align="stretch"
       css={{
         position: 'relative',
-        border: isEmbed ? '1px solid $gray400' : undefined,
+        border: isEmbed ? '2px solid $gray400' : undefined,
         borderRadius: '$md',
         padding: '$4',
       }}
@@ -258,7 +268,9 @@ export const Post = (props: PostProps) => {
             <AuthorHandle>@{author.handle}</AuthorHandle>
           </Link>
           <PostDate>
-            {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
+            <Link style={{ display: 'block' }} href={`https://staging.bsky.app/profile/${author.handle}/post/${uri}`} target={"_blank"}>
+              {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
+            </Link>
           </PostDate>
         </PostInfo>
 

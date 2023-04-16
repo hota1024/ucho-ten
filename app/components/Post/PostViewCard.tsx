@@ -155,6 +155,7 @@ export const PostViewCard = (props: PostProps) => {
   return (
     <>
       <Post
+        uri={post.uri.split('/').pop()}
         record={record}
         embed={embed}
         author={post.author}
