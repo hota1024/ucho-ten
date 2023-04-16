@@ -36,7 +36,9 @@ export const PostViewCard = (props: PostProps) => {
   const embed = post.embed as unknown as AppBskyEmbedRecord.ViewRecord
   const [agent] = useAgent()
   const [isLiked, setIsLiked] = useState(!!post.viewer?.like)
+  const [likeCount, setLikeCount] = useState(post.likeCount ?? 0)
   const [isReposted, setIsReposted] = useState(!!post.viewer?.repost)
+  const [repostCount, setRepostCount] = useState(post.repostCount ?? 0)
 
   const handleLikeClick = async () => {
     if (!agent) {
@@ -45,12 +47,14 @@ export const PostViewCard = (props: PostProps) => {
 
     setIsLiked((v) => {
       if (v) {
+        setLikeCount((v) => v - 1)
         return false
       } else {
+        setLikeCount((v) => v + 1)
         return true
       }
     })
-    const post = await onFetch()
+    let post = await onFetch()
 
     if (post.viewer?.like) {
       await agent.deleteLike(post.viewer?.like)
@@ -58,20 +62,8 @@ export const PostViewCard = (props: PostProps) => {
       await agent.like(post.uri, post.cid)
     }
 
-    await onFetch()
-
-    //let r = await agent.like(post.uri, post.cid)
-    // let is_already_like = await agent.getLikes({ uri: post.uri, cid: post.cid })
-    // let my_did = await agent.session?.did
-    // console.log(is_already_like)
-    // console.log(my_did)
-    // for (let i = 0; i < is_already_like.data.likes.length; i++) {
-    //   console.log(is_already_like.data.likes[i].did)
-    //   if (is_already_like.data.likes[i].actor.did !== my_did) {
-    //     await agent.like(post.uri, post.cid)
-    //     return
-    //   }
-    // }
+    post = await onFetch()
+    setLikeCount(post.likeCount ?? 0)
   }
 
   const handleRepostClick = async () => {
@@ -81,12 +73,14 @@ export const PostViewCard = (props: PostProps) => {
 
     setIsReposted((v) => {
       if (v) {
+        setRepostCount((v) => v - 1)
         return false
       } else {
+        setRepostCount((v) => v + 1)
         return true
       }
     })
-    const post = await onFetch()
+    let post = await onFetch()
 
     if (post.viewer?.repost) {
       await agent.deleteRepost(post.viewer?.repost)
@@ -94,7 +88,8 @@ export const PostViewCard = (props: PostProps) => {
       await agent.repost(post.uri, post.cid)
     }
 
-    await onFetch()
+    post = await onFetch()
+    setRepostCount(post.repostCount ?? 0)
 
     //let r = await agent.like(post.uri, post.cid)
     // let is_already_like = await agent.getLikes({ uri: post.uri, cid: post.cid })
@@ -119,20 +114,8 @@ export const PostViewCard = (props: PostProps) => {
       reasonRepost={reasonRepost}
       hasReply={hasReply}
       replyCount={post.replyCount}
-      repostCount={
-        isReposted
-          ? (post.repostCount ? post.repostCount - 1 : 0) + 1
-          : post.repostCount
-          ? post.repostCount - 1
-          : post.repostCount
-      }
-      likeCount={
-        isLiked
-          ? (post.likeCount ? post.likeCount - 1 : 0) + 1
-          : post.likeCount
-          ? post.likeCount - 1
-          : 0
-      }
+      repostCount={repostCount}
+      likeCount={likeCount}
       showReplyCount={showReplyCount}
       showRepostCount={showRepostCount}
       showLikeCount={showLikeCount}
