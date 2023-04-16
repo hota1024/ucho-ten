@@ -1,7 +1,7 @@
 'use client'
 
 import { FeedViewPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
-import { Row, styled } from '@nextui-org/react'
+import {Loading, Row, styled} from '@nextui-org/react'
 import { NextPage } from 'next'
 import { useCallback, useEffect, useState } from 'react'
 import { FeedView } from './components/FeedView'
@@ -73,7 +73,15 @@ const HomePage: NextPage = () => {
   }, [])
 
   if (!agent) {
-    return <>loading...</>
+    return <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginLeft: 'auto',
+              marginRight: 'auto'
+          }}>
+            <Loading size="lg" />
+          </div>
   }
 
   return (
@@ -87,7 +95,15 @@ const HomePage: NextPage = () => {
         <InfiniteScroll
           loadMore={updateFeed}
           hasMore={hasMore}
-          loader={<>loading...</>}
+          loader={<div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginLeft: 'auto',
+                    marginRight: 'auto'
+                  }}>
+                    <Loading size="lg" />
+                  </div>}
           threshold={2500}
           useWindow={false}
         >
