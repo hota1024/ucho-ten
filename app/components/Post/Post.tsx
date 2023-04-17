@@ -84,7 +84,7 @@ const PostAction = styled('div', {
   gap: '$4',
   fontWeight: '$medium',
   color: '$gray700',
-  cursor: 'pointer',
+  //cursor: 'pointer',
 })
 
 const ReplyLine = styled('div', {
@@ -315,14 +315,14 @@ export const Post = (props: PostProps) => {
         {!hideActions && (
           <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
             <Col>
-              <PostAction onClick={onReplyClick}>
-                <FontAwesomeIcon icon={faComment} color="#787F85" />
+              <PostAction>
+                <FontAwesomeIcon icon={faComment} color="#787F85" onClick={onReplyClick}/>
                 {showReplyCount && replyCount}
               </PostAction>
             </Col>
             <Col>
-              <PostAction onClick={onRepostClick}>
-                <FontAwesomeIcon
+              <PostAction>
+                <FontAwesomeIcon onClick={onRepostClick}
                   icon={faRetweetSolid}
                   //color="#787F85"
                   color={isReposted ? '#36BA7A' : '#787F85'}
@@ -331,8 +331,8 @@ export const Post = (props: PostProps) => {
               </PostAction>
             </Col>
             <Col>
-              <PostAction onClick={onLikeClick}>
-                <FontAwesomeIcon
+              <PostAction>
+                <FontAwesomeIcon onClick={onLikeClick}
                   icon={isLiked ? faHeartSolid : faHeartRegular}
                   color={isLiked ? '#F31260' : '#787F85'}
                 />
