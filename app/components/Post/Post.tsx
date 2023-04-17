@@ -59,7 +59,7 @@ const AuthorHandle = styled('div', {
 const PostDate = styled('div', {
   color: '$gray700',
   fontSize: '$sm',
-  lineHeight: '1.55',
+  lineHeight: '1.6',
   '&:hover': {
     textDecoration: 'underline',
   },
