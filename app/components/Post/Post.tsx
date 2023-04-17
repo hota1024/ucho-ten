@@ -96,7 +96,7 @@ const ReplyLine = styled('div', {
 })
 
 interface PostProps {
-  uri?: string
+  postUri?: string
   reasonRepost?: ReasonRepost
 
   author: ProfileViewBasic
@@ -134,7 +134,7 @@ interface PostProps {
 
 export const Post = (props: PostProps) => {
   const {
-    uri,
+    postUri,
     reasonRepost,
     author,
     record,
@@ -268,7 +268,7 @@ export const Post = (props: PostProps) => {
             <AuthorHandle>@{author.handle}</AuthorHandle>
           </Link>
           <PostDate>
-            <Link style={{ display: 'block' }} href={`https://staging.bsky.app/profile/${author.handle}/post/${uri}`} target={"_blank"}>
+            <Link style={{ display: 'block' }} href={`https://staging.bsky.app/profile/${author.handle}/post/${postUri}`} target={"_blank"}>
               {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
             </Link>
           </PostDate>
