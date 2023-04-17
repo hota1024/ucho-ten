@@ -168,7 +168,17 @@ const HomePage: NextPage = () => {
           <InfiniteScroll
             loadMore={updateFeed}
             hasMore={hasMore}
-            loader={<>loading...</>}
+            loader={<div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                }}
+            >
+              <Loading size="lg" />
+            </div>}
             threshold={2500}
             useWindow={false}
           >
