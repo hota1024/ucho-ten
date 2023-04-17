@@ -71,7 +71,7 @@ const PostDate = styled('div', {
 
 const timeUnit = utx(
   makeConsecutiveUnits([
-    makeUnit(1000, 'sec'),
+    makeUnit(1000, 's'),
     makeUnit(60, 'm'),
     makeUnit(60, 'h'),
     makeUnit(24, 'd'),
