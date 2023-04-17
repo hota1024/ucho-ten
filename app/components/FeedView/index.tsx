@@ -6,7 +6,7 @@ import {
   ReasonRepost,
 } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 import { Card, styled } from '@nextui-org/react'
-import { useState } from 'react'
+import { ComponentProps, useState } from 'react'
 import { PostViewCard } from '../Post'
 
 const PostContainer = styled('div', {
@@ -20,7 +20,6 @@ export interface FeedViewProps {
 export const FeedView = (props: FeedViewProps) => {
   const [agent] = useAgent()
   const [feed, setFeed] = useState(props.feed)
-  console.log(feed)
 
   const fetchFeed = async () => {
     if (!agent) {
@@ -37,7 +36,9 @@ export const FeedView = (props: FeedViewProps) => {
       setFeed(post)
     }
 
-    return post.post
+    return post.post as ReturnType<
+      ComponentProps<typeof PostViewCard>['onFetch']
+    >
   }
 
   return (

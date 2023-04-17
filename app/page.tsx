@@ -1,9 +1,9 @@
 'use client'
 
 import { FeedViewPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
-import {Loading, Row, styled} from '@nextui-org/react'
+import { Button, Loading, Row, styled } from '@nextui-org/react'
 import { NextPage } from 'next'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { FeedView } from './components/FeedView'
 import { LogoutButton } from './components/LogoutButton'
 import { PostButton } from './components/PostButton'
@@ -16,13 +16,23 @@ const Container = styled('div', {
   margin: '0 auto',
 
   display: 'grid',
-  gridTemplateColumns: '300px auto 300px',
+  gridTemplateColumns: '300px 600px 300px',
   gap: '$6',
 })
 
 const TimelineContainer = styled('div', {
   maxHeight: '100dvh',
   overflowY: 'scroll',
+})
+
+const ReloadButtonContainer = styled('div', {
+  position: 'absolute',
+  display: 'flex',
+  justifyContent: 'center',
+  zIndex: 1,
+  top: 32,
+  left: 16,
+  right: 16,
 })
 
 const LeftActionsContainer = styled('div', {
@@ -45,9 +55,12 @@ const HomePage: NextPage = () => {
   const { agent } = useRequiredSession()
 
   const [feeds, setFeeds] = useState<FeedViewPost[]>([])
+  const [firstFeedsJson, setFirstFeedsJson] = useState<string>()
   const [cursor, setCursor] = useState<string>()
   const [hasMore, setHasMore] = useState(true)
-  console.log(feeds.length)
+  const [newTimeline, setNewTimeline] = useState<FeedViewPost[] | null>()
+  const [newCursor, setNewCursor] = useState<string | undefined>()
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const updateFeed = useCallback(async () => {
     if (agent) {
@@ -58,7 +71,9 @@ const HomePage: NextPage = () => {
       setFeeds((feeds) => [...feeds, ...result.data.feed])
       setCursor(result.data.cursor)
 
-      console.log(cursor, 'fetched feed', result.data.feed)
+      if (!firstFeedsJson) {
+        setFirstFeedsJson(JSON.stringify(result.data.feed))
+      }
 
       if (!result.data.cursor) {
         setHasMore(false)
@@ -66,22 +81,72 @@ const HomePage: NextPage = () => {
     }
   }, [agent, cursor])
 
-  useEffect(() => {
-    if (window) {
-      console.log('initial load')
+  const reloadTimeline = useCallback(async () => {
+    if (!agent) {
+      return
     }
-  }, [])
+
+    if (!newTimeline) {
+      return
+    }
+
+    console.log('reload')
+
+    setFeeds(newTimeline)
+    setCursor(newCursor)
+
+    setFirstFeedsJson(JSON.stringify(newTimeline))
+    setNewTimeline(null)
+
+    if (containerRef.current) {
+      containerRef.current.scrollTo(0, 0)
+    }
+
+    if (!newCursor) {
+      setHasMore(false)
+    }
+  }, [agent, newTimeline])
+
+  useEffect(() => {
+    if (!agent) {
+      return
+    }
+
+    const id = setInterval(async () => {
+      const result = await agent.getTimeline()
+
+      const feedJson = JSON.stringify(result.data.feed)
+
+      if (firstFeedsJson !== feedJson) {
+        console.log('new timeline', result.data.feed)
+        setNewTimeline(result.data.feed)
+        setNewCursor(result.data.cursor)
+      }
+    }, 10000)
+
+    return () => {
+      clearInterval(id)
+    }
+  }, [agent, firstFeedsJson])
+
+  useEffect(() => {
+    console.log({ feeds })
+  }, [feeds])
 
   if (!agent) {
-    return <div style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginLeft: 'auto',
-              marginRight: 'auto'
-          }}>
-            <Loading size="lg" />
-          </div>
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+        }}
+      >
+        <Loading size="lg" />
+      </div>
+    )
   }
 
   return (
@@ -91,29 +156,39 @@ const HomePage: NextPage = () => {
         <PostButton />
         <LogoutButton />
       </LeftActionsContainer>
-      <TimelineContainer>
-        <InfiniteScroll
-          loadMore={updateFeed}
-          hasMore={hasMore}
-          loader={<div style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginLeft: 'auto',
-                    marginRight: 'auto'
-                  }}>
-                    <Loading size="lg" />
-                  </div>}
-          threshold={2500}
-          useWindow={false}
-        >
-          {feeds.map((feed, key) => (
-            <Row key={key} css={{ my: '$8' }}>
-              <FeedView feed={feed} />
-            </Row>
-          ))}
-        </InfiniteScroll>
-      </TimelineContainer>
+
+      <div style={{ position: 'relative' }}>
+        <ReloadButtonContainer>
+          <Button
+            shadow
+            color="primary"
+            auto
+            css={{
+              backgroundFilter: 'blur(16px)',
+              visibility: newTimeline ? 'visible' : 'hidden',
+            }}
+            onPress={reloadTimeline}
+          >
+            新しい投稿があります
+          </Button>
+        </ReloadButtonContainer>
+        <TimelineContainer ref={containerRef}>
+          <InfiniteScroll
+            loadMore={updateFeed}
+            hasMore={hasMore}
+            loader={<>loading...</>}
+            threshold={2500}
+            useWindow={false}
+          >
+            {feeds.map((feed, key) => (
+              <Row key={key} css={{ my: '$8' }}>
+                <FeedView feed={feed} />
+              </Row>
+            ))}
+          </InfiniteScroll>
+        </TimelineContainer>
+      </div>
+
       <div></div>
     </Container>
   )

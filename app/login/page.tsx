@@ -46,7 +46,6 @@ const LoginPage: NextPage = () => {
 
         setLoading(false)
       } else {
-        console.log({ error })
         throw error
       }
     }

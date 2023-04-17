@@ -11,7 +11,7 @@ import { isRTL } from '@react-aria/i18n/src/utils'
 import { PostModal } from '../PostModal'
 import { PostRecordPost } from '@/types/posts'
 
-interface PostProps {
+interface PostViewCardProps {
   post: PostView
   reasonRepost?: ReasonRepost
 
@@ -21,10 +21,10 @@ interface PostProps {
   showRepostCount?: boolean
   showLikeCount?: boolean
 
-  onFetch: () => PostView
+  onFetch: () => PostView | Promise<PostView>
 }
 
-export const PostViewCard = (props: PostProps) => {
+export const PostViewCard = (props: PostViewCardProps) => {
   const {
     post,
     reasonRepost,
@@ -108,13 +108,11 @@ export const PostViewCard = (props: PostProps) => {
 
     //my did
     const my_did = agent.session!.did
-    console.log(my_did)
 
     setFollowLoading(true)
     const profile = await agent.getProfile({
       actor: author.did,
     })
-    console.log(profile)
 
     if (profile.data.viewer) {
       if (profile.data.viewer.following) {
