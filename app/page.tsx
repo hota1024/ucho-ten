@@ -55,7 +55,6 @@ const HomePage: NextPage = () => {
   const { agent } = useRequiredSession()
 
   const [feeds, setFeeds] = useState<FeedViewPost[]>([])
-  const [firstFeedsJson, setFirstFeedsJson] = useState<string>()
   const [cursor, setCursor] = useState<string>()
   const [hasMore, setHasMore] = useState(true)
   const [newTimeline, setNewTimeline] = useState<FeedViewPost[] | null>()
@@ -70,10 +69,6 @@ const HomePage: NextPage = () => {
 
       setFeeds((feeds) => [...feeds, ...result.data.feed])
       setCursor(result.data.cursor)
-
-      if (!firstFeedsJson) {
-        setFirstFeedsJson(JSON.stringify(result.data.feed))
-      }
 
       if (!result.data.cursor) {
         setHasMore(false)
@@ -90,12 +85,11 @@ const HomePage: NextPage = () => {
       return
     }
 
-    console.log('reload')
+    console.log('reload', newTimeline)
 
     setFeeds(newTimeline)
     setCursor(newCursor)
 
-    setFirstFeedsJson(JSON.stringify(newTimeline))
     setNewTimeline(null)
 
     if (containerRef.current) {
@@ -105,7 +99,7 @@ const HomePage: NextPage = () => {
     if (!newCursor) {
       setHasMore(false)
     }
-  }, [agent, newTimeline])
+  }, [agent, newCursor, newTimeline])
 
   useEffect(() => {
     if (!agent) {
@@ -115,10 +109,8 @@ const HomePage: NextPage = () => {
     const id = setInterval(async () => {
       const result = await agent.getTimeline()
 
-      const feedJson = JSON.stringify(result.data.feed)
-
-      if (firstFeedsJson !== feedJson) {
-        console.log('new timeline', result.data.feed)
+      console.log(result.data.feed[0].post.uri, feeds[0].post.uri)
+      if (result.data.feed[0].post.uri !== feeds[0].post.uri) {
         setNewTimeline(result.data.feed)
         setNewCursor(result.data.cursor)
       }
@@ -127,7 +119,7 @@ const HomePage: NextPage = () => {
     return () => {
       clearInterval(id)
     }
-  }, [agent, firstFeedsJson])
+  }, [agent, feeds])
 
   useEffect(() => {
     console.log({ feeds })
@@ -181,7 +173,12 @@ const HomePage: NextPage = () => {
             useWindow={false}
           >
             {feeds.map((feed, key) => (
-              <Row key={key} css={{ my: '$8' }}>
+              <Row
+                key={`${feed.post.cid}${feed.reason?.by ?? 'no-reason-by'}${
+                  feed.reply?.parent.cid ?? 'no-reply-parent'
+                }`}
+                css={{ my: '$8' }}
+              >
                 <FeedView feed={feed} />
               </Row>
             ))}
