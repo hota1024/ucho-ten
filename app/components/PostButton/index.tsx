@@ -19,18 +19,18 @@ export const PostButton = (props: PostButtonProps) => {
 
     await agent.post(record)
   }
-    const styles = {
-        button: {
-            color: '$white',
-            backgroundColor: '$blue500',
-            border: '2px solid $blue500', // 変更
-            '&:hover': {
-                color: '$blue500',
-                backgroundColor: '$white',
-                border: '2px solid $blue500', // 変更
-            },
-        },
-    }
+  const styles = {
+    button: {
+      color: '$white',
+      backgroundColor: '$blue500',
+      border: '2px solid $blue500', // 変更
+      '&:hover': {
+        color: '$blue500',
+        backgroundColor: '$white',
+        border: '2px solid $blue500', // 変更
+      },
+    },
+  }
 
   return (
     <>
