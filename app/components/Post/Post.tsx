@@ -261,7 +261,6 @@ export const Post = (props: PostProps) => {
         <Col>
           {reasonRepost && (
               <RepostByLabel>
-                {reasonRepost.by.displayName} さんがリポスト
                 <Link href={`/profile/${reasonRepost.by.handle}`}>
                   {reasonRepost.by.displayName} さんがリポスト
                 </Link>
