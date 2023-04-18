@@ -369,6 +369,7 @@ export const Post = (props: PostProps) => {
                 <FontAwesomeIcon
                   icon={faComment}
                   color="#787F85"
+                  style={{cursor: 'pointer'}}
                   onClick={onReplyClick}
                 />
                 {showReplyCount && replyCount}
@@ -381,6 +382,7 @@ export const Post = (props: PostProps) => {
                   icon={faRetweetSolid}
                   //color="#787F85"
                   color={isReposted ? '#36BA7A' : '#787F85'}
+                  style={{cursor: 'pointer'}}
                 />
                 {showRepostCount && repostCount}
               </PostAction>
@@ -391,6 +393,7 @@ export const Post = (props: PostProps) => {
                   onClick={onLikeClick}
                   icon={isLiked ? faHeartSolid : faHeartRegular}
                   color={isLiked ? '#F31260' : '#787F85'}
+                  style={{cursor: 'pointer'}}
                 />
                 {showLikeCount && likeCount}
               </PostAction>
