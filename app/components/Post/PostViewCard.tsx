@@ -40,7 +40,9 @@ export const PostViewCard = (props: PostViewCardProps) => {
   const [isLiked, setIsLiked] = useState(!!post.viewer?.like)
   const [likeCount, setLikeCount] = useState(post.likeCount ?? 0)
   const [isReposted, setIsReposted] = useState(!!post.viewer?.repost)
-  const [isFollowing, setIsFollowing] = useState(!!post.viewer?.following)
+  const [isFollowing, setIsFollowing] = useState(
+    !!post.author.viewer?.following
+  )
   const [repostCount, setRepostCount] = useState(post.repostCount ?? 0)
   const [followLoading, setFollowLoading] = useState(false)
   const [replyDialog, setReplyDialog] = useState(false)

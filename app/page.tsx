@@ -168,7 +168,9 @@ const HomePage: NextPage = () => {
           <InfiniteScroll
             loadMore={updateFeed}
             hasMore={hasMore}
-            loader={<div
+            loader={
+              <div
+                key={0}
                 style={{
                   display: 'flex',
                   justifyContent: 'center',
@@ -176,19 +178,15 @@ const HomePage: NextPage = () => {
                   marginLeft: 'auto',
                   marginRight: 'auto',
                 }}
-            >
-              <Loading size="lg" />
-            </div>}
+              >
+                <Loading size="lg" />
+              </div>
+            }
             threshold={2500}
             useWindow={false}
           >
             {feeds.map((feed, key) => (
-              <Row
-                key={`${feed.post.cid}${feed.reason?.by ?? 'no-reason-by'}${
-                  feed.reply?.parent.cid ?? 'no-reply-parent'
-                }`}
-                css={{ my: '$8' }}
-              >
+              <Row key={`${feed.post.cid}${key}`} css={{ my: '$8' }}>
                 <FeedView feed={feed} />
               </Row>
             ))}
