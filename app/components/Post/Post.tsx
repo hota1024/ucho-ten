@@ -68,7 +68,6 @@ const PostDate = styled('div', {
   },
 })
 
-
 const timeUnit = utx(
   makeConsecutiveUnits([
     makeUnit(1000, 's'),
@@ -248,7 +247,11 @@ export const Post = (props: PostProps) => {
             </Container>
           }
         >
-          <Avatar squared src={author.avatar ? author.avatar : undefined} size={isEmbed ? 'md' : 'lg'} />
+          <Avatar
+            squared
+            src={author.avatar ? author.avatar : undefined}
+            size={isEmbed ? 'md' : 'lg'}
+          />
         </Tooltip>
       </div>
       <Spacer x={1} />
@@ -268,7 +271,11 @@ export const Post = (props: PostProps) => {
             <AuthorHandle>@{author.handle}</AuthorHandle>
           </Link>
           <PostDate>
-            <Link style={{ display: 'block' }} href={`https://staging.bsky.app/profile/${author.handle}/post/${postUri}`} target={"_blank"}>
+            <Link
+              style={{ display: 'block' }}
+              href={`https://staging.bsky.app/profile/${author.handle}/post/${postUri}`}
+              target={'_blank'}
+            >
               {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
             </Link>
           </PostDate>
@@ -316,13 +323,20 @@ export const Post = (props: PostProps) => {
           <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
             <Col>
               <PostAction>
-                <FontAwesomeIcon icon={faComment} color="#787F85" onClick={onReplyClick}/>
+                <FontAwesomeIcon
+                  style={{ cursor: 'pointer' }}
+                  icon={faComment}
+                  color="#787F85"
+                  onClick={onReplyClick}
+                />
                 {showReplyCount && replyCount}
               </PostAction>
             </Col>
             <Col>
               <PostAction>
-                <FontAwesomeIcon onClick={onRepostClick}
+                <FontAwesomeIcon
+                  style={{ cursor: 'pointer' }}
+                  onClick={onRepostClick}
                   icon={faRetweetSolid}
                   //color="#787F85"
                   color={isReposted ? '#36BA7A' : '#787F85'}
@@ -332,7 +346,9 @@ export const Post = (props: PostProps) => {
             </Col>
             <Col>
               <PostAction>
-                <FontAwesomeIcon onClick={onLikeClick}
+                <FontAwesomeIcon
+                  style={{ cursor: 'pointer' }}
+                  onClick={onLikeClick}
                   icon={isLiked ? faHeartSolid : faHeartRegular}
                   color={isLiked ? '#F31260' : '#787F85'}
                 />
