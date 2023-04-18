@@ -39,6 +39,12 @@ const RepostByLabel = styled('div', {
   fontSize: '$sm',
   fontWeight: 'bold',
   color: '$gray700',
+  '& a': {
+    color: '$gray700',
+  },
+  '&:hover': {
+    textDecoration: 'underline',
+  },
 })
 
 const PostInfo = styled('div', {
@@ -256,6 +262,9 @@ export const Post = (props: PostProps) => {
           {reasonRepost && (
               <RepostByLabel>
                 {reasonRepost.by.displayName} さんがリポスト
+                <Link href={`/profile/${reasonRepost.by.handle}`}>
+                  {reasonRepost.by.displayName} さんがリポスト
+                </Link>
               </RepostByLabel>
           )}
           <PostInfo>
@@ -295,7 +304,8 @@ export const Post = (props: PostProps) => {
                     gap: '$4',
                     marginTop: '$4',
                     width: images.length === 1 ? '200%' : '100%',
-                    
+                    borderRadius: images.length === 1 ? '30px' : '0px',
+
                   }}
               >
                 {images.slice(0, 2).map((image, key) => (
@@ -340,8 +350,6 @@ export const Post = (props: PostProps) => {
                     ))}
               </div>
           )}
-
-
           {!hideActions && (
               <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
                 <Col>
@@ -353,9 +361,9 @@ export const Post = (props: PostProps) => {
                 <Col>
                   <PostAction>
                     <FontAwesomeIcon onClick={onRepostClick}
-                                     icon={faRetweetSolid}
-                        //color="#787F85"
-                                     color={isReposted ? '#36BA7A' : '#787F85'}
+                      icon={faRetweetSolid}
+                      //color="#787F85"
+                      color={isReposted ? '#36BA7A' : '#787F85'}
                     />
                     {showRepostCount && repostCount}
                   </PostAction>
@@ -363,8 +371,8 @@ export const Post = (props: PostProps) => {
                 <Col>
                   <PostAction>
                     <FontAwesomeIcon onClick={onLikeClick}
-                                     icon={isLiked ? faHeartSolid : faHeartRegular}
-                                     color={isLiked ? '#F31260' : '#787F85'}
+                      icon={isLiked ? faHeartSolid : faHeartRegular}
+                      color={isLiked ? '#F31260' : '#787F85'}
                     />
                     {showLikeCount && likeCount}
                   </PostAction>
