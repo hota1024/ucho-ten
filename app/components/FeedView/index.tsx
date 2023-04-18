@@ -6,7 +6,7 @@ import {
   ReasonRepost,
 } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 import { Card, styled } from '@nextui-org/react'
-import { ComponentProps, useState } from 'react'
+import { ComponentProps, useMemo, useState } from 'react'
 import { PostViewCard } from '../Post'
 
 const PostContainer = styled('div', {
@@ -20,6 +20,11 @@ export interface FeedViewProps {
 export const FeedView = (props: FeedViewProps) => {
   const [agent] = useAgent()
   const [feed, setFeed] = useState(props.feed)
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const reply = useMemo(() => feed.reply, [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const reasonRepost = useMemo(() => feed.reason as ReasonRepost, [])
 
   const fetchFeed = async () => {
     if (!agent) {
@@ -44,13 +49,13 @@ export const FeedView = (props: FeedViewProps) => {
   return (
     <>
       <Card variant="flat" css={{ py: '$8' }}>
-        {feed.reply ? (
+        {reply ? (
           <>
             <PostContainer>
               <PostViewCard
                 hasReply
-                post={feed.reply.parent}
-                reasonRepost={feed.reason as ReasonRepost}
+                post={reply.parent}
+                reasonRepost={reasonRepost}
                 showLikeCount
                 showReplyCount
                 showRepostCount
@@ -60,7 +65,7 @@ export const FeedView = (props: FeedViewProps) => {
             <PostContainer>
               <PostViewCard
                 post={feed.post}
-                reasonRepost={feed.reason as ReasonRepost}
+                reasonRepost={reasonRepost}
                 showLikeCount
                 showReplyCount
                 showRepostCount
@@ -72,7 +77,7 @@ export const FeedView = (props: FeedViewProps) => {
           <PostContainer>
             <PostViewCard
               post={feed.post}
-              reasonRepost={feed.reason as ReasonRepost}
+              reasonRepost={reasonRepost}
               showLikeCount
               showReplyCount
               showRepostCount
