@@ -98,6 +98,9 @@ const ProfilePage: NextPage<{
     await fetchProfile()
     setFollowLoading(false)
   }
+  const newlineCodeToBr = (text: string) => {
+    return text.split('\n').map((line, i) => { return <span key={i}>{line}<br /></span> })
+  }
 
   return (
     <MainLayout>
@@ -139,7 +142,7 @@ const ProfilePage: NextPage<{
               {profile.description && (
                 <>
                   <Card.Divider />
-                  <Card.Body>{profile.description}</Card.Body>
+                  <Card.Body>{newlineCodeToBr(profile.description)}</Card.Body>
                 </>
               )}
             </Card>
