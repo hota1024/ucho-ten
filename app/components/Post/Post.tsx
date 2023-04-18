@@ -294,6 +294,7 @@ export const Post = (props: PostProps) => {
                     flexWrap: 'wrap',
                     gap: '$4',
                     marginTop: '$4',
+                    width: images.length === 1 ? '200%' : '100%',
                     
                   }}
               >
