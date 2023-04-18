@@ -37,6 +37,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
   const record = post.record as Record
   const embed = post.embed as unknown as AppBskyEmbedRecord.ViewRecord
   const [agent] = useAgent()
+  const [isMuted, setIsMuted] = useState(!!post.viewer?.mute)
   const [isLiked, setIsLiked] = useState(!!post.viewer?.like)
   const [likeCount, setLikeCount] = useState(post.likeCount ?? 0)
   const [isReposted, setIsReposted] = useState(!!post.viewer?.repost)
@@ -168,6 +169,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
         showReplyCount={showReplyCount}
         showRepostCount={showRepostCount}
         showLikeCount={showLikeCount}
+        isMuted={isMuted}
         isLiked={isLiked}
         isReposted={isReposted}
         isFollowing={isFollowing}

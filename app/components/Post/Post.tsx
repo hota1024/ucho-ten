@@ -127,6 +127,7 @@ interface PostProps {
   showRepostCount?: boolean
   showLikeCount?: boolean
 
+  isMuted?: boolean
   isLiked?: boolean
   isReposted?: boolean
   onLikeClick?: () => void
@@ -156,6 +157,7 @@ export const Post = (props: PostProps) => {
     showReplyCount,
     showRepostCount,
     showLikeCount,
+    isMuted,
     isLiked,
     isReposted,
     isFollowing,
