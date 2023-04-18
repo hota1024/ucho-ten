@@ -25,6 +25,7 @@ import {
   Spacer,
   Grid,
   Image,
+  Text,
 } from '@nextui-org/react'
 import Link from 'next/link'
 import { useState, useMemo, useCallback, useEffect } from 'react'
@@ -74,14 +75,13 @@ const PostDate = styled('div', {
   },
 })
 
-
 const timeUnit = utx(
-    makeConsecutiveUnits([
-      makeUnit(1000, 's'),
-      makeUnit(60, 'm'),
-      makeUnit(60, 'h'),
-      makeUnit(24, 'd'),
-    ])
+  makeConsecutiveUnits([
+    makeUnit(1000, 's'),
+    makeUnit(60, 'm'),
+    makeUnit(60, 'h'),
+    makeUnit(24, 'd'),
+  ])
 )
 
 const PostAction = styled('div', {
@@ -199,188 +199,205 @@ export const Post = (props: PostProps) => {
   }, [time, updateElapsed])
 
   return (
-      <Row
-          align="stretch"
-          css={{
-            position: 'relative',
-            border: isEmbed ? '2px solid $gray400' : undefined,
-            borderRadius: '$md',
-            padding: '$4',
-          }}
-      >
-        {hasReply && <ReplyLine />}
-        <div>
-          <Tooltip
-              placement="right"
-              isDisabled={disableTooltip}
-              content={
-                <Container
-                    css={{
-                      mw: '400px',
-                      width: '100%',
-                      borderRadius: '$lg',
-                      p: '$sm',
-                    }}
-                >
-                  <Row justify="space-between" align="center">
-                    <Col span={7}>
-                      <User
-                          squared
-                          src={author.avatar ? author.avatar : undefined}
-                          size="lg"
-                          name={author.displayName}
-                          description={`@${author.handle}`}
-                      />
-                    </Col>
-                    <Col span={7}>
-                      <Button
-                          auto
-                          onClick={onFollowClick}
-                          onMouseOver={() => setFollowHover(true)}
-                          onMouseLeave={() => setFollowHover(false)}
-                          rounded
-                          bordered={isFollowing}
-                          color={isFollowing && followHover ? 'error' : 'primary'}
-                          css={{ ml: '$10', width: `5ch` }}
-                      >
-                        {isFollowing
-                            ? followHover
-                                ? 'フォロー解除'
-                                : 'フォロー中'
-                            : 'フォロー'}
-                      </Button>
-                    </Col>
-                  </Row>
-                </Container>
-              }
-          >
-            <Avatar squared src={author.avatar ? author.avatar : undefined} size={isEmbed ? 'md' : 'lg'} />
-          </Tooltip>
-        </div>
-        <Spacer x={1} />
-        <Col>
-          {reasonRepost && (
-              <RepostByLabel>
-                <Link href={`/profile/${reasonRepost.by.handle}`}>
-                  {reasonRepost.by.displayName} さんがリポスト
-                </Link>
-              </RepostByLabel>
-          )}
-          <PostInfo>
-            <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
-              <AuthorDisplayName>
-                {author.displayName ?? `@${author.handle}`}
-              </AuthorDisplayName>
-            </Link>
-            <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
-              <AuthorHandle>@{author.handle}</AuthorHandle>
-            </Link>
-            <PostDate>
-              <Link style={{ display: 'block' }} href={`https://staging.bsky.app/profile/${author.handle}/post/${postUri}`} target={"_blank"}>
-                {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
-              </Link>
-            </PostDate>
-          </PostInfo>
-
-          <PostRecordTextView record={record} />
-
-          {embed && embed.$type === 'app.bsky.embed.record#view' && (
-              <>
-                <Post
-                    record={(embed.record as Record).value as Record}
-                    author={(embed.record as Record).author as ProfileViewBasic}
-                    isEmbed
-                    hideActions
-                />
-              </>
-          )}
-
-          {images.length > 0 && (
-              <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '$4',
-                    marginTop: '$4',
-                    width: images.length === 1 ? '200%' : '100%',
-                    borderRadius: images.length === 1 ? '30px' : '0px',
-
-                  }}
-              >
-                {images.slice(0, 2).map((image, key) => (
-                    <div
-                        key={key}
-                        style={{
-                          flexBasis: '50%',
-                          padding: '$1',
-                          boxSizing: 'border-box',
-                          padding: '1px',
-                        }}
-                    >
-                      <Zoom>
-                        <Image
-                            src={image.fullsize}
-                            alt={image.alt}
-                            style={{ borderRadius: '$xs', width: '100%', height: '100%' }}
-                        />
-                      </Zoom>
-                    </div>
-                ))}
-                {images.length > 2 &&
-                    images.slice(2).map((image, key) => (
-                        <div
-                            key={key}
-                            style={{
-                              flexBasis: '50%',
-                              padding: '$1',
-                              boxSizing: 'border-box',
-                              breakInside: 'avoid',
-                              padding: '1px',
-                            }}
-                        >
-                          <Zoom>
-                            <Image
-                                src={image.fullsize}
-                                alt={image.alt}
-                                style={{ borderRadius: '$xs', width: '100%'}}
-                            />
-                          </Zoom>
-                        </div>
-                    ))}
-              </div>
-          )}
-          {!hideActions && (
-              <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
-                <Col>
-                  <PostAction>
-                    <FontAwesomeIcon icon={faComment} color="#787F85" style={{cursor: 'pointer'}} onClick={onReplyClick}/>
-                    {showReplyCount && replyCount}
-                  </PostAction>
+    <Row
+      align="stretch"
+      css={{
+        position: 'relative',
+        border: isEmbed ? '2px solid $gray400' : undefined,
+        borderRadius: '$md',
+        padding: '$4',
+      }}
+    >
+      {hasReply && <ReplyLine />}
+      <div>
+        <Tooltip
+          placement="right"
+          isDisabled={disableTooltip}
+          content={
+            <Container
+              css={{
+                mw: '400px',
+                width: '100%',
+                borderRadius: '$lg',
+                p: '$sm',
+              }}
+            >
+              <Row justify="space-between" align="center">
+                <Col span={7}>
+                  <User
+                    squared
+                    src={author.avatar ? author.avatar : undefined}
+                    size="lg"
+                    name={author.displayName}
+                    description={`@${author.handle}`}
+                  />
                 </Col>
-                <Col>
-                  <PostAction>
-                    <FontAwesomeIcon onClick={onRepostClick}
-                      icon={faRetweetSolid}
-                      //color="#787F85"
-                      color={isReposted ? '#36BA7A' : '#787F85'}
-                      style={{cursor: 'pointer'}}
-                    />
-                    {showRepostCount && repostCount}
-                  </PostAction>
-                </Col>
-                <Col>
-                  <PostAction>
-                    <FontAwesomeIcon onClick={onLikeClick}
-                      icon={isLiked ? faHeartSolid : faHeartRegular}
-                      color={isLiked ? '#F31260' : '#787F85'}
-                      style={{cursor: 'pointer'}}
-                    />
-                    {showLikeCount && likeCount}
-                  </PostAction>
+                <Col span={7}>
+                  <Button
+                    auto
+                    onClick={onFollowClick}
+                    onMouseOver={() => setFollowHover(true)}
+                    onMouseLeave={() => setFollowHover(false)}
+                    rounded
+                    bordered={isFollowing}
+                    color={isFollowing && followHover ? 'error' : 'primary'}
+                    css={{ ml: '$10', width: `5ch` }}
+                  >
+                    {isFollowing
+                      ? followHover
+                        ? 'フォロー解除'
+                        : 'フォロー中'
+                      : 'フォロー'}
+                  </Button>
                 </Col>
               </Row>
-          )}
-        </Col>
-      </Row>
+            </Container>
+          }
+        >
+          <Link href={`/profile/${author.handle}`}>
+            <Avatar
+              pointer
+              squared
+              src={author.avatar ? author.avatar : undefined}
+              size={isEmbed ? 'md' : 'lg'}
+            />
+          </Link>
+        </Tooltip>
+      </div>
+      <Spacer x={1} />
+      <Col>
+        {reasonRepost && (
+          <Link href={`/profile/${reasonRepost.by.handle}`}>
+            <RepostByLabel>
+              {reasonRepost.by.displayName}
+              さんがリポスト
+            </RepostByLabel>
+          </Link>
+        )}
+        <PostInfo>
+          <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
+            <AuthorDisplayName>
+              {author.displayName ?? `@${author.handle}`}
+            </AuthorDisplayName>
+          </Link>
+          <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
+            <AuthorHandle>@{author.handle}</AuthorHandle>
+          </Link>
+          <PostDate>
+            <Link
+              style={{ display: 'block' }}
+              href={`https://staging.bsky.app/profile/${author.handle}/post/${postUri}`}
+              target={'_blank'}
+            >
+              {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
+            </Link>
+          </PostDate>
+        </PostInfo>
+
+        <PostRecordTextView record={record} />
+
+        {embed && embed.$type === 'app.bsky.embed.record#view' && (
+          <>
+            <Post
+              record={(embed.record as Record).value as Record}
+              author={(embed.record as Record).author as ProfileViewBasic}
+              isEmbed
+              hideActions
+            />
+          </>
+        )}
+
+        {images.length > 0 && (
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '$4',
+              marginTop: '$4',
+              width: images.length === 1 ? '200%' : '100%',
+            }}
+          >
+            {images.slice(0, 2).map((image, key) => (
+              <div
+                key={key}
+                style={{
+                  flexBasis: '50%',
+                  padding: '$1',
+                  boxSizing: 'border-box',
+                }}
+              >
+                <Zoom>
+                  <Image
+                    src={image.fullsize}
+                    alt={image.alt}
+                    style={{
+                      borderRadius: '$xs',
+                      width: '100%',
+                      height: '100%',
+                    }}
+                  />
+                </Zoom>
+              </div>
+            ))}
+            {images.length > 2 &&
+              images.slice(2).map((image, key) => (
+                <div
+                  key={key}
+                  style={{
+                    flexBasis: '50%',
+                    padding: '$1',
+                    boxSizing: 'border-box',
+                    breakInside: 'avoid',
+                  }}
+                >
+                  <Zoom>
+                    <Image
+                      src={image.fullsize}
+                      alt={image.alt}
+                      style={{ borderRadius: '$xs', width: '100%' }}
+                    />
+                  </Zoom>
+                </div>
+              ))}
+          </div>
+        )}
+
+        {!hideActions && (
+          <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
+            <Col>
+              <PostAction>
+                <FontAwesomeIcon
+                  icon={faComment}
+                  color="#787F85"
+                  onClick={onReplyClick}
+                />
+                {showReplyCount && replyCount}
+              </PostAction>
+            </Col>
+            <Col>
+              <PostAction>
+                <FontAwesomeIcon
+                  onClick={onRepostClick}
+                  icon={faRetweetSolid}
+                  //color="#787F85"
+                  color={isReposted ? '#36BA7A' : '#787F85'}
+                />
+                {showRepostCount && repostCount}
+              </PostAction>
+            </Col>
+            <Col>
+              <PostAction>
+                <FontAwesomeIcon
+                  onClick={onLikeClick}
+                  icon={isLiked ? faHeartSolid : faHeartRegular}
+                  color={isLiked ? '#F31260' : '#787F85'}
+                />
+                {showLikeCount && likeCount}
+              </PostAction>
+            </Col>
+          </Row>
+        )}
+      </Col>
+    </Row>
   )
 }

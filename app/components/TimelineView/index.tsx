@@ -1,6 +1,6 @@
 import { FeedViewPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 import { Button, Loading, Row, styled } from '@nextui-org/react'
-import { useRef } from 'react'
+import { ReactNode, useRef } from 'react'
 import InfiniteScroll from 'react-infinite-scroller'
 import { FeedView } from '../FeedView'
 
@@ -29,14 +29,22 @@ export type TimelineViewProps = {
   onLoadMorePosts: () => void
   posts: FeedViewPost[]
   containerRef?: React.RefObject<HTMLDivElement>
+
+  header?: ReactNode
 }
 
 /**
  * TimelineView component.
  */
 export const TimelineView: React.FC<TimelineViewProps> = (props) => {
-  const { hasNewTimeline, posts, containerRef, hasMorePosts, onLoadMorePosts } =
-    props
+  const {
+    hasNewTimeline,
+    posts,
+    containerRef,
+    hasMorePosts,
+    onLoadMorePosts,
+    header,
+  } = props
   const onLoadNewTimeline = props.onLoadNewTimeline ?? (() => {})
 
   return (
@@ -71,6 +79,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
           threshold={2500}
           useWindow={false}
         >
+          {header}
           {posts.map((feed, key) => (
             <Row key={`${feed.post.cid}${key}`} css={{ my: '$8' }}>
               <FeedView feed={feed} />

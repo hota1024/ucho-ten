@@ -30,11 +30,10 @@ const HomePage: NextPage = () => {
     return (
       <div
         style={{
+          height: '100dvh',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          marginLeft: 'auto',
-          marginRight: 'auto',
         }}
       >
         <Loading size="lg" />
