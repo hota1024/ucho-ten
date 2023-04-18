@@ -49,6 +49,11 @@ export const PostModal = (props: PostModalProps) => {
     onClose()
     setContent('')
   }
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+      handlePostClick()
+    }
+  }
 
   return (
     <Modal
@@ -81,6 +86,7 @@ export const PostModal = (props: PostModalProps) => {
           initialValue={content}
           onChange={(e) => setContent(e.target.value)}
           disabled={loading}
+          onKeyDown={handleKeyDown}
         />
       </Modal.Body>
       <Modal.Footer>
