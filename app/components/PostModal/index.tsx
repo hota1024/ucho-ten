@@ -84,6 +84,7 @@ export const PostModal = (props: PostModalProps) => {
           rows={8}
           maxLength={300}
           initialValue={content}
+          autoFocus={true}
           onChange={(e) => setContent(e.target.value)}
           disabled={loading}
           onKeyDown={handleKeyDown}
