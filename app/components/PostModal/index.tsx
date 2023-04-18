@@ -87,7 +87,7 @@ export const PostModal = (props: PostModalProps) => {
           autoFocus={true}
           onChange={(e) => setContent(e.target.value)}
           disabled={loading}
-          onKeyDown={handleKeyDown}
+          onKeyDown={isPostable ? handleKeyDown : undefined}
         />
       </Modal.Body>
       <Modal.Footer>
