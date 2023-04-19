@@ -9,7 +9,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head></head>
-      <body>
+      <body style={{backgroundImage:'url(/images/backgroundimg/sky_00421.jpg)', backgroundSize: 'cover'}}>
         <Providers>{children}</Providers>
       </body>
     </html>

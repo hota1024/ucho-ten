@@ -11,7 +11,7 @@ export default function RootLayout({
       <head>
         <title>サインイン | ucho-ten</title>
       </head>
-      <body>
+      <body style={{backgroundImage:'url(/images/backgroundimg/sky_00421.jpg)', backgroundSize: 'cover'}}>
         <Providers>{children}</Providers>
       </body>
     </html>
