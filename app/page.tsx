@@ -43,7 +43,7 @@ const HomePage: NextPage = () => {
 
   return (
     <MainLayout>
-      <div>
+      <div style={{height: '100vh', overflow: 'hidden' }}>
         <div
           style={{
             height: '5vh',
