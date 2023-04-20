@@ -43,7 +43,107 @@ const HomePage: NextPage = () => {
 
   return (
     <MainLayout>
-      <TimelineView {...timeline} />
+      <div>
+        <div
+          style={{
+            height: '5vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center',
+            color: 'white',
+            fontSize: '18px',
+          }}
+        >
+          <div
+            style={{
+              flex: 1,
+              height: '100%',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              cursor: 'pointer',
+              borderBottom: '1px solid transparent', // 初期状態は透明の下線を設定
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.borderBottom = '3px solid #d3d3d3' // ホバー時に下線を表示
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.borderBottom = '3px solid transparent' // ホバー解除時に下線を透明に戻す
+            }}
+          >
+            <div
+              style={{
+                borderRight: '1px solid #d3d3d3',
+                paddingRight: '0.5rem',
+                width: '100%',
+              }}
+            >
+              Timeline
+            </div>
+          </div>
+          <div
+            style={{
+              flex: 1,
+              height: '100%',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              cursor: 'pointer',
+              borderBottom: '1px solid transparent', // 初期状態は透明の下線を設定
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.borderBottom = '2px solid #d3d3d3' // ホバー時に下線を表示
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.borderBottom = '2px solid transparent' // ホバー解除時に下線を透明に戻す
+            }}
+          >
+            <div
+              style={{
+                borderLeft: '1px solid #d3d3d3',
+                borderRight: '1px solid #d3d3d3',
+                paddingLeft: '0.5rem',
+                paddingRight: '0.5rem',
+                width: '100%',
+              }}
+            >
+              青空
+            </div>
+          </div>
+          <div
+            style={{
+              flex: 1,
+              height: '100%',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              cursor: 'pointer',
+              borderBottom: '2px solid transparent',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.borderBottom = '2px solid #d3d3d3'
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.borderBottom = '2px solid transparent'
+            }}
+          >
+            <div
+              style={{
+                borderLeft: '1px solid #d3d3d3',
+                paddingLeft: '0.5rem',
+                width: '100%',
+              }}
+            >
+              what's hot
+            </div>
+          </div>
+        </div>
+        <TimelineView {...timeline} />
+      </div>
     </MainLayout>
   )
 }
