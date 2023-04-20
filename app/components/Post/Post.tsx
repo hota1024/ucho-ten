@@ -317,6 +317,8 @@ export const Post = (props: PostProps) => {
               gap: '$4',
               marginTop: '$4',
               width: images.length === 1 ? '200%' : '100%',
+              borderRadius: '10px',
+              overflow: 'hidden',
             }}
           >
             {images.slice(0, 2).map((image, key) => (
