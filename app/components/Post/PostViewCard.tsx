@@ -6,7 +6,7 @@ import {
 import { Post } from './Post'
 import { AppBskyEmbedRecord, ComAtprotoRepoStrongRef } from '@atproto/api'
 import { useAgent } from '@/atoms/agent'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { isRTL } from '@react-aria/i18n/src/utils'
 import { PostModal } from '../PostModal'
 import { PostRecordPost } from '@/types/posts'
@@ -48,7 +48,13 @@ export const PostViewCard = (props: PostViewCardProps) => {
   const [followLoading, setFollowLoading] = useState(false)
   const [replyDialog, setReplyDialog] = useState(false)
 
-  const handleLikeClick = async () => {
+  if (
+    post.cid === 'bafyreievvr466th5wonvdoxazkbly6ziide2s7hjiu35poxeicfnh6vlfa'
+  ) {
+    console.log('render time', { post })
+  }
+
+  const handleLikeClick = useCallback(async () => {
     if (!agent) {
       return
     }
@@ -62,17 +68,16 @@ export const PostViewCard = (props: PostViewCardProps) => {
         return true
       }
     })
-    let post = await onFetch()
+    let fetchedPost = await onFetch()
 
-    if (post.viewer?.like) {
-      await agent.deleteLike(post.viewer?.like)
+    if (fetchedPost.viewer?.like) {
+      await agent.deleteLike(fetchedPost.viewer?.like)
     } else {
       await agent.like(post.uri, post.cid)
     }
 
-    post = await onFetch()
-    setLikeCount(post.likeCount ?? 0)
-  }
+    fetchedPost = await onFetch()
+  }, [agent, onFetch])
 
   const handleRepostClick = async () => {
     if (!agent) {
