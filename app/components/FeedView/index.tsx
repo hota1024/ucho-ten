@@ -20,9 +20,8 @@ export interface FeedViewProps {
 export const FeedView = (props: FeedViewProps) => {
   const [agent] = useAgent()
   const [feed, setFeed] = useState(props.feed)
+  const [replyParent, setReplyParent] = useState(props.feed.reply?.parent)
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const reply = useMemo(() => feed.reply, [])
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const reasonRepost = useMemo(() => feed.reason as ReasonRepost, [])
 
@@ -46,20 +45,38 @@ export const FeedView = (props: FeedViewProps) => {
     >
   }
 
+  const fetchReplyParent = async () => {
+    if (!agent) {
+      throw new Error('agent is not ready')
+    }
+
+    const thread = await agent.getPostThread({
+      uri: replyParent?.uri!,
+    })
+
+    const post = thread.data.thread
+
+    setReplyParent(post.post as PostView)
+
+    return post.post as ReturnType<
+      ComponentProps<typeof PostViewCard>['onFetch']
+    >
+  }
+
   return (
     <>
       <Card variant="flat" css={{ py: '$8' }}>
-        {reply ? (
+        {replyParent ? (
           <>
             <PostContainer>
               <PostViewCard
                 hasReply
-                post={reply.parent}
+                post={replyParent}
                 reasonRepost={reasonRepost}
                 showLikeCount
                 showReplyCount
                 showRepostCount
-                onFetch={fetchFeed}
+                onFetch={fetchReplyParent}
               />
             </PostContainer>
             <PostContainer>

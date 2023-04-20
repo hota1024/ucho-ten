@@ -51,7 +51,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
   if (
     post.cid === 'bafyreievvr466th5wonvdoxazkbly6ziide2s7hjiu35poxeicfnh6vlfa'
   ) {
-    console.log('render time', { post })
+    // console.log('render time', { post })
   }
 
   const handleLikeClick = useCallback(async () => {
@@ -76,7 +76,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
       await agent.like(post.uri, post.cid)
     }
 
-    fetchedPost = await onFetch()
+    await onFetch()
   }, [agent, onFetch])
 
   const handleRepostClick = async () => {
