@@ -85,7 +85,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
                           width: '100%',
                       }}
                   >
-                      whats hot
+                      Timeline
                   </div>
               </div>
               <div
@@ -115,7 +115,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
                           width: '100%',
                       }}
                   >
-                      blue like sky
+                      青空
                   </div>
               </div>
               <div
@@ -143,7 +143,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
                           width: '100%',
                       }}
                   >
-                      whats hot
+                      what's hot
                   </div>
               </div>
           </div>
