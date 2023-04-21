@@ -308,62 +308,99 @@ export const Post = (props: PostProps) => {
             />
           </>
         )}
-
-        {images.length > 0 && (
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '$4',
-              marginTop: '$4',
-              width: images.length === 1 ? '200%' : '100%',
-              borderRadius: '10px',
-              overflow: 'hidden',
-            }}
-          >
-            {images.slice(0, 2).map((image, key) => (
-              <div
-                key={key}
+        {images.length === 1 && (
+            <div
                 style={{
-                  flexBasis: '50%',
-                  padding: '$1',
-                  boxSizing: 'border-box',
+                  display: 'grid',
+                  gap: '$4',
+                  marginTop: '$4',
+                  borderRadius: '10px',
+                  overflow: 'hidden',
+                  width: '100%',
+                  height: '260px',
+                  objectFit: 'cover',
                 }}
-              >
-                <Zoom>
-                  <Image
-                    src={image.fullsize}
-                    alt={image.alt}
-                    style={{
-                      borderRadius: '$xs',
-                      width: '100%',
-                      height: '100%',
-                    }}
-                  />
-                </Zoom>
-              </div>
-            ))}
-            {images.length > 2 &&
-              images.slice(2).map((image, key) => (
-                <div
-                  key={key}
-                  style={{
-                    flexBasis: '50%',
-                    padding: '$1',
-                    boxSizing: 'border-box',
-                    breakInside: 'avoid',
-                  }}
-                >
-                  <Zoom>
+            >
+              {images.map((image, key) => (
+                  <Zoom key={key}>
                     <Image
-                      src={image.fullsize}
-                      alt={image.alt}
-                      style={{ borderRadius: '$xs', width: '100%' }}
+                        src={image.fullsize}
+                        alt={image.alt}
+                        style={{
+                          height: '100%',
+                          width: '100%',
+                          objectFit: 'cover',
+                        }}
                     />
                   </Zoom>
-                </div>
               ))}
-          </div>
+            </div>
+        )}
+        {(images.length === 2 || images.length === 3) && (
+            <div
+                style={{
+                  display: 'grid',
+                  gap: '$4',
+                  marginTop: '$4',
+                  borderRadius: '10px',
+                  overflow: 'hidden',
+                  width: '100%',
+                  height: '260px',
+                  objectFit: 'cover',
+                  gridTemplateRows: 'repeat(2, 50%)',
+                  gridTemplateColumns: 'repeat(2, 50%)',
+                }}
+            >
+              {images.map((image, key) => (
+                  <Zoom key={key}>
+                    <Image
+                        src={image.fullsize}
+                        alt={image.alt}
+                        style={{
+                          gridRow: `${(key % 2) + 1}/${(key % 2) + 2}`,
+                          gridColumn: `${(key % 2) + 1}/${(key % 2) + 2}`,
+                          height: '130px',
+                          width: '100%',
+                          objectFit: 'cover',
+                        }}
+                    />
+                  </Zoom>
+              ))}
+            </div>
+        )}
+
+        {images.length === 4 && (
+            <div
+                style={{
+                  display: 'grid',
+                  gap: '$4',
+                  marginTop: '$4',
+                  borderRadius: '10px',
+                  overflow: 'hidden',
+                  width: '100%',
+                  height: '260px',
+                  objectFit: 'cover',
+                  gridTemplateRows: 'repeat(2, 50%)', // gridTemplateRowsを簡略化
+                  gridTemplateColumns: 'repeat(2, 50%)', // gridTemplateColumnsを簡略化
+                }}
+            >
+              {images.slice(0, 4).map((image, key) => ( // imagesをスライスしてmap関数に渡す
+                  <Zoom key={key}>
+                    <Image
+                        src={image.fullsize} // image.fullsizeに修正
+                        alt={image.alt} // image.altに修正
+                        style={{
+                          gridRow: `${(key % 2) + 1}/${(key % 2) + 2}`, // gridRowの動的な指定に修正
+                          gridColumn: `${(key % 2) + 1}/${(key % 2) + 2}`, // gridColumnの動的な指定に修正
+                          height: '130px',
+                          width: '100%',
+                          objectFit: 'cover',
+                          //overflow: 'hidden',
+                        }}
+                    />
+                  </Zoom>
+              ))}
+            </div>
         )}
 
         {!hideActions && (
