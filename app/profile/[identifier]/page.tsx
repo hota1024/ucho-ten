@@ -162,6 +162,7 @@ const ProfilePage: NextPage<{
                     onMouseOver={() => setFollowHover(true)}
                     onMouseLeave={() => setFollowHover(false)}
                     onPress={handleFollowClick}
+                    style={{marginRight : '12px'}}
                   >
                     {isFollowing
                       ? followHover
