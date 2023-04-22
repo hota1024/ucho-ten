@@ -317,7 +317,7 @@ export const Post = (props: PostProps) => {
                   borderRadius: '10px',
                   overflow: 'hidden',
                   width: '100%',
-                  height: '260px',
+                  maxHeight: '500px',
                   objectFit: 'cover',
                 }}
             >
@@ -336,7 +336,7 @@ export const Post = (props: PostProps) => {
               ))}
             </div>
         )}
-        {(images.length === 2 || images.length === 3) && (
+        {images.length === 2 && (
             <div
                 style={{
                   display: 'grid',
@@ -347,27 +347,29 @@ export const Post = (props: PostProps) => {
                   width: '100%',
                   height: '260px',
                   objectFit: 'cover',
-                  gridTemplateRows: 'repeat(2, 50%)',
-                  gridTemplateColumns: 'repeat(2, 50%)',
+                  gridTemplateRows: '1fr', // gridTemplateRowsを簡略化
+                  gridTemplateColumns: 'repeat(2, 50%)', // gridTemplateColumnsを簡略化
                 }}
             >
-              {images.map((image, key) => (
+              {images.slice(0, images.length).map((image, key) => ( // imagesをスライスしてmap関数に渡す
                   <Zoom key={key}>
                     <Image
-                        src={image.fullsize}
-                        alt={image.alt}
+                        src={image.fullsize} // image.fullsizeに修正
+                        alt={image.alt} // image.altに修正
                         style={{
-                          gridRow: `${(key % 2) + 1}/${(key % 2) + 2}`,
-                          gridColumn: `${(key % 2) + 1}/${(key % 2) + 2}`,
-                          height: '130px',
+                          gridRow: `1/2`, // gridRowの動的な指定に修正
+                          gridColumn: `${(key % 2) + 1}/${(key % 2) + 2}`, // gridColumnの動的な指定に修正
+                          height: '100%',
                           width: '100%',
                           objectFit: 'cover',
+                          objectPosition: "50% 100%",
                         }}
                     />
                   </Zoom>
               ))}
             </div>
         )}
+
 
         {images.length === 4 && (
             <div
@@ -395,6 +397,7 @@ export const Post = (props: PostProps) => {
                           height: '130px',
                           width: '100%',
                           objectFit: 'cover',
+                          objectPosition: "50% 100%",
                           //overflow: 'hidden',
                         }}
                     />
