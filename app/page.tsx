@@ -16,12 +16,16 @@ import { useRequiredSession } from './lib/hooks/useRequiredSession'
 const HomePage: NextPage = () => {
   const { agent } = useRequiredSession()
 
-  const fetchTimeline: TimelineFetcher = ({ agent }) => {
+  const fetchTimeline: TimelineFetcher = ({ agent, cursor }) => {
     if (!agent) {
       return
     }
 
-    return agent.getTimeline().then((result) => result.data)
+    return agent
+      .getTimeline({
+        cursor,
+      })
+      .then((result) => result.data)
   }
 
   const timeline = useTimelineView(fetchTimeline)
@@ -43,7 +47,7 @@ const HomePage: NextPage = () => {
 
   return (
     <MainLayout>
-      <div style={{height: '100vh', overflow: 'hidden' }}>
+      <div style={{ height: '100vh', overflow: 'hidden' }}>
         <div
           style={{
             height: '5vh',

@@ -60,7 +60,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
       </ReloadButtonContainer>
       <TimelineContainer
         ref={containerRef}
-        style={{ height: '100vh', overflowY: 'auto' }}
+        style={{ height: '100dvh', overflowY: 'auto' }}
       >
         <InfiniteScroll
           loadMore={onLoadMorePosts}

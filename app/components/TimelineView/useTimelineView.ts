@@ -2,6 +2,7 @@ import { useAgent } from '@/atoms/agent'
 import { BskyAgent } from '@atproto/api'
 import { FeedViewPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { TimelineViewProps } from '.'
 
 export type TimelineFetcher = (args: {
   agent: BskyAgent
@@ -11,7 +12,9 @@ export type TimelineFetcher = (args: {
   feed: FeedViewPost[]
 }> | void
 
-export const useTimelineView = (fetchTimeline: TimelineFetcher) => {
+export const useTimelineView = (
+  fetchTimeline: TimelineFetcher
+): TimelineViewProps => {
   const [agent] = useAgent()
   const [feeds, setFeeds] = useState<FeedViewPost[]>([])
   const [cursor, setCursor] = useState<string>()
@@ -101,7 +104,7 @@ export const useTimelineView = (fetchTimeline: TimelineFetcher) => {
 
   return {
     posts: feeds,
-    hasMore: hasMore && !loading,
+    hasMorePosts: hasMore && !loading,
     hasNewTimeline: !!newTimeline,
     onLoadMorePosts: updateFeed,
     onLoadNewTimeline: reloadTimeline,
