@@ -7,7 +7,6 @@ import { Post } from './Post'
 import { AppBskyEmbedRecord, ComAtprotoRepoStrongRef } from '@atproto/api'
 import { useAgent } from '@/atoms/agent'
 import { useCallback, useState } from 'react'
-import { isRTL } from '@react-aria/i18n/src/utils'
 import { PostModal } from '../PostModal'
 import { PostRecordPost } from '@/types/posts'
 

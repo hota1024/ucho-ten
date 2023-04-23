@@ -11,7 +11,7 @@ import { BskyAgent } from '@atproto/api'
 /**
  * Login page.
  */
-const LoginPage: NextPage = () => {
+const LoginPage = () => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 

@@ -20,15 +20,13 @@ import { MainLayout } from '@/layouts/Main'
 import { useRequiredSession } from '@/lib/hooks/useRequiredSession'
 import React, { useCallback, useEffect, useState } from 'react'
 import { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
-import reactStringReplace from "react-string-replace";
-import Link from "next/link";
+import reactStringReplace from 'react-string-replace'
+import Link from 'next/link'
 
 /**
  * Home page.
  */
-const ProfilePage: NextPage<{
-  params: { identifier: string }
-}> = ({ params }) => {
+const ProfilePage = ({ params }: { params: { identifier: string } }) => {
   const { agent } = useRequiredSession()
   const [profile, setProfile] = useState<ProfileViewDetailed>()
   const [followHover, setFollowHover] = useState(false)
@@ -103,35 +101,48 @@ const ProfilePage: NextPage<{
   const newlineCodeToBr = (text: string) => {
     //return text.split('\n').map((line, i) => { return <span key={i}>{line}<br /></span> })
     return text.split('\n').map((line, i) => (
-        <p key={i}>
-          {reactStringReplace(line, /(tw@\S+|@\S+|https?:\/\/\S+)/g, (match, j) => {
+      <p key={i}>
+        {reactStringReplace(
+          line,
+          /(tw@\S+|@\S+|https?:\/\/\S+)/g,
+          (match, j) => {
             if (match.startsWith('@')) {
               const domain = match.substring(1) // remove "@" symbol from match
               return (
-                  <Link key={j} href={`/profile/${domain}`}>
-                    {match}
-                  </Link>
+                <Link key={j} href={`/profile/${domain}`}>
+                  {match}
+                </Link>
               )
             } else if (match.startsWith('http')) {
               return (
-                  <a key={j} href={match} target="_blank" rel="noopener noreferrer">
-                    {match}
-                  </a>
+                <a
+                  key={j}
+                  href={match}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {match}
+                </a>
               )
             } else if (match.startsWith('tw@')) {
               const domain = match.substring(3) // remove "tw@" symbol from match
               return (
-                  <a key={j} href={`https://twitter.com/${domain}`} target="_blank" rel="noopener noreferrer">
-                    {match}
-                  </a>
+                <a
+                  key={j}
+                  href={`https://twitter.com/${domain}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {match}
+                </a>
               )
-            }else {
+            } else {
               return match
             }
-          })}
-        </p>
+          }
+        )}
+      </p>
     ))
-
   }
 
   return (
@@ -162,7 +173,7 @@ const ProfilePage: NextPage<{
                     onMouseOver={() => setFollowHover(true)}
                     onMouseLeave={() => setFollowHover(false)}
                     onPress={handleFollowClick}
-                    style={{marginRight : '12px'}}
+                    style={{ marginRight: '12px' }}
                   >
                     {isFollowing
                       ? followHover

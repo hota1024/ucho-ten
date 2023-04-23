@@ -9,7 +9,7 @@ import { useCallback, useEffect } from 'react'
 /**
  * Notification page.
  */
-const NotificationPage: NextPage = () => {
+const NotificationPage = () => {
   const { agent } = useRequiredSession()
 
   const fetchNotifications = useCallback(async () => {

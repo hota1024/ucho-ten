@@ -13,7 +13,7 @@ import { useRequiredSession } from './lib/hooks/useRequiredSession'
 /**
  * Home page.
  */
-const HomePage: NextPage = () => {
+const HomePage = () => {
   const { agent } = useRequiredSession()
 
   const fetchTimeline: TimelineFetcher = ({ agent, cursor }) => {
@@ -142,7 +142,7 @@ const HomePage: NextPage = () => {
                 width: '100%',
               }}
             >
-              what's hot
+              {`what's hot`}
             </div>
           </div>
         </div>

@@ -14,10 +14,9 @@ import {
 } from '@nextui-org/react'
 import { useState } from 'react'
 import { Post } from '../Post/Post'
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faXmark} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import Zoom from 'react-medium-image-zoom'
-
 
 export interface PostModalProps {
   open: boolean
@@ -30,12 +29,13 @@ export const PostModal = (props: PostModalProps) => {
   const { open, onClose, onSubmit, parentPostView } = props
   const [agent] = useAgent()
   const [contentText, setContentText] = useState<string>('')
-  const [contentImage, setContentImages, ] = useState<File[]>([]);
+  const [contentImage, setContentImages] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
 
   const isPostable = contentText.length > 0
-  const isImageMaxLimited = contentImage.length >= 5 || contentImage.length === 4// 4枚まで
-  const isImageMinLimited = contentImage.length === 0// 4枚まで
+  const isImageMaxLimited =
+    contentImage.length >= 5 || contentImage.length === 4 // 4枚まで
+  const isImageMinLimited = contentImage.length === 0 // 4枚まで
   const inputId = Math.random().toString(32).substring(2)
 
   const handlePostClick = async () => {
@@ -45,7 +45,7 @@ export const PostModal = (props: PostModalProps) => {
 
     setLoading(true)
 
-    const rt = new RichText({ text: contentText})
+    const rt = new RichText({ text: contentText })
     await rt.detectFacets(agent)
 
     await onSubmit({
@@ -53,13 +53,13 @@ export const PostModal = (props: PostModalProps) => {
       facets: rt.facets,
     })
     //contentImage.lengthが0枚または5枚以上のときは画像を投稿しない
-    if (contentImage.length > 0 && contentImage.length < 5) {
-        const formData = new FormData();
-        contentImage.forEach((image) => {
-            formData.append("images", image);
-        });
-        await agent.post(formData);
-    }
+    // if (contentImage.length > 0 && contentImage.length < 5) {
+    //     const formData = new FormData();
+    //     contentImage.forEach((image) => {
+    //         formData.append("images", image);
+    //     });
+    //     await agent.post(formData);
+    // }
 
     setLoading(false)
     onClose()
@@ -67,22 +67,22 @@ export const PostModal = (props: PostModalProps) => {
     setContentImages([])
   }
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
       handlePostClick()
     }
   }
 
   const handleOnAddImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-    setContentImages([...contentImage, ...e.target.files]);
-  };
+    if (!e.target.files) return
+    setContentImages([...contentImage, ...e.target.files])
+  }
 
   const handleOnRemoveImage = (index: number) => {
     // 選択した画像は削除可能
-    const newImages = [...contentImage];
-    newImages.splice(index, 1);
-    setContentImages(newImages);
-  };
+    const newImages = [...contentImage]
+    newImages.splice(index, 1)
+    setContentImages(newImages)
+  }
 
   return (
     <Modal
@@ -124,42 +124,61 @@ export const PostModal = (props: PostModalProps) => {
           画像はあと{4 - contentImage.length}枚までです.
         </Text>
         {contentImage.length > 0 && (
-          <div style={{display:"flex", width:'100%', height:'100px'}}>
+          <div style={{ display: 'flex', width: '100%', height: '100px' }}>
             {contentImage.map((image, index) => (
-                <div key={index} style={{width:`calc(100% / 4)`, height:'88px', overflow:'hidden', position:'relative'}}>
-                  <Zoom>
-                    <img  src={URL.createObjectURL(image)} alt="preview" style={{width:`100%`, height:'88px', objectFit: 'cover'}}/>
-                  </Zoom>
-                  <div style={{position : 'absolute', top:0, left:0}}>
-                    <Button auto
-                            css={{height:'15px',width:'15px', padding:'0px', borderRadius:'50%', backgroundColor:'rgba(0,0,0,0.3)'}}
-                            onClick={() => handleOnRemoveImage(index)}
-                    >
-                    <FontAwesomeIcon icon={faXmark} size="sm"/>
-                    </Button>
-                  </div>
+              <div
+                key={index}
+                style={{
+                  width: `calc(100% / 4)`,
+                  height: '88px',
+                  overflow: 'hidden',
+                  position: 'relative',
+                }}
+              >
+                <Zoom>
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt="preview"
+                    style={{
+                      width: `100%`,
+                      height: '88px',
+                      objectFit: 'cover',
+                    }}
+                  />
+                </Zoom>
+                <div style={{ position: 'absolute', top: 0, left: 0 }}>
+                  <Button
+                    auto
+                    css={{
+                      height: '15px',
+                      width: '15px',
+                      padding: '0px',
+                      borderRadius: '50%',
+                      backgroundColor: 'rgba(0,0,0,0.3)',
+                    }}
+                    onClick={() => handleOnRemoveImage(index)}
+                  >
+                    <FontAwesomeIcon icon={faXmark} size="sm" />
+                  </Button>
                 </div>
+              </div>
             ))}
           </div>
         )}
         <label htmlFor={inputId}>
-          <Button
-              disabled={isImageMaxLimited}
-              as="span"
-              auto
-          >
+          <Button disabled={isImageMaxLimited} as="span" auto>
             追加
           </Button>
           <input
-              hidden
-              id={inputId}
-              type="file"
-              multiple
-              accept="image/*,.png,.jpg,.jpeg"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  handleOnAddImage(e)
-              }
-              disabled={isImageMaxLimited}
+            hidden
+            id={inputId}
+            type="file"
+            multiple
+            accept="image/*,.png,.jpg,.jpeg"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleOnAddImage(e)
+            }
+            disabled={isImageMaxLimited}
           />
         </label>
 
@@ -169,7 +188,11 @@ export const PostModal = (props: PostModalProps) => {
         <Button
           auto
           onClick={handlePostClick}
-          disabled={loading || !isPostable && isImageMinLimited || contentImage.length >= 5}
+          disabled={
+            loading ||
+            (!isPostable && isImageMinLimited) ||
+            contentImage.length >= 5
+          }
         >
           {loading ? (
             <>

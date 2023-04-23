@@ -17,7 +17,7 @@
     "@nextui-org/react": "^1.0.0-beta.12",
     "@vercel/og": "^0.0.20",
     "jotai": "^2.0.4",
-    "next": "latest",
+    "next": "13.0.5-canary.5",
     "react": "latest",
     "react-dom": "latest",
     "react-infinite-scroller": "^1.2.6",
