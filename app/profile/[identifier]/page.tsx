@@ -22,6 +22,8 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
 import reactStringReplace from 'react-string-replace'
 import Link from 'next/link'
+import Zoom from 'react-medium-image-zoom'
+
 
 /**
  * Home page.
@@ -153,7 +155,9 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
           profile ? (
             <Card css={{ my: '$10' }} variant="bordered">
               {profile.banner && (
-                <Card.Image src={profile.banner} showSkeleton />
+                  <Zoom>
+                    <Card.Image src={profile.banner} showSkeleton />
+                  </Zoom>
               )}
               <Card.Header css={{ px: 0, flexFlow: 'column' }}>
                 <Row align="center" justify="space-between">
