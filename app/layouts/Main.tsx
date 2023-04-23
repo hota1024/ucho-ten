@@ -3,24 +3,28 @@
 import { ReactNode, useEffect, useState } from 'react'
 
 import {
+  Badge,
   Button,
+  Card,
   Dropdown,
   Loading,
   Modal,
-  Progress,
+  Popover,
+  Row,
   Spacer,
   styled,
   Text,
   User,
 } from '@nextui-org/react'
-import { LogoutButton } from '@/components/LogoutButton'
 import { PostButton } from '@/components/PostButton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHome, faSignOut } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link'
 import { useAgent } from '@/atoms/agent'
 import { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
-import { faUser } from '@fortawesome/free-regular-svg-icons'
+import { faBell, faUser } from '@fortawesome/free-regular-svg-icons'
+import { Notification } from '@atproto/api/dist/client/types/app/bsky/notification/listNotifications'
+import { NotificationCardList } from '@/components/NotificationCardList'
 
 const Container = styled('div', {
   maxWidth: '1200px',
@@ -43,7 +47,7 @@ const UchoTen = styled('div', {
   fontSize: '2rem',
   fontWeight: 'bold',
   textAlign: 'center',
-  color: 'white'
+  color: 'white',
 })
 
 /**
@@ -61,12 +65,35 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
   const [agent] = useAgent()
   const [profile, setProfile] = useState<ProfileViewDetailed | null>(null)
   const [logoutLoading, setLogoutLoading] = useState(false)
+  const [notificationCount, setNotificationCount] = useState(0)
+  const [notifications, setNotifications] = useState<Notification[]>([])
+  const [loadingNotifications, setLoadingNotifications] = useState(false)
 
   const logout = () => {
     setLogoutLoading(true)
 
     localStorage.removeItem('session')
     window.location.href = '/login'
+  }
+
+  const handleNotificationOpen = async (isOpen: boolean) => {
+    if (!agent) {
+      return
+    }
+
+    setNotifications([])
+
+    if (isOpen) {
+      setNotificationCount(0)
+      setLoadingNotifications(true)
+
+      const result = await agent.listNotifications()
+      agent.updateSeenNotifications()
+
+      setNotifications(result.data.notifications)
+
+      setLoadingNotifications(false)
+    }
   }
 
   useEffect(() => {
@@ -81,6 +108,22 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
       .then((result) => {
         setProfile(result.data)
       })
+  }, [agent])
+
+  useEffect(() => {
+    if (!agent) {
+      return
+    }
+
+    const id = setInterval(async () => {
+      const result = await agent.countUnreadNotifications()
+
+      setNotificationCount(result.data.count)
+    }, 10000)
+
+    return () => {
+      clearInterval(id)
+    }
   }, [agent])
 
   return (
@@ -102,6 +145,37 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
         >
           Home
         </Button>
+
+        <Popover onOpenChange={handleNotificationOpen}>
+          <Popover.Trigger>
+            <Button
+              icon={
+                <Badge
+                  content={notificationCount}
+                  size="xs"
+                  color="error"
+                  isInvisible={notificationCount === 0}
+                >
+                  <FontAwesomeIcon icon={faBell} size="lg" />
+                </Badge>
+              }
+            >
+              Notification
+            </Button>
+          </Popover.Trigger>
+          <Popover.Content
+            css={{ minWidth: 400, maxHeight: 400, overflow: 'scroll' }}
+          >
+            {loadingNotifications && (
+              <Row justify="center">
+                <Loading css={{ my: 4 }} />
+              </Row>
+            )}
+
+            <NotificationCardList notifications={notifications} />
+          </Popover.Content>
+        </Popover>
+
         <PostButton />
 
         {profile && (
