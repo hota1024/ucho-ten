@@ -16,6 +16,7 @@ import { useState } from 'react'
 import { Post } from '../Post/Post'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faImage } from '@fortawesome/free-solid-svg-icons'
 import Zoom from 'react-medium-image-zoom'
 
 export interface PostModalProps {
@@ -109,7 +110,7 @@ export const PostModal = (props: PostModalProps) => {
       )}
       <Modal.Body>
         <Textarea
-          placeholder="投稿内容"
+          placeholder="Post contents"
           rows={8}
           maxLength={300}
           initialValue={contentText}
@@ -168,8 +169,8 @@ export const PostModal = (props: PostModalProps) => {
           </div>
         )}
         <label htmlFor={inputId}>
-          <Button disabled={isImageMaxLimited} as="span" auto>
-            追加
+          <Button disabled={loading || isImageMaxLimited} as="span" auto>
+            <FontAwesomeIcon icon={faImage} size="lg" />
           </Button>
           <input
             hidden
@@ -185,7 +186,7 @@ export const PostModal = (props: PostModalProps) => {
         </label>
 
         <Button auto flat onPress={onClose} disabled={loading}>
-          キャンセル
+          Cancel
         </Button>
         <Button
           auto
@@ -203,7 +204,7 @@ export const PostModal = (props: PostModalProps) => {
               投稿中...
             </>
           ) : (
-            '投稿'
+            'Post'
           )}
         </Button>
       </Modal.Footer>
