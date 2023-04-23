@@ -120,9 +120,11 @@ export const PostModal = (props: PostModalProps) => {
         />
       </Modal.Body>
       <Modal.Footer>
-        <Text size="$sm" color="error">
-          画像はあと{4 - contentImage.length}枚までです.
-        </Text>
+        {contentImage.length > 0 && (
+          <Text size="$sm" color="error">
+            画像はあと{4 - contentImage.length}枚までです.
+          </Text>
+        )}
         {contentImage.length > 0 && (
           <div style={{ display: 'flex', width: '100%', height: '100px' }}>
             {contentImage.map((image, index) => (
