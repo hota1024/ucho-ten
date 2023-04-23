@@ -39,7 +39,7 @@ export const PostButton = (props: PostButtonProps) => {
         onPress={() => setDialog(true)}
         icon={<FontAwesomeIcon icon={faPenToSquare} size="lg" />}
       >
-        投稿
+        Post
       </Button>
       <PostModal
         open={dialog}

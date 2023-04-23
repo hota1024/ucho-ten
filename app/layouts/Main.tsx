@@ -43,6 +43,7 @@ const UchoTen = styled('div', {
   fontSize: '2rem',
   fontWeight: 'bold',
   textAlign: 'center',
+  color: 'white'
 })
 
 /**
@@ -99,7 +100,7 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
           href="/"
           icon={<FontAwesomeIcon icon={faHome} size="lg" />}
         >
-          ホーム
+          Home
         </Button>
         <PostButton />
 
@@ -124,7 +125,7 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
                 icon={<FontAwesomeIcon icon={faUser} />}
               >
                 <Link href={`/profile/${profile.handle}`}>
-                  <Text>プロフィール</Text>
+                  <Text>My profile</Text>
                 </Link>
               </Dropdown.Item>
               <Dropdown.Item

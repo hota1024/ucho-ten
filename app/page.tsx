@@ -110,7 +110,7 @@ const HomePage: NextPage = () => {
                 width: '100%',
               }}
             >
-              青空
+              Bluesky
             </div>
           </div>
           <div
