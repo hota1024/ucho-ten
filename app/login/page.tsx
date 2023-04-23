@@ -1,23 +1,17 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { NextPage } from 'next'
 
 import { Container } from '@nextui-org/react'
 
-import { useAgent } from '@/atoms/agent'
 import { LoginForm } from '@/components/LoginForm'
 import { BskyAgent } from '@atproto/api'
 
 /**
  * Login page.
  */
-const LoginPage: NextPage = () => {
-  const router = useRouter()
-
-  const [, setAgent] = useAgent()
-
+const LoginPage = () => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -37,9 +31,11 @@ const LoginPage: NextPage = () => {
       })
       await agent.login({ identifier, password })
 
-      setAgent(agent)
+      if (agent.session) {
+        localStorage.setItem('session', JSON.stringify(agent.session))
+      }
 
-      await router.push('/')
+      location.href = '/'
     } catch (error) {
       if (
         error instanceof Error &&
@@ -50,7 +46,6 @@ const LoginPage: NextPage = () => {
 
         setLoading(false)
       } else {
-        console.log({ error })
         throw error
       }
     }
