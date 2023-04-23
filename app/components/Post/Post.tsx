@@ -340,7 +340,7 @@ export const Post = (props: PostProps) => {
             <div style={{display:"flex", width:'100%', maxHeight : '500px', borderRadius : '10px', overflow : 'hidden', gap:'0px 3px'}}>
               <div style={{width:`calc(100% / 2)`, height:'100%',}}>
                 <Zoom>
-                  <img  src={images[0].fullsize} alt="preview" style={{width:`100%`, height:'100%',marginBottom:'-10px'}}/>
+                  <img  src={images[0].fullsize} alt="preview" style={{width:`100%`, height:'100%',marginBottom:'-10px',objectFit: 'cover'}}/>
                 </Zoom>
               </div>
               <div style={{width:`calc(100% / 2)`, height:'100%',}}>
@@ -351,38 +351,33 @@ export const Post = (props: PostProps) => {
             </div>
         )}
 
+        {images.length === 3 && (
+            <div style={{display:"flex",width:'100%', maxHeight : '500px', borderRadius : '10px', overflow : 'hidden',gap:'0px 2px'}}>
+              <div style={{width:'calc(100% + 2px)', height:'100%', marginBottom : '-10px'}}>
+                <Zoom>
+                  <img  src={images[0].fullsize} alt="preview" style={{width:`100%`, height:'100%'}}/>
+                </Zoom>
+              </div>
+              <div style={{width:'50%', height:'100%'}}>
+                <Zoom>
+                  <img  src={images[1].fullsize} alt="preview" style={{width:`100%`, height:'50%',marginBottom:'-4px'}}/>
+                </Zoom>
+                <Zoom>
+                  <img  src={images[2].fullsize} alt="preview" style={{width:`100%`, height:'50%',marginBottom:'-10px'}}/>
+                </Zoom>
+              </div>
+            </div>
+        )}
+
 
         {images.length === 4 && (
-            <div
-                style={{
-                  display: 'grid',
-                  gap: '3px 3px',
-                  marginTop: '$4',
-                  borderRadius: '10px',
-                  overflow: 'hidden',
-                  width: '100%',
-                  height: '260px',
-                  objectFit: 'cover',
-                  gridTemplateRows: 'repeat(2, 50%)', // gridTemplateRowsを簡略化
-                  gridTemplateColumns: 'repeat(2, 50%)', // gridTemplateColumnsを簡略化
-                }}
-            >
+            <div style={{display:"flex",flexWrap:'wrap', width:'100%', maxHeight : '500px', borderRadius : '10px', overflow : 'hidden', gap:'7px 3px'}}>
               {images.slice(0, 4).map((image, key) => ( // imagesをスライスしてmap関数に渡す
-                  <Zoom key={key}>
-                    <Image
-                        src={image.fullsize} // image.fullsizeに修正
-                        alt={image.alt} // image.altに修正
-                        style={{
-                          gridRow: `${(key % 2) + 1}/${(key % 2) + 2}`, // gridRowの動的な指定に修正
-                          gridColumn: `${(key % 2) + 1}/${(key % 2) + 2}`, // gridColumnの動的な指定に修正
-                          height: '130px',
-                          width: '100%',
-                          objectFit: 'cover',
-                          objectPosition: "50% 100%",
-                          //overflow: 'hidden',
-                        }}
-                    />
-                  </Zoom>
+                  <div key={key} style={{width:`calc(50% - 1.5px)`, height:`calc(100%)`,}}>
+                    <Zoom>
+                      <img  src={images[key].fullsize} alt="preview" style={{width:`100%`, height:'100%',marginBottom:'-10px'}}/>
+                    </Zoom>
+                  </div>
               ))}
             </div>
         )}
