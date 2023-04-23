@@ -41,7 +41,7 @@ export const useTimelineView = (
     }
 
     setFeeds((feeds) => [...feeds, ...result.feed])
-    setCursor(result.cursor)
+    setNewCursor(result.cursor)
 
     if (!result.cursor) {
       setHasMore(false)
@@ -54,7 +54,7 @@ export const useTimelineView = (
     }
 
     setFeeds(newTimeline)
-    setCursor(newCursor)
+    setNewCursor(newCursor)
 
     setNewTimeline(null)
 
