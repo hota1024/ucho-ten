@@ -1,6 +1,6 @@
 import { useAgent } from '@/atoms/agent'
 import { BskyAgent } from '@atproto/api'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
 
 export const useRequiredSession = () => {
