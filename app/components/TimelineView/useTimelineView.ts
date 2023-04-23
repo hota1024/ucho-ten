@@ -40,6 +40,10 @@ export const useTimelineView = (
       return
     }
 
+    if (result.feed[0]?.post.uri === feeds[0]?.post.uri) {
+      return
+    }
+    
     setFeeds((feeds) => [...feeds, ...result.feed])
     setNewCursor(result.cursor)
 
