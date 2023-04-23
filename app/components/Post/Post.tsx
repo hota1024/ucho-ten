@@ -337,36 +337,17 @@ export const Post = (props: PostProps) => {
             </div>
         )}
         {images.length === 2 && (
-            <div
-                style={{
-                  display: 'grid',
-                  gap: '$4',
-                  marginTop: '$4',
-                  borderRadius: '10px',
-                  overflow: 'hidden',
-                  width: '100%',
-                  height: '260px',
-                  objectFit: 'cover',
-                  gridTemplateRows: '1fr', // gridTemplateRowsを簡略化
-                  gridTemplateColumns: 'repeat(2, 50%)', // gridTemplateColumnsを簡略化
-                }}
-            >
-              {images.slice(0, images.length).map((image, key) => ( // imagesをスライスしてmap関数に渡す
-                  <Zoom key={key}>
-                    <Image
-                        src={image.fullsize} // image.fullsizeに修正
-                        alt={image.alt} // image.altに修正
-                        style={{
-                          gridRow: `1/2`, // gridRowの動的な指定に修正
-                          gridColumn: `${(key % 2) + 1}/${(key % 2) + 2}`, // gridColumnの動的な指定に修正
-                          height: '100%',
-                          width: '100%',
-                          objectFit: 'cover',
-                          objectPosition: "50% 100%",
-                        }}
-                    />
-                  </Zoom>
-              ))}
+            <div style={{display:"flex", width:'100%', maxHeight : '500px', borderRadius : '10px', overflow : 'hidden', gap:'0px 3px'}}>
+              <div style={{width:`calc(100% / 2)`, height:'100%',}}>
+                <Zoom>
+                  <img  src={images[0].fullsize} alt="preview" style={{width:`100%`, height:'100%',marginBottom:'-10px'}}/>
+                </Zoom>
+              </div>
+              <div style={{width:`calc(100% / 2)`, height:'100%',}}>
+                <Zoom>
+                  <img  src={images[1].fullsize} alt="preview" style={{width:`100%`, height:'100%',marginBottom:'-10px'}}/>
+                </Zoom>
+              </div>
             </div>
         )}
 
@@ -375,7 +356,7 @@ export const Post = (props: PostProps) => {
             <div
                 style={{
                   display: 'grid',
-                  gap: '$4',
+                  gap: '3px 3px',
                   marginTop: '$4',
                   borderRadius: '10px',
                   overflow: 'hidden',
