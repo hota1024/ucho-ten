@@ -9,6 +9,7 @@ import { useAgent } from '@/atoms/agent'
 import { useCallback, useState } from 'react'
 import { PostModal } from '../PostModal'
 import { PostRecordPost } from '@/types/posts'
+import { useShowPostNumbers } from '@/atoms/settings'
 
 interface PostViewCardProps {
   post: PostView
@@ -46,6 +47,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
   const [repostCount, setRepostCount] = useState(post.repostCount ?? 0)
   const [followLoading, setFollowLoading] = useState(false)
   const [replyDialog, setReplyDialog] = useState(false)
+  const [showPostNumbers] = useShowPostNumbers()
 
   if (
     post.cid === 'bafyreievvr466th5wonvdoxazkbly6ziide2s7hjiu35poxeicfnh6vlfa'
@@ -170,9 +172,9 @@ export const PostViewCard = (props: PostViewCardProps) => {
         replyCount={post.replyCount}
         repostCount={repostCount}
         likeCount={likeCount}
-        showReplyCount={false}
-        showRepostCount={false}
-        showLikeCount={false}
+        showReplyCount={showPostNumbers}
+        showRepostCount={showPostNumbers}
+        showLikeCount={showPostNumbers}
         isMuted={isMuted}
         isLiked={isLiked}
         isReposted={isReposted}

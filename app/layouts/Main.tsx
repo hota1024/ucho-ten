@@ -1,6 +1,7 @@
 'use client'
 
 import { ReactNode, useEffect, useState } from 'react'
+import Konami from 'react-konami-code'
 
 import {
   Badge,
@@ -25,6 +26,7 @@ import { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/act
 import { faBell, faUser } from '@fortawesome/free-regular-svg-icons'
 import { Notification } from '@atproto/api/dist/client/types/app/bsky/notification/listNotifications'
 import { NotificationCardList } from '@/components/NotificationCardList'
+import { useShowPostNumbers } from '@/atoms/settings'
 
 const Container = styled('div', {
   maxWidth: '1200px',
@@ -68,6 +70,7 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
   const [notificationCount, setNotificationCount] = useState(0)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loadingNotifications, setLoadingNotifications] = useState(false)
+  const [showPostNumbers, setShowPostNumbers] = useShowPostNumbers()
 
   const logout = () => {
     setLogoutLoading(true)
@@ -126,6 +129,10 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
     }
   }, [agent])
 
+  const handleKonami = () => {
+    setShowPostNumbers((v) => !v)
+  }
+
   return (
     <Container>
       <Modal open={logoutLoading} blur preventClose>
@@ -137,6 +144,9 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
       </Modal>
 
       <LeftActionsContainer>
+        <div style={{ display: 'none' }}>
+          <Konami action={handleKonami}></Konami>
+        </div>
         <UchoTen>Ucho-ten</UchoTen>
         <Button
           as={Link}
@@ -151,17 +161,14 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
             <Button
               icon={
                 notificationCount > 0 ? (
-                  <Badge
-                    content={notificationCount}
-                    size="xs"
-                    color="error"
-                  >
+                  <Badge content={notificationCount} size="xs" color="error">
                     <FontAwesomeIcon icon={faBell} size="lg" />
                   </Badge>
                 ) : (
                   <FontAwesomeIcon icon={faBell} size="lg" />
                 )
-              }>
+              }
+            >
               Notification
             </Button>
           </Popover.Trigger>
