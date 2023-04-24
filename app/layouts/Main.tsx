@@ -161,7 +161,7 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
             <Button
               icon={
                 notificationCount > 0 ? (
-                  <Badge content={notificationCount} size="xs" color="error">
+                  <Badge content={''} size="md" color="error" variant="dot">
                     <FontAwesomeIcon icon={faBell} size="lg" />
                   </Badge>
                 ) : (
