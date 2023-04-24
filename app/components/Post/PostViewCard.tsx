@@ -170,9 +170,9 @@ export const PostViewCard = (props: PostViewCardProps) => {
         replyCount={post.replyCount}
         repostCount={repostCount}
         likeCount={likeCount}
-        showReplyCount={showReplyCount}
-        showRepostCount={showRepostCount}
-        showLikeCount={showLikeCount}
+        showReplyCount={false}
+        showRepostCount={false}
+        showLikeCount={false}
         isMuted={isMuted}
         isLiked={isLiked}
         isReposted={isReposted}
