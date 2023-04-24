@@ -150,16 +150,18 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
           <Popover.Trigger>
             <Button
               icon={
-                <Badge
-                  content={notificationCount}
-                  size="xs"
-                  color="error"
-                  isInvisible={notificationCount === 0}
-                >
+                notificationCount > 0 ? (
+                  <Badge
+                    content={notificationCount}
+                    size="xs"
+                    color="error"
+                  >
+                    <FontAwesomeIcon icon={faBell} size="lg" />
+                  </Badge>
+                ) : (
                   <FontAwesomeIcon icon={faBell} size="lg" />
-                </Badge>
-              }
-            >
+                )
+              }>
               Notification
             </Button>
           </Popover.Trigger>
