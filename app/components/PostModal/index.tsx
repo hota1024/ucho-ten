@@ -11,6 +11,7 @@ import {
   Spacer,
   Text,
   Textarea,
+  Image,
 } from '@nextui-org/react'
 import { useState } from 'react'
 import { Post } from '../Post/Post'
@@ -139,7 +140,7 @@ export const PostModal = (props: PostModalProps) => {
                 }}
               >
                 <Zoom>
-                  <img
+                  <Image
                     src={URL.createObjectURL(image)}
                     alt="preview"
                     style={{
@@ -147,7 +148,7 @@ export const PostModal = (props: PostModalProps) => {
                       height: '88px',
                       objectFit: 'cover',
                     }}
-                  />
+                  ></Image>
                 </Zoom>
                 <div style={{ position: 'absolute', top: 0, left: 0 }}>
                   <Button
