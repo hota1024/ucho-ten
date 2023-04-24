@@ -119,7 +119,7 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
       const result = await agent.countUnreadNotifications()
 
       setNotificationCount(result.data.count)
-    }, 10000)
+    }, 5000)
 
     return () => {
       clearInterval(id)
