@@ -34,6 +34,10 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
   const [followHover, setFollowHover] = useState(false)
   const [isFollowing, setIsFollowing] = useState(!!profile?.viewer?.following)
   const [followLoading, setFollowLoading] = useState(false)
+  const [isMuted, setIsMuted] = useState(false)
+  const [isLabeled, setIsLabeled] = useState(false)
+  const [whatLabel, setWhatLabel] = useState('')
+  const [isMe, setIsMe] = useState(false)
 
   const fetchTimeline: TimelineFetcher = ({ agent }) => {
     if (!agent) {
@@ -57,8 +61,15 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
     const result = await agent.getProfile({
       actor: params.identifier,
     })
-    console.log(result)
 
+    if(result.data.labels?.length > 0){
+      setIsLabeled(true)
+      setWhatLabel(result.data.labels[0].val)
+    }
+
+    if(result.data.did === agent.session!.did){
+      setIsMe(true)
+    }
     setProfile(result.data)
     setIsFollowing(!!result.data?.viewer?.following)
   }, [agent, params.identifier])
@@ -101,12 +112,25 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
     await fetchProfile()
     setFollowLoading(false)
   }
+
+  const handleEditProfileClick = async () => {
+    if (!agent) {
+      return
+    }
+
+    const profile = await agent.getProfile({
+      actor: params.identifier,
+    })
+
+    console.log('工事中')
+  }
+
   const newlineCodeToBr = (text: string) => {
     return text.split('\n').map((line, i) => (
       <p key={i}>
         {reactStringReplace(
           line,
-            /(@[a-zA-Z0-9-.]+|https?:\/\/[a-zA-Z0-9-./?=])/g,
+            /(@[a-zA-Z0-9-.]+|https?:\/\/[a-zA-Z0-9-./?=_])/g,
           (match, j) => {
             if (match.startsWith('@')) {
               let domain = match.substring(1) // remove "@" symbol from match
@@ -178,17 +202,19 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                   <Button
                     rounded
                     bordered={isFollowing}
-                    color={isFollowing && followHover ? 'error' : 'primary'}
+                    color={isFollowing && followHover && !isMe ? isMe ? 'error' : 'primary': 'gradient'}
                     onMouseOver={() => setFollowHover(true)}
                     onMouseLeave={() => setFollowHover(false)}
-                    onPress={handleFollowClick}
+                    onPress={isMe ? handleEditProfileClick : handleFollowClick}
                     style={{ marginRight: '12px' }}
                   >
-                    {isFollowing
-                      ? followHover
-                        ? 'UnFollow'
-                        : 'Following'
-                      : 'Follow'}
+                    {!isMe
+                      ?isFollowing
+                        ? followHover
+                          ? 'UnFollow'
+                          : 'Following'
+                        : 'Follow'
+                      : 'Edit Profile'}
                   </Button>
                 </Row>
               </Card.Header>
