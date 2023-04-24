@@ -111,7 +111,8 @@ export const PostModal = (props: PostModalProps) => {
       )}
       <Modal.Body>
         <Textarea
-          placeholder="Post contents"
+          aria-label="content"
+          placeholder="content"
           rows={8}
           maxLength={300}
           initialValue={contentText}
