@@ -208,7 +208,7 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
                 color="error"
                 icon={<FontAwesomeIcon icon={faSignOut} />}
               >
-                <Text color="inherit">ログアウト</Text>
+                <Text color="inherit">Log out</Text>
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>

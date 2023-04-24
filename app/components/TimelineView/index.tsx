@@ -55,7 +55,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         }}
       >
         <Button shadow color="primary" auto onPress={onLoadNewTimeline}>
-          新しい投稿があります
+          Load New posts
         </Button>
       </ReloadButtonContainer>
       <TimelineContainer

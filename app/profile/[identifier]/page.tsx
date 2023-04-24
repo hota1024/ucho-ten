@@ -181,9 +181,9 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                   >
                     {isFollowing
                       ? followHover
-                        ? 'フォロー解除'
-                        : 'フォロー中'
-                      : 'フォロー'}
+                        ? 'UnFollow'
+                        : 'Following'
+                      : 'Follow'}
                   </Button>
                 </Row>
               </Card.Header>

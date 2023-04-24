@@ -247,9 +247,9 @@ export const Post = (props: PostProps) => {
                   >
                     {isFollowing
                       ? followHover
-                        ? 'フォロー解除'
-                        : 'フォロー中'
-                      : 'フォロー'}
+                        ? 'UnFollow'
+                        : 'Following'
+                      : 'Follow'}
                   </Button>
                 </Col>
               </Row>
@@ -271,8 +271,8 @@ export const Post = (props: PostProps) => {
         {reasonRepost && (
           <Link href={`/profile/${reasonRepost.by.handle}`}>
             <RepostByLabel>
+                Reposted by
               {reasonRepost.by.displayName}
-              さんがリポスト
             </RepostByLabel>
           </Link>
         )}
