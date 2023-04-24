@@ -271,8 +271,7 @@ export const Post = (props: PostProps) => {
         {reasonRepost && (
           <Link href={`/profile/${reasonRepost.by.handle}`}>
             <RepostByLabel>
-                Reposted by
-              {reasonRepost.by.displayName}
+                Reposted by {reasonRepost.by.displayName}
             </RepostByLabel>
           </Link>
         )}
