@@ -92,7 +92,7 @@ export const useTimelineView = (
         setNewTimeline(result.feed)
         setNewCursor(result.cursor)
       }
-    }, 5000)
+    }, 10000)
 
     return () => {
       clearInterval(id)
