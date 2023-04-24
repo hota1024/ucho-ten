@@ -102,7 +102,6 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
     setFollowLoading(false)
   }
   const newlineCodeToBr = (text: string) => {
-    //return text.split('\n').map((line, i) => { return <span key={i}>{line}<br /></span> })
     return text.split('\n').map((line, i) => (
       <p key={i}>
         {reactStringReplace(
@@ -110,17 +109,24 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
             /(@[a-zA-Z0-9-.]+|https?:\/\/[a-zA-Z0-9-./])/g,
           (match, j) => {
             if (match.startsWith('@')) {
-              const domain = match.substring(1) // remove "@" symbol from match
+              let domain = match.substring(1) // remove "@" symbol from match
+              if (domain.endsWith('.')){
+                domain = domain.slice(0, -1)
+              }
               return (
                 <Link key={j} href={`/profile/${domain}`}>
                   {match}
                 </Link>
               )
             } else if (match.startsWith('http')) {
+              let url = match
+              if(url.endsWith('.')){
+                url = url.slice(0, -1)
+              }
               return (
                 <a
                   key={j}
-                  href={match}
+                  href={url}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -139,8 +145,6 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                   {match}
                 </a>
               )
-            } else {
-              return match
             }
           }
         )}
