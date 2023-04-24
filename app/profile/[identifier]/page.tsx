@@ -130,7 +130,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
       <p key={i}>
         {reactStringReplace(
           line,
-            /(@[a-zA-Z0-9-.]+|https?:\/\/[a-zA-Z0-9-./?=_])/g,
+            /(@[a-zA-Z0-9-.]+|https?:\/\/[a-zA-Z0-9-./?=_%&])/g,
           (match, j) => {
             if (match.startsWith('@')) {
               let domain = match.substring(1) // remove "@" symbol from match
