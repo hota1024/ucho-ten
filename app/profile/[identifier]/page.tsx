@@ -57,6 +57,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
     const result = await agent.getProfile({
       actor: params.identifier,
     })
+    console.log(result)
 
     setProfile(result.data)
     setIsFollowing(!!result.data?.viewer?.following)
@@ -106,7 +107,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
       <p key={i}>
         {reactStringReplace(
           line,
-          /(tw@\S+|@\S+|https?:\/\/\S+)/g,
+            /(@[a-zA-Z0-9-.]+|https?:\/\/[a-zA-Z0-9-./])/g,
           (match, j) => {
             if (match.startsWith('@')) {
               const domain = match.substring(1) // remove "@" symbol from match
