@@ -28,15 +28,17 @@ export const PostRecordTextView = (props: PostRecordTextViewProps) => {
       <>
         {text.split('\n').map((line, i) => (
           <p key={i}>
-            {reactStringReplace(line, /(@\S+|https?:\/\/\S+)/g, (match, j) => {
+            {reactStringReplace(line, /(@[a-zA-Z0-9-.]+|https?:\/\/\S+)/g, (match, j) => {
               if (match.startsWith('@')) {
                 const domain = match.substring(1) // remove "@" symbol from match
+                console.log(domain)
                 return (
                   <Link key={j} href={`/profile/${domain}`}>
                     {match}
                   </Link>
                 )
               } else if (match.startsWith('http')) {
+                console.log(match)
                 return (
                   <a key={j} href={match} target="_blank" rel="noopener noreferrer">
                     {match}
