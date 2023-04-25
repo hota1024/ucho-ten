@@ -1,5 +1,5 @@
 import { useAgent } from '@/atoms/agent'
-import { AppBskyActorProfile } from '@atproto/api'
+import { AppBskyActorProfile, BlobRef } from '@atproto/api'
 import { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
 import { faUpload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -22,6 +22,7 @@ import { useCallback, useEffect, useState } from 'react'
 const DummyBanner = styled('div', {
   background: '$gray100',
   borderRadius: '8px',
+  width: '100%',
   minHeight: '10rem',
 })
 
@@ -30,6 +31,19 @@ const DummyAvatar = styled('div', {
   borderRadius: '8px',
   minWidth: '4rem',
   aspectRatio: 1,
+})
+
+const ImageContainer = styled('label', {
+  width: 'auto',
+  display: 'block',
+  cursor: 'pointer',
+  variants: {
+    fullWidth: {
+      true: {
+        width: '100%',
+      },
+    },
+  },
 })
 
 export interface ProfileEditModalProps {
@@ -46,8 +60,19 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
   const [saving, setSaving] = useState(false)
   const [displayName, setDisplayName] = useState('')
   const [description, setDescription] = useState('')
+  const [bannerFile, setBannerFile] = useState<File | undefined>()
+  const [avatarFile, setAvatarFile] = useState<File | undefined>()
+
+  const hasChange =
+    !!bannerFile ||
+    !!avatarFile ||
+    displayName !== profile?.displayName ||
+    description !== profile?.description
 
   const fetchProfile = useCallback(async () => {
+    setBannerFile(undefined)
+    setAvatarFile(undefined)
+
     if (!agent || !agent.session?.handle) {
       return
     }
@@ -64,10 +89,36 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
       return
     }
 
+    let avatar: BlobRef | undefined
+
+    if (avatarFile) {
+      const result = await agent.uploadBlob(
+        new Uint8Array(await avatarFile.arrayBuffer()),
+        {
+          encoding: avatarFile.type,
+        }
+      )
+      avatar = result.data.blob
+    }
+
+    let banner: BlobRef | undefined
+
+    if (bannerFile) {
+      const result = await agent.uploadBlob(
+        new Uint8Array(await bannerFile.arrayBuffer()),
+        {
+          encoding: bannerFile.type,
+        }
+      )
+      banner = result.data.blob
+    }
+
     setSaving(true)
     await agent.upsertProfile((old) => {
       const profile: AppBskyActorProfile.Record = {
         ...old,
+        avatar: avatar ?? old?.avatar,
+        banner: banner ?? old?.banner,
         displayName: displayName || undefined,
         description: description || undefined,
       }
@@ -106,17 +157,50 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
       {profile ? (
         <>
           <Modal.Body>
-            {profile.banner ? (
-              <Image src={profile.banner} alt="banner" />
-            ) : (
-              <DummyBanner></DummyBanner>
-            )}
+            <Row>
+              <ImageContainer htmlFor="banner-input" fullWidth>
+                {bannerFile ? (
+                  <Image src={URL.createObjectURL(bannerFile)} alt="banner" />
+                ) : profile.banner ? (
+                  <Image src={profile.banner} alt="banner" />
+                ) : (
+                  <DummyBanner></DummyBanner>
+                )}
+              </ImageContainer>
+              <input
+                hidden
+                id="banner-input"
+                type="file"
+                accept="image/*,.png,.jpg,.jpeg"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setBannerFile(e.target.files?.[0])
+                }
+              />
+            </Row>
             <Row align="center">
-              {profile.avatar ? (
-                <Avatar src={profile.avatar} squared size="xl" pointer />
-              ) : (
-                <DummyAvatar></DummyAvatar>
-              )}
+              <ImageContainer htmlFor="avatar-input">
+                {avatarFile ? (
+                  <Avatar
+                    src={URL.createObjectURL(avatarFile)}
+                    squared
+                    size="xl"
+                    pointer
+                  />
+                ) : profile.avatar ? (
+                  <Avatar src={profile.avatar} squared size="xl" pointer />
+                ) : (
+                  <DummyAvatar></DummyAvatar>
+                )}
+                <input
+                  hidden
+                  id="avatar-input"
+                  type="file"
+                  accept="image/*,.png,.jpg,.jpeg"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setAvatarFile(e.target.files?.[0])
+                  }
+                />
+              </ImageContainer>
               <Spacer x={1} />
               <Col>
                 <Input
@@ -138,6 +222,7 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
             </Row>
           </Modal.Body>
           <Modal.Footer>
+            {hasChange && <Text color="error">You have unsaved changes</Text>}
             <Button light auto onPress={() => onClose()} disabled={saving}>
               Cancel
             </Button>
@@ -145,7 +230,7 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
               color="success"
               auto
               onPress={handleSaveClick}
-              disabled={saving}
+              disabled={saving || !hasChange}
             >
               {saving ? <Loading /> : 'Save'}
             </Button>
