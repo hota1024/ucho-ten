@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart } from '@fortawesome/free-solid-svg-icons'
 import { faArrowsTurnRight } from '@fortawesome/free-solid-svg-icons'
-import { faPersonCirclePlus } from '@fortawesome/free-solid-svg-icons'
+import {faUser} from "@fortawesome/free-regular-svg-icons";
 
 /**
  * NotificationCard props.
@@ -114,7 +114,7 @@ export const NotificationCard: React.VFC<NotificationCardProps> = (props) => {
               </Link>{' '}
               followed you{' '}
               <FontAwesomeIcon
-                icon={faPersonCirclePlus}
+                icon={faUser}
                 color={'green'}
                 size={'lg'}
               />
