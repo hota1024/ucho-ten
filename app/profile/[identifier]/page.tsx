@@ -202,7 +202,9 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                   <Button
                     rounded
                     bordered={isFollowing}
-                    color={isFollowing && followHover && !isMe ? isMe ? 'error' : 'primary': 'gradient'}
+                    color={isMe ? 'gradient' :
+                            isFollowing && followHover ? 'error' :
+                            'primary'}
                     onMouseOver={() => setFollowHover(true)}
                     onMouseLeave={() => setFollowHover(false)}
                     onPress={isMe ? handleEditProfileClick : handleFollowClick}
