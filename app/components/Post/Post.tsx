@@ -237,7 +237,7 @@ export const Post = (props: PostProps) => {
                 <Col span={7}>
                   <User
                     squared
-                    src={author.avatar ? author.avatar : undefined}
+                    src={author.avatar ? author.avatar : '/images/profileDefaultIcon/bosatsu.png'}
                     size="lg"
                     name={author.displayName}
                     description={`@${author.handle}`}
@@ -270,7 +270,7 @@ export const Post = (props: PostProps) => {
             <Avatar
               pointer
               squared
-              src={author.avatar ? author.avatar : undefined}
+              src={author.avatar ? author.avatar : '/images/profileDefaultIcon/bosatsu.png'}
               size={isEmbed ? 'md' : 'lg'}
             />
           </Link>

@@ -183,6 +183,9 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
         header={
           profile ? (
             <Card css={{ my: '$10' }} variant="bordered">
+              {!profile.banner && (
+                  <Card.Image src={'/images/profileDefaultImage/defaultHeaderImage.png'}></Card.Image>
+              )}
               {profile.banner && (
                   <Zoom>
                     <Card.Image src={profile.banner} showSkeleton />
@@ -192,7 +195,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                 <Row align="center" justify="space-between">
                   <Col>
                     <User
-                      src={profile.avatar}
+                      src={profile.avatar ? profile.avatar : '/images/profileDefaultIcon/bosatsu.png'}
                       squared
                       size="xl"
                       name={profile.displayName}
