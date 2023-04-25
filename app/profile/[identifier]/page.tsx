@@ -37,6 +37,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
   const [isLabeled, setIsLabeled] = useState(false)
   const [whatLabel, setWhatLabel] = useState('')
   const [isMe, setIsMe] = useState(false)
+  const [show, setShow] = useState(true)
 
   const fetchTimeline: TimelineFetcher = ({ agent, cursor }) => {
     if (!agent) {
@@ -58,25 +59,33 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
       return
     }
 
-    const result = await agent.getProfile({
-      actor: params.identifier,
-    })
+    try {
+      const result = await agent.getProfile({
+        actor: params.identifier,
+      })
 
-    if (
-      result &&
-      result.data &&
-      result.data.labels &&
-      result.data.labels.length > 0
-    ) {
-      setIsLabeled(true)
-      setWhatLabel(result.data.labels[0].val)
-    }
+      if (
+        result &&
+        result.data &&
+        result.data.labels &&
+        result.data.labels.length > 0
+      ) {
+        setIsLabeled(true)
+        setWhatLabel(result.data.labels[0].val)
+      }
 
-    if (result.data.did === agent.session!.did) {
-      setIsMe(true)
+      if (result.data.did === agent.session!.did) {
+        setIsMe(true)
+      }
+      setProfile(result.data)
+      setIsFollowing(!!result.data?.viewer?.following)
+
+      if (result.data.viewer?.muted) {
+        setShow(false)
+      }
+    } catch (error) {
+      setShow(false)
     }
-    setProfile(result.data)
-    setIsFollowing(!!result.data?.viewer?.following)
   }, [agent, params.identifier])
 
   useEffect(() => {
@@ -174,6 +183,33 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
         )}
       </p>
     ))
+  }
+
+  if (!show) {
+    return (
+      <MainLayout>
+        <div
+          style={{
+            height: '100dvh',
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'center',
+          }}
+        >
+          <Card css={{ my: '$10' }} variant="bordered">
+            <Card.Image
+              src={'/images/profileDefaultImage/defaultHeaderImage.png'}
+            ></Card.Image>
+            <Card.Header>User not found</Card.Header>
+            <Card.Body>
+              <Link href="/">
+                <Button>Return to Home</Button>
+              </Link>
+            </Card.Body>
+          </Card>
+        </div>
+      </MainLayout>
+    )
   }
 
   return (
