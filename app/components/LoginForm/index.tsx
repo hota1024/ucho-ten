@@ -27,9 +27,13 @@ export const LoginForm = (props: LoginFormProps) => {
   const { value: password, bindings: bindPassword } = useInput('')
 
   const handleSubmit = (event: FormEvent) => {
-    event.preventDefault()
-    onSubmit({ identifier, password })
-  }
+    event.preventDefault();
+    if (/^[a-zA-Z0-9-]+$/.test(identifier)) {
+      onSubmit({ identifier: identifier + ".bsky.social", password });
+    } else {
+      onSubmit({ identifier, password });
+    }
+  };
 
   return (
     <Card as="form" onSubmit={handleSubmit} css={{ mw: '420px', p: '$8' }}>
