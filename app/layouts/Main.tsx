@@ -149,7 +149,12 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
           <Konami action={handleKonami}></Konami>
         </div>
         <UchoTen>
-          <Image src={'/images/Logo/ucho-ten.svg'} alt='Icon' height={'70%'} width={'70%'} ></Image>
+          <Image
+            src={'/images/Logo/ucho-ten.svg'}
+            alt="Icon"
+            height={'70%'}
+            width={'70%'}
+          ></Image>
         </UchoTen>
         <Button
           as={Link}
@@ -193,15 +198,38 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
         {profile && (
           <Dropdown placement="bottom-left">
             <Dropdown.Trigger>
-              <User
-                as="button"
-                size="lg"
-                squared
-                src={profile.avatar ? profile.avatar : '/images/profileDefaultIcon/bosatsu.png'}
-                name={profile.displayName ?? profile.handle}
-                description={`@${profile.handle}`}
-                style={{backgroundColor:"rgba(255,255,255,0.3)",backdropFilter: 'blur(30px)'}}
-              ></User>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  padding: '4px',
+                  borderRadius: '16px',
+                  cursor: 'pointer',
+                }}
+              >
+                <User
+                  as="button"
+                  size="lg"
+                  squared
+                  src={
+                    profile.avatar
+                      ? profile.avatar
+                      : '/images/profileDefaultIcon/bosatsu.png'
+                  }
+                  css={{
+                    '.nextui-user-desc': {
+                      color: '$gray400',
+                    },
+                  }}
+                  name={
+                    <Text color="white">
+                      {profile.displayName ?? profile.handle}
+                    </Text>
+                  }
+                  description={`@${profile.handle}`}
+                ></User>
+              </div>
             </Dropdown.Trigger>
             <Dropdown.Menu
               disabledKeys={[logoutLoading ? 'logout' : '']}
