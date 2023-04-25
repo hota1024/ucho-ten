@@ -9,7 +9,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
-        <title>サインイン | ucho-ten</title>
+        <title>Sign in | Ucho-ten</title>
       </head>
       <body style={{backgroundImage:'url(/images/backgroundimg/sky_00421.jpg)', backgroundSize: 'cover'}}>
         <Providers>{children}</Providers>

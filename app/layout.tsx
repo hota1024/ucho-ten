@@ -8,7 +8,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <head></head>
+      <head>
+        <title>Home | Ucho-ten</title>
+      </head>
       <body style={{backgroundImage:'url(/images/backgroundimg/sky_00421.jpg)', backgroundSize: 'cover',backgroundColor:"rgba(255,255,255,0.1)",backgroundBlendMode:"lighten"}}>
         <Providers>{children}</Providers>
       </body>
