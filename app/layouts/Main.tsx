@@ -20,7 +20,7 @@ import {
 } from '@nextui-org/react'
 import { PostButton } from '@/components/PostButton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHome, faSignOut } from '@fortawesome/free-solid-svg-icons'
+import { faGear, faHome, faSignOut } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link'
 import { useAgent } from '@/atoms/agent'
 import { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
@@ -28,6 +28,7 @@ import { faBell, faUser } from '@fortawesome/free-regular-svg-icons'
 import { Notification } from '@atproto/api/dist/client/types/app/bsky/notification/listNotifications'
 import { NotificationCardList } from '@/components/NotificationCardList'
 import { useShowPostNumbers } from '@/atoms/settings'
+import { SetttingsModal } from '@/components/SettingsModal'
 
 const Container = styled('div', {
   maxWidth: '1200px',
@@ -68,6 +69,7 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
   const [agent] = useAgent()
   const [profile, setProfile] = useState<ProfileViewDetailed | null>(null)
   const [logoutLoading, setLogoutLoading] = useState(false)
+  const [settingsModal, setSettingsModal] = useState(false)
   const [notificationCount, setNotificationCount] = useState(0)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loadingNotifications, setLoadingNotifications] = useState(false)
@@ -143,6 +145,11 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
           <Text>ログアウト中...</Text>
         </Modal.Header>
       </Modal>
+
+      <SetttingsModal
+        open={settingsModal}
+        onClose={() => setSettingsModal(false)}
+      />
 
       <LeftActionsContainer>
         <div style={{ display: 'none' }}>
@@ -233,7 +240,13 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
             </Dropdown.Trigger>
             <Dropdown.Menu
               disabledKeys={[logoutLoading ? 'logout' : '']}
-              onAction={(key) => key === 'logout' && logout()}
+              onAction={(key) =>
+                key === 'logout'
+                  ? logout()
+                  : key === 'settings'
+                  ? setSettingsModal(true)
+                  : null
+              }
             >
               <Dropdown.Item
                 key="profile"
@@ -242,6 +255,12 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
                 <Link href={`/profile/${profile.handle}`}>
                   <Text>My profile</Text>
                 </Link>
+              </Dropdown.Item>
+              <Dropdown.Item
+                key="settings"
+                icon={<FontAwesomeIcon icon={faGear} />}
+              >
+                <Text>Settings</Text>
               </Dropdown.Item>
               <Dropdown.Item
                 key="logout"
