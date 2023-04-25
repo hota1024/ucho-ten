@@ -2,6 +2,7 @@
 
 import { Loading } from '@nextui-org/react'
 import { NextPage } from 'next'
+import { useState } from 'react'
 import { TimelineView } from './components/TimelineView'
 import {
   TimelineFetcher,
@@ -10,12 +11,7 @@ import {
 import { MainLayout } from './layouts/Main'
 import { useRequiredSession } from './lib/hooks/useRequiredSession'
 
-/**
- * Home page.
- */
-const HomePage = () => {
-  const { agent } = useRequiredSession()
-
+const Timeline = () => {
   const fetchTimeline: TimelineFetcher = ({ agent, cursor }) => {
     if (!agent) {
       return
@@ -29,6 +25,52 @@ const HomePage = () => {
   }
 
   const timeline = useTimelineView(fetchTimeline)
+
+  return <TimelineView {...timeline} />
+}
+
+const BlueskyTimeline = () => {
+  const fetchTimeline: TimelineFetcher = async ({ agent, cursor }) => {
+    const res = await fetch(
+      'https://search.bsky.social/search/posts?q=青空'
+    ).then((r) => r.json())
+
+    let data = await Promise.all(
+      res.map((p) =>
+        agent
+          .getPostThread({ uri: `at://${p.user.did}/${p.tid}` })
+          .then((p) => p)
+          .catch(() => null)
+      )
+    )
+    data = data.filter(
+      (v) =>
+        !!v && v.data.thread.post.embed?.$type === 'app.bsky.embed.images#view'
+    )
+
+    console.log(data)
+    const feed = data.map((v) => ({
+      post: v.data.thread.post,
+    }))
+
+    console.log({ feed })
+
+    return {
+      feed,
+    }
+  }
+
+  const timeline = useTimelineView(fetchTimeline)
+
+  return <TimelineView {...timeline} />
+}
+
+/**
+ * Home page.
+ */
+const HomePage = () => {
+  const { agent } = useRequiredSession()
+  const [tab, setTab] = useState<'home' | 'bluesky'>('home')
 
   if (!agent) {
     return (
@@ -68,7 +110,8 @@ const HomePage = () => {
               justifyContent: 'center',
               alignItems: 'center',
               cursor: 'pointer',
-              borderBottom: '1px solid transparent', // 初期状態は透明の下線を設定
+              borderBottom:
+                tab === 'home' ? '2px solid #d3d3d3' : '1px solid transparent', // 初期状態は透明の下線を設定
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.borderBottom = '3px solid #d3d3d3' // ホバー時に下線を表示
@@ -76,6 +119,7 @@ const HomePage = () => {
             onMouseOut={(e) => {
               e.currentTarget.style.borderBottom = '3px solid transparent' // ホバー解除時に下線を透明に戻す
             }}
+            onClick={() => setTab('home')}
           >
             <div
               style={{
@@ -96,7 +140,10 @@ const HomePage = () => {
               justifyContent: 'center',
               alignItems: 'center',
               cursor: 'pointer',
-              borderBottom: '1px solid transparent', // 初期状態は透明の下線を設定
+              borderBottom:
+                tab === 'bluesky'
+                  ? '2px solid #d3d3d3'
+                  : '1px solid transparent', // 初期状態は透明の下線を設定
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.borderBottom = '2px solid #d3d3d3' // ホバー時に下線を表示
@@ -104,6 +151,7 @@ const HomePage = () => {
             onMouseOut={(e) => {
               e.currentTarget.style.borderBottom = '2px solid transparent' // ホバー解除時に下線を透明に戻す
             }}
+            onClick={() => setTab('bluesky')}
           >
             <div
               style={{
@@ -146,7 +194,9 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        <TimelineView {...timeline} />
+
+        {tab === 'home' && <Timeline />}
+        {tab === 'bluesky' && <BlueskyTimeline />}
       </div>
     </MainLayout>
   )

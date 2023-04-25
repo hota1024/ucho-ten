@@ -12,8 +12,11 @@ export type TimelineFetcher = (args: {
   feed: FeedViewPost[]
 }> | void
 
+export type TimelineFilter = (post: FeedViewPost) => boolean
+
 export const useTimelineView = (
-  fetchTimeline: TimelineFetcher
+  fetchTimeline: TimelineFetcher,
+  filter: TimelineFilter = () => true
 ): TimelineViewProps => {
   const [agent] = useAgent()
   const [feeds, setFeeds] = useState<FeedViewPost[]>([])
@@ -108,7 +111,7 @@ export const useTimelineView = (
   }, [agent])
 
   return {
-    posts: feeds,
+    posts: feeds.filter(filter),
     hasMorePosts: hasMore && !loading,
     hasNewTimeline,
     onLoadMorePosts: updateFeed,
