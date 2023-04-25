@@ -81,7 +81,6 @@ export const useTimelineView = (
       setLoading(true)
       const result = await fetchTimeline({
         agent,
-        cursor,
       })
       setLoading(false)
 
