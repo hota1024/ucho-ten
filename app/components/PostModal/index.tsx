@@ -95,6 +95,14 @@ export const PostModal = (props: PostModalProps) => {
   const handleOnAddImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return
 
+    const files = e.target.files;
+    if (files) {
+      const allSizesValid = Array.from(files).every(file => file.size <= 976560);
+      if(allSizesValid === false) {
+        return
+      }
+      //console.log(allSizesValid); // true or false
+    }
     setContentImages((b) => [...b, ...(e.target.files ?? [])])
   }
 
