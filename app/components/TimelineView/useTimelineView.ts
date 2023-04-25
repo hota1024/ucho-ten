@@ -91,10 +91,14 @@ export const useTimelineView = (
         return
       }
 
+      if (!result.feed[0]) {
+        return
+      }
+
       if (result.feed[0]?.post.uri !== feeds[0]?.post.uri) {
         setHasNewTimeline(true)
       }
-    }, 10000)
+    }, 5000)
 
     return () => {
       clearInterval(id)
