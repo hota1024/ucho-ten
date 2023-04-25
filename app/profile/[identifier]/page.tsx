@@ -62,9 +62,9 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
       actor: params.identifier,
     })
 
-    if(result.data.labels?.length > 0){
-      setIsLabeled(true)
-      setWhatLabel(result.data.labels[0].val)
+    if (result && result.data && result.data.labels && result.data.labels.length > 0) {
+      setIsLabeled(true);
+      setWhatLabel(result.data.labels[0].val);
     }
 
     if(result.data.did === agent.session!.did){
