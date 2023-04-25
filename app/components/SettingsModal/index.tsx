@@ -84,6 +84,7 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
           <Switch
             initialChecked={showMuteUserInNotifications}
             onChange={(e) => setShowUserInNotifications(e.target.checked)}
+            disabled
           />
         </Row>
         <Row align="center">
@@ -93,10 +94,11 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
           <Switch
             initialChecked={showMuteUserInSearch}
             onChange={(e) => setShowMuteUserInSearch(e.target.checked)}
+            disabled
           />
         </Row>
         <Text size={20} b>
-          Mute words
+          Mute words (工事中)
         </Text>
         <Row>
           <Col
@@ -139,7 +141,7 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
             />
           </Col>
           <Spacer x={0.5} />
-          <Button auto onPress={handleMuteWordAddClick}>
+          <Button auto onPress={handleMuteWordAddClick} disabled>
             Add
           </Button>
         </Row>
