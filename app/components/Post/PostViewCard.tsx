@@ -37,6 +37,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
   const record = post.record as Record
   const embed = post.embed as unknown as AppBskyEmbedRecord.ViewRecord
   const [agent] = useAgent()
+  const [myDid, setMyDid] = useState<string | undefined>(agent?.session!.did)
   const [isMuted, setIsMuted] = useState(!!post.viewer?.mute)
   const [isLiked, setIsLiked] = useState(!!post.viewer?.like)
   const [likeCount, setLikeCount] = useState(post.likeCount ?? 0)
@@ -162,6 +163,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
   return (
     <>
       <Post
+        myDid={myDid}
         postUri={post.uri.split('/').pop()}
         record={record}
         embed={embed}

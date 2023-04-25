@@ -102,6 +102,7 @@ const ReplyLine = styled('div', {
 })
 
 interface PostProps {
+  myDid?: string
   postUri?: string
   reasonRepost?: ReasonRepost
 
@@ -141,6 +142,7 @@ interface PostProps {
 
 export const Post = (props: PostProps) => {
   const {
+    myDid,
     postUri,
     reasonRepost,
     author,
@@ -244,6 +246,7 @@ export const Post = (props: PostProps) => {
                     bordered={isFollowing}
                     color={isFollowing && followHover ? 'error' : 'primary'}
                     css={{ ml: '$10', width: `5ch` }}
+                    disabled={myDid === author.did}
                   >
                     {isFollowing
                       ? followHover
