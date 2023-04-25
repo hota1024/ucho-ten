@@ -185,6 +185,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
         onRepostClick={handleRepostClick}
         onFollowClick={handleFollowClick}
         onReplyClick={handleReplyClick}
+        onQuoteRepostClick={handleReplyClick}
       />
       <PostModal
         open={replyDialog}

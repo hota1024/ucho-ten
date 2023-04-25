@@ -133,6 +133,7 @@ interface PostProps {
   isReposted?: boolean
   onLikeClick?: () => void
   onRepostClick?: () => void
+  onQuoteRepostClick?: () => void
 
   isFollowing?: boolean
   onFollowClick?: () => void
@@ -167,6 +168,7 @@ export const Post = (props: PostProps) => {
   } = props
   const onLikeClick = props.onLikeClick ?? (() => {})
   const onRepostClick = props.onRepostClick ?? (() => {})
+  const onQuoteRepostClick = props.onQuoteRepostClick ?? (() => {})
   const onFollowClick = props.onFollowClick ?? (() => {})
 
   const [agent] = useAgent()
@@ -416,14 +418,22 @@ export const Post = (props: PostProps) => {
                     {showRepostCount && repostCount}
                   </PostAction>
                 </Dropdown.Trigger>
-                <Dropdown.Menu onAction={(key) => key === 'repost' && onRepostClick()}>
+                <Dropdown.Menu
+                    onAction={(key) => {
+                      if (key === 'repost') {
+                        onRepostClick()
+                      } else if (key === 'quoteRepost') {
+                        onQuoteRepostClick()
+                      }
+                    }}
+                >
                   <Dropdown.Item key='repost'>
                     {isReposted === false && <Text>Repost</Text>}
                     {isReposted === true && <Text color={'error'}>UnRepost</Text>}
                   </Dropdown.Item>
-                  <Dropdown.Item key='ressonRepost'>
+                  <Dropdown.Item key='quoteRepost'>
                     <Text>
-                      Reason Repost
+                      Quote Repost
                     </Text>
                   </Dropdown.Item>
                 </Dropdown.Menu>
