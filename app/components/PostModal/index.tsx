@@ -1,7 +1,7 @@
 import { Record } from '@atproto/api/dist/client/types/app/bsky/feed/post'
 import { useAgent } from '@/atoms/agent'
 import { PostRecordPost } from '@/types/posts'
-import { RichText } from '@atproto/api'
+import { BlobRef, RichText } from '@atproto/api'
 import { PostView } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 import {
   Button,
@@ -51,21 +51,35 @@ export const PostModal = (props: PostModalProps) => {
 
     setLoading(true)
 
+    const blobs: BlobRef[] = []
+    for (const file of contentImage) {
+      const binary = new Uint8Array(await file.arrayBuffer())
+      const result = await agent.uploadBlob(binary, {
+        encoding: file.type,
+      })
+
+      blobs.push(result.data.blob)
+    }
+
+    const images = blobs.map((blob, key) => ({
+      image: blob,
+      alt: `image${key + 1}`,
+    }))
+
     const rt = new RichText({ text: contentText })
     await rt.detectFacets(agent)
 
     await onSubmit({
       text: rt.text,
       facets: rt.facets,
+      embed:
+        blobs.length > 0
+          ? {
+              $type: 'app.bsky.embed.images',
+              images,
+            }
+          : undefined,
     })
-    //contentImage.lengthが0枚または5枚以上のときは画像を投稿しない
-    // if (contentImage.length > 0 && contentImage.length < 5) {
-    //     const formData = new FormData();
-    //     contentImage.forEach((image) => {
-    //         formData.append("images", image);
-    //     });
-    //     await agent.post(formData);
-    // }
 
     setLoading(false)
     onClose()
@@ -78,9 +92,10 @@ export const PostModal = (props: PostModalProps) => {
     }
   }
 
-  const handleOnAddImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOnAddImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return
-    setContentImages([...contentImage, ...e.target.files])
+
+    setContentImages((b) => [...b, ...(e.target.files ?? [])])
   }
 
   const handleOnRemoveImage = (index: number) => {
