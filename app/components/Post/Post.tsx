@@ -353,6 +353,8 @@ export const Post = (props: PostProps) => {
             ))}
           </div>
         )}
+
+
         {images.length === 2 && (
           <div
             style={{
@@ -393,92 +395,36 @@ export const Post = (props: PostProps) => {
             </div>
           </div>
         )}
-
         {images.length === 3 && (
-          <div
-            style={{
-              display: 'flex',
-              width: '100%',
-              maxHeight: '500px',
-              borderRadius: '10px',
-              overflow: 'hidden',
-              gap: '0px 2px',
-            }}
-          >
-            <div
-              style={{
-                width: 'calc(100% + 2px)',
-                height: '100%',
-                marginBottom: '-10px',
-              }}
-            >
-              <Zoom>
-                <img
-                  src={images[0].fullsize}
-                  alt="preview"
-                  style={{ width: `100%`, height: '100%' }}
-                />
-              </Zoom>
+          <div style={{width:'100%', height:'100%', maxHeight:'400px',display:'flex',flexWrap:'wrap', overflow :'hidden', borderRadius:'10px'}}>
+            <div style={{height:'100%', width : 'calc(50% - 4px)', marginRight : '4px'}}>
+              <img src={images[0].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
             </div>
-            <div style={{ width: '50%', height: '100%' }}>
-              <Zoom>
-                <img
-                  src={images[1].fullsize}
-                  alt="preview"
-                  style={{ width: `100%`, height: '50%', marginBottom: '-4px' }}
-                />
-              </Zoom>
-              <Zoom>
-                <img
-                  src={images[2].fullsize}
-                  alt="preview"
-                  style={{
-                    width: `100%`,
-                    height: '50%',
-                    marginBottom: '-10px',
-                  }}
-                />
-              </Zoom>
+            <div style={{height:'100%', width : '50%'}}>
+              <div style={{height:'50%', width : '100%' ,marginBottom:'4px'}}>
+                <img src={images[1].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
+              </div>
+              <div style={{height:'50%', width : '100%', marginTop:'4px'}}>
+                <img src={images[2].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
+              </div>
             </div>
           </div>
         )}
-
         {images.length === 4 && (
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              width: '100%',
-              maxHeight: '500px',
-              borderRadius: '10px',
-              overflow: 'hidden',
-              gap: '7px 3px',
-            }}
-          >
-            {images.slice(0, 4).map(
-              (
-                image,
-                key // imagesをスライスしてmap関数に渡す
-              ) => (
-                <div
-                  key={key}
-                  style={{ width: `calc(50% - 1.5px)`, height: `calc(100%)` }}
-                >
-                  <Zoom>
-                    <img
-                      src={images[key].fullsize}
-                      alt="preview"
-                      style={{
-                        width: `100%`,
-                        height: '100%',
-                        marginBottom: '-10px',
-                      }}
-                    />
-                  </Zoom>
-                </div>
-              )
-            )}
-          </div>
+            <div style={{width:'100%', height:'100%', maxHeight:'400px',display:'flex',flexWrap:'wrap', overflow :'hidden', borderRadius:'10px'}}>
+              <div style={{width:'calc(50% - 2px)', height:'50%', marginRight:'2px', marginBottom:'2px'}}>
+                <img src={images[0].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
+              </div>
+              <div style={{width:'calc(50% - 2px)', height:'50%', marginLeft:'2px', marginBottom:'2px'}}>
+                <img src={images[1].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
+              </div>
+              <div style={{width:'calc(50% - 2px)', height:'50%', marginRight:'2px', marginTop:'2px'}}>
+                <img src={images[2].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
+              </div>
+              <div style={{width:'calc(50% - 2px)', height:'50%', marginLeft:'2px', marginTop:'2px'}}>
+                <img src={images[3].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
+              </div>
+            </div>
         )}
 
         {!hideActions && (
