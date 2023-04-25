@@ -12,6 +12,8 @@ import {
   Text,
   Textarea,
   Image,
+  Row,
+  Col,
 } from '@nextui-org/react'
 import { useState } from 'react'
 import { Post } from '../Post/Post'
@@ -173,45 +175,54 @@ export const PostModal = (props: PostModalProps) => {
             ))}
           </div>
         )}
-        <label htmlFor={inputId}>
-          <Button disabled={loading || isImageMaxLimited} as="span" auto>
-            <FontAwesomeIcon icon={faImage} size="lg" />
-          </Button>
-          <input
-            hidden
-            id={inputId}
-            type="file"
-            multiple
-            accept="image/*,.png,.jpg,.jpeg"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              handleOnAddImage(e)
-            }
-            disabled={isImageMaxLimited}
-          />
-        </label>
+        <Row justify="space-between">
+          <label htmlFor={inputId}>
+            <Button
+              disabled={loading || isImageMaxLimited}
+              as="span"
+              auto
+              light
+              icon={<FontAwesomeIcon icon={faImage} size="lg" />}
+            />
 
-        <Button auto flat onPress={onClose} disabled={loading}>
-          Cancel
-        </Button>
-        <Button
-          auto
-          onClick={handlePostClick}
-          disabled={
-            loading ||
-            (!isPostable && isImageMinLimited) ||
-            contentImage.length >= 5
-          }
-        >
-          {loading ? (
-            <>
-              <Loading size="xs" />
-              <Spacer x={0.5} />
-              Submitting...
-            </>
-          ) : (
-            submitText
-          )}
-        </Button>
+            <input
+              hidden
+              id={inputId}
+              type="file"
+              multiple
+              accept="image/*,.png,.jpg,.jpeg"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                handleOnAddImage(e)
+              }
+              disabled={isImageMaxLimited}
+            />
+          </label>
+
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Button auto light onPress={onClose} disabled={loading}>
+              Cancel
+            </Button>
+            <Button
+              auto
+              onClick={handlePostClick}
+              disabled={
+                loading ||
+                (!isPostable && isImageMinLimited) ||
+                contentImage.length >= 5
+              }
+            >
+              {loading ? (
+                <>
+                  <Loading size="xs" />
+                  <Spacer x={0.5} />
+                  Submitting...
+                </>
+              ) : (
+                submitText
+              )}
+            </Button>
+          </div>
+        </Row>
       </Modal.Footer>
     </Modal>
   )
