@@ -51,7 +51,8 @@ export const LoginForm = (props: LoginFormProps) => {
         <Input
           {...bindIdentifier}
           name="handle"
-          placeholder="ハンドル"
+          placeholder="Handle or your domain"
+          aria-label="handle"
           contentLeft={<FontAwesomeIcon icon={faAt} />}
           required
           disabled={loading}
@@ -60,7 +61,8 @@ export const LoginForm = (props: LoginFormProps) => {
         <Input.Password
           {...bindPassword}
           name="password"
-          placeholder="パスワード"
+          placeholder="Password"
+          aria-label="password"
           contentLeft={<FontAwesomeIcon icon={faLock} />}
           required
           disabled={loading}
