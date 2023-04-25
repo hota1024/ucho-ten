@@ -48,6 +48,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
   const [repostCount, setRepostCount] = useState(post.repostCount ?? 0)
   const [followLoading, setFollowLoading] = useState(false)
   const [replyDialog, setReplyDialog] = useState(false)
+  const [repostDialog, setRepostDialog] = useState(false)
   const [showPostNumbers] = useShowPostNumbers()
 
   if (
@@ -142,6 +143,10 @@ export const PostViewCard = (props: PostViewCardProps) => {
     setReplyDialog(true)
   }
 
+  const handleQuoteRepostClick = () => {
+    setRepostDialog(true)
+  }
+
   const onReplySubmit = async (postRecord: PostRecordPost) => {
     if (!agent) {
       return
@@ -155,6 +160,23 @@ export const PostViewCard = (props: PostViewCardProps) => {
     postRecord.reply = {
       root: record.reply?.root ?? parent,
       parent,
+    }
+
+    await agent.post(postRecord)
+  }
+
+  const onRepostSubmit = async (postRecord: PostRecordPost) => {
+    if (!agent) {
+      return
+    }
+
+    if (!postRecord.embed) {
+      postRecord.embed = {} as unknown as AppBskyEmbedRecord.Main
+    }
+
+    postRecord.embed = {
+      $type: 'app.bsky.embed.record',
+      record: post,
     }
 
     await agent.post(postRecord)
@@ -185,13 +207,23 @@ export const PostViewCard = (props: PostViewCardProps) => {
         onRepostClick={handleRepostClick}
         onFollowClick={handleFollowClick}
         onReplyClick={handleReplyClick}
-        onQuoteRepostClick={handleReplyClick}
+        onQuoteRepostClick={handleQuoteRepostClick}
       />
       <PostModal
         open={replyDialog}
         onClose={() => setReplyDialog(false)}
         onSubmit={onReplySubmit}
         parentPostView={post}
+        title="Reply"
+        submitText="Reply"
+      />
+      <PostModal
+        open={repostDialog}
+        onClose={() => setRepostDialog(false)}
+        onSubmit={onRepostSubmit}
+        parentPostView={post}
+        title="Quote Repost"
+        submitText="Quote Repost"
       />
     </>
   )

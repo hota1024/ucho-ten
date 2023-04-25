@@ -25,10 +25,12 @@ export interface PostModalProps {
   onClose: () => void
   onSubmit: (record: PostRecordPost) => void
   parentPostView?: PostView
+  title: string
+  submitText: string
 }
 
 export const PostModal = (props: PostModalProps) => {
-  const { open, onClose, onSubmit, parentPostView } = props
+  const { title, submitText, open, onClose, onSubmit, parentPostView } = props
   const [agent] = useAgent()
   const [contentText, setContentText] = useState<string>('')
   const [contentImage, setContentImages] = useState<File[]>([])
@@ -94,7 +96,8 @@ export const PostModal = (props: PostModalProps) => {
     >
       <Modal.Header>
         <Text size="$lg" b>
-          {parentPostView ? '返信する' : '投稿する'}
+          {/* {parentPostView ? '返信する' : '投稿する'} */}
+          {title}
         </Text>
       </Modal.Header>
       {parentPostView && (
@@ -203,10 +206,10 @@ export const PostModal = (props: PostModalProps) => {
             <>
               <Loading size="xs" />
               <Spacer x={0.5} />
-              投稿中...
+              Submitting...
             </>
           ) : (
-            'Post'
+            submitText
           )}
         </Button>
       </Modal.Footer>
