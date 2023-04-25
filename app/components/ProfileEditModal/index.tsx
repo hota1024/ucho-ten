@@ -1,6 +1,8 @@
 import { useAgent } from '@/atoms/agent'
 import { AppBskyActorProfile } from '@atproto/api'
 import { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
+import { faUpload } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   Avatar,
   Button,
@@ -62,7 +64,6 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
       return
     }
 
-    console.log(displayName, description)
     setSaving(true)
     await agent.upsertProfile((old) => {
       const profile: AppBskyActorProfile.Record = {
@@ -75,6 +76,7 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
     })
     setSaving(false)
     onSave()
+    onClose()
   }
 
   useEffect(() => {
@@ -111,7 +113,7 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
             )}
             <Row align="center">
               {profile.avatar ? (
-                <Avatar src={profile.avatar} squared size="xl" />
+                <Avatar src={profile.avatar} squared size="xl" pointer />
               ) : (
                 <DummyAvatar></DummyAvatar>
               )}
