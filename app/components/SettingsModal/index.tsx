@@ -88,7 +88,7 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
         </Row>
         <Row align="center">
           <Col>
-            <Text>Show mute users in notification</Text>
+            <Text>Show mute users in search</Text>
           </Col>
           <Switch
             initialChecked={showMuteUserInSearch}
