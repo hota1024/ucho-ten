@@ -62,6 +62,10 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
     }
   }
 
+  const removeMuteWord = (word: string) => {
+    setMuteWords(muteWords.filter((w) => w !== word))
+  }
+
   return (
     <Modal open={open} onClose={onClose}>
       <Modal.Header>
@@ -115,6 +119,7 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
                         color="error"
                         flat
                         icon={<FontAwesomeIcon icon={faTrash} />}
+                        onPress={() => removeMuteWord(word)}
                       />
                     </Row>
                   </Card.Header>
