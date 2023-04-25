@@ -24,7 +24,6 @@ import reactStringReplace from 'react-string-replace'
 import Link from 'next/link'
 import Zoom from 'react-medium-image-zoom'
 
-
 /**
  * Home page.
  */
@@ -39,7 +38,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
   const [whatLabel, setWhatLabel] = useState('')
   const [isMe, setIsMe] = useState(false)
 
-  const fetchTimeline: TimelineFetcher = ({ agent }) => {
+  const fetchTimeline: TimelineFetcher = ({ agent, cursor }) => {
     if (!agent) {
       return
     }
@@ -47,6 +46,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
     return agent
       .getAuthorFeed({
         actor: params.identifier,
+        cursor,
       })
       .then((result) => result.data)
   }
@@ -62,12 +62,17 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
       actor: params.identifier,
     })
 
-    if (result && result.data && result.data.labels && result.data.labels.length > 0) {
-      setIsLabeled(true);
-      setWhatLabel(result.data.labels[0].val);
+    if (
+      result &&
+      result.data &&
+      result.data.labels &&
+      result.data.labels.length > 0
+    ) {
+      setIsLabeled(true)
+      setWhatLabel(result.data.labels[0].val)
     }
 
-    if(result.data.did === agent.session!.did){
+    if (result.data.did === agent.session!.did) {
       setIsMe(true)
     }
     setProfile(result.data)
@@ -130,11 +135,11 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
       <p key={i}>
         {reactStringReplace(
           line,
-            /(@[a-zA-Z0-9-.]+|https?:\/\/[a-zA-Z0-9-./?=_%&:]+)/g,
+          /(@[a-zA-Z0-9-.]+|https?:\/\/[a-zA-Z0-9-./?=_%&:]+)/g,
           (match, j) => {
             if (match.startsWith('@')) {
               let domain = match.substring(1) // remove "@" symbol from match
-              if (domain.endsWith('.')){
+              if (domain.endsWith('.')) {
                 domain = domain.slice(0, -1)
               }
               return (
@@ -144,16 +149,11 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
               )
             } else if (match.startsWith('http')) {
               let url = match
-              if(url.endsWith('.')){
+              if (url.endsWith('.')) {
                 url = url.slice(0, -1)
               }
               return (
-                <a
-                  key={j}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a key={j} href={url} target="_blank" rel="noopener noreferrer">
                   {match}
                 </a>
               )
@@ -184,18 +184,24 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
           profile ? (
             <Card css={{ my: '$10' }} variant="bordered">
               {!profile.banner && (
-                  <Card.Image src={'/images/profileDefaultImage/defaultHeaderImage.png'}></Card.Image>
+                <Card.Image
+                  src={'/images/profileDefaultImage/defaultHeaderImage.png'}
+                ></Card.Image>
               )}
               {profile.banner && (
-                  <Zoom>
-                    <Card.Image src={profile.banner} showSkeleton />
-                  </Zoom>
+                <Zoom>
+                  <Card.Image src={profile.banner} showSkeleton />
+                </Zoom>
               )}
               <Card.Header css={{ px: 0, flexFlow: 'column' }}>
                 <Row align="center" justify="space-between">
                   <Col>
                     <User
-                      src={profile.avatar ? profile.avatar : '/images/profileDefaultIcon/bosatsu.png'}
+                      src={
+                        profile.avatar
+                          ? profile.avatar
+                          : '/images/profileDefaultIcon/bosatsu.png'
+                      }
                       squared
                       size="xl"
                       name={profile.displayName}
@@ -205,16 +211,20 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                   <Button
                     rounded
                     bordered={isFollowing}
-                    color={isMe ? 'gradient' :
-                            isFollowing && followHover ? 'error' :
-                            'primary'}
+                    color={
+                      isMe
+                        ? 'gradient'
+                        : isFollowing && followHover
+                        ? 'error'
+                        : 'primary'
+                    }
                     onMouseOver={() => setFollowHover(true)}
                     onMouseLeave={() => setFollowHover(false)}
                     onPress={isMe ? handleEditProfileClick : handleFollowClick}
                     style={{ marginRight: '12px' }}
                   >
                     {!isMe
-                      ?isFollowing
+                      ? isFollowing
                         ? followHover
                           ? 'UnFollow'
                           : 'Following'

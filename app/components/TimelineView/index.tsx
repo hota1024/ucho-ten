@@ -26,7 +26,7 @@ export type TimelineViewProps = {
   hasNewTimeline?: boolean
   hasMorePosts?: boolean
   onLoadNewTimeline?: () => void
-  onLoadMorePosts: () => void
+  onLoadMorePosts: (turn: number, loadTop?: boolean) => void
   posts: FeedViewPost[]
   containerRef?: React.RefObject<HTMLDivElement>
 
