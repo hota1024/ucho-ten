@@ -40,8 +40,6 @@ export const useTimelineView = (
         return
       }
 
-      console.log({ loadTop }, 'current', cursor, 'new', result.cursor)
-
       // if (result.feed[0]?.post.uri === feeds[0]?.post.uri) {
       //   return
       // }
