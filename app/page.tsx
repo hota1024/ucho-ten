@@ -36,7 +36,7 @@ const BlueskyTimeline = () => {
     ).then((r) => r.json())
 
     let data = await Promise.all(
-      res.map((p) =>
+      res.map((p:any) =>
         agent
           .getPostThread({ uri: `at://${p.user.did}/${p.tid}` })
           .then((p) => p)
