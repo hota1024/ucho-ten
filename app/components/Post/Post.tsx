@@ -25,7 +25,7 @@ import {
   Spacer,
   Grid,
   Image,
-  Text,
+  Text, Dropdown,
 } from '@nextui-org/react'
 import Link from 'next/link'
 import { useState, useMemo, useCallback, useEffect } from 'react'
@@ -176,6 +176,11 @@ export const Post = (props: PostProps) => {
 
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
+
+  const handleRepostMarkClick = () => {
+
+    //onRepostClick()
+  }
 
   const updateElapsed = useCallback(() => {
     if (!time) return 0
@@ -398,16 +403,31 @@ export const Post = (props: PostProps) => {
               </PostAction>
             </Col>
             <Col>
-              <PostAction>
-                <FontAwesomeIcon
-                  onClick={onRepostClick}
-                  icon={faRetweetSolid}
-                  //color="#787F85"
-                  color={isReposted ? '#36BA7A' : '#787F85'}
-                  style={{cursor: 'pointer'}}
-                />
-                {showRepostCount && repostCount}
-              </PostAction>
+              <Dropdown placement="bottom-left">
+                <Dropdown.Trigger>
+                  <PostAction>
+                    <FontAwesomeIcon
+                        //onClick={onRepostClick}
+                        icon={faRetweetSolid}
+                        //color="#787F85"
+                        color={isReposted ? '#36BA7A' : '#787F85'}
+                        style={{cursor: 'pointer'}}
+                    />
+                    {showRepostCount && repostCount}
+                  </PostAction>
+                </Dropdown.Trigger>
+                <Dropdown.Menu onAction={(key) => key === 'repost' && onRepostClick()}>
+                  <Dropdown.Item key='repost'>
+                    {isReposted === false && <Text>Repost</Text>}
+                    {isReposted === true && <Text color={'error'}>UnRepost</Text>}
+                  </Dropdown.Item>
+                  <Dropdown.Item key='ressonRepost'>
+                    <Text>
+                      Reason Repost
+                    </Text>
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             </Col>
             <Col>
               <PostAction>
