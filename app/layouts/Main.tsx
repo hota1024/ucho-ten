@@ -16,6 +16,7 @@ import {
   styled,
   Text,
   User,
+  Image,
 } from '@nextui-org/react'
 import { PostButton } from '@/components/PostButton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -45,7 +46,7 @@ const LeftActionsContainer = styled('div', {
 })
 
 const UchoTen = styled('div', {
-  marginTop: '$8',
+  marginTop: '$7',
   fontSize: '2rem',
   fontWeight: 'bold',
   textAlign: 'center',
@@ -147,7 +148,9 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
         <div style={{ display: 'none' }}>
           <Konami action={handleKonami}></Konami>
         </div>
-        <UchoTen>Ucho-ten</UchoTen>
+        <UchoTen>
+          <Image src={'/images/Logo/ucho-ten.svg'} alt='Icon' height={'70%'} width={'70%'} ></Image>
+        </UchoTen>
         <Button
           as={Link}
           href="/"
@@ -194,9 +197,10 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
                 as="button"
                 size="lg"
                 squared
-                src={profile.avatar}
+                src={profile.avatar ? profile.avatar : '/images/profileDefaultIcon/bosatsu.png'}
                 name={profile.displayName ?? profile.handle}
                 description={`@${profile.handle}`}
+                style={{backgroundColor:"rgba(255,255,255,0.3)",backdropFilter: 'blur(30px)'}}
               ></User>
             </Dropdown.Trigger>
             <Dropdown.Menu
