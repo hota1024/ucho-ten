@@ -54,7 +54,6 @@ export const PostViewCard = (props: PostViewCardProps) => {
   if (
     post.cid === 'bafyreievvr466th5wonvdoxazkbly6ziide2s7hjiu35poxeicfnh6vlfa'
   ) {
-    // console.log('render time', { post })
   }
 
   const handleLikeClick = useCallback(async () => {

@@ -23,6 +23,7 @@ import { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/act
 import reactStringReplace from 'react-string-replace'
 import Link from 'next/link'
 import Zoom from 'react-medium-image-zoom'
+import { ProfileEditModal } from '@/components/ProfileEditModal'
 
 /**
  * Home page.
@@ -38,6 +39,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
   const [whatLabel, setWhatLabel] = useState('')
   const [isMe, setIsMe] = useState(false)
   const [show, setShow] = useState(true)
+  const [profileEditModal, setProfileEditModal] = useState(false)
 
   const fetchTimeline: TimelineFetcher = ({ agent, cursor }) => {
     if (!agent) {
@@ -128,15 +130,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
   }
 
   const handleEditProfileClick = async () => {
-    if (!agent) {
-      return
-    }
-
-    const profile = await agent.getProfile({
-      actor: params.identifier,
-    })
-
-    console.log('工事中')
+    setProfileEditModal(true)
   }
 
   const newlineCodeToBr = (text: string) => {
@@ -214,6 +208,11 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
 
   return (
     <MainLayout>
+      <ProfileEditModal
+        open={profileEditModal}
+        onClose={() => setProfileEditModal(false)}
+        onSave={fetchProfile}
+      />
       <TimelineView
         {...timeline}
         header={

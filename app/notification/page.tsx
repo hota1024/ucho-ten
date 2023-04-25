@@ -18,7 +18,6 @@ const NotificationPage = () => {
     }
 
     const result = await agent.listNotifications()
-    console.log({ result })
   }, [agent])
 
   useEffect(() => {

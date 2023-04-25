@@ -9,10 +9,10 @@ import { Notification } from '@atproto/api/dist/client/types/app/bsky/notificati
 import { Card, Loading, Text } from '@nextui-org/react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faHeart} from "@fortawesome/free-solid-svg-icons";
-import {faArrowsTurnRight} from "@fortawesome/free-solid-svg-icons";
-import {faPersonCirclePlus} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHeart } from '@fortawesome/free-solid-svg-icons'
+import { faArrowsTurnRight } from '@fortawesome/free-solid-svg-icons'
+import { faPersonCirclePlus } from '@fortawesome/free-solid-svg-icons'
 
 /**
  * NotificationCard props.
@@ -51,7 +51,6 @@ export const NotificationCard: React.VFC<NotificationCardProps> = (props) => {
 
   useEffect(() => {
     fetchNotificationDetails()
-    console.log({ item })
   }, [agent, item])
 
   return (
@@ -63,7 +62,8 @@ export const NotificationCard: React.VFC<NotificationCardProps> = (props) => {
               <Link href={`/profile/${item.author.handle}`}>
                 {item.author.displayName ?? item.author.handle}
               </Link>{' '}
-              liked your post <FontAwesomeIcon icon={faHeart} color={'#F31260'}/>
+              liked your post{' '}
+              <FontAwesomeIcon icon={faHeart} color={'#F31260'} />
             </Text>
           </Card.Header>
           <Card.Divider />
@@ -87,7 +87,8 @@ export const NotificationCard: React.VFC<NotificationCardProps> = (props) => {
               <Link href={`/profile/${item.author.handle}`}>
                 {item.author.displayName ?? item.author.handle}
               </Link>{' '}
-              {item.reason === 'reply' && 'replied to your post  '}<FontAwesomeIcon icon={faArrowsTurnRight} color={'orange'}/>
+              {item.reason === 'reply' && 'replied to your post  '}
+              <FontAwesomeIcon icon={faArrowsTurnRight} color={'orange'} />
             </Text>
           </Card.Header>
           <Card.Divider />
@@ -111,7 +112,12 @@ export const NotificationCard: React.VFC<NotificationCardProps> = (props) => {
               <Link href={`/profile/${item.author.handle}`}>
                 {item.author.displayName ?? item.author.handle}
               </Link>{' '}
-              followed you <FontAwesomeIcon icon={faPersonCirclePlus} color={'green'} size={"lg"}/>
+              followed you{' '}
+              <FontAwesomeIcon
+                icon={faPersonCirclePlus}
+                color={'green'}
+                size={'lg'}
+              />
             </Text>
           </Card.Header>
         </>
