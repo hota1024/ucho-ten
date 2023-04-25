@@ -111,13 +111,19 @@ const HomePage = () => {
               alignItems: 'center',
               cursor: 'pointer',
               borderBottom:
-                tab === 'home' ? '2px solid #d3d3d3' : '1px solid transparent', // 初期状態は透明の下線を設定
+                tab === 'home' ? '3px solid #d3d3d3' : '1px solid transparent', // 初期状態は透明の下線を設定
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.borderBottom = '3px solid #d3d3d3' // ホバー時に下線を表示
+                if(tab === 'home') {
+                    return
+                }
+              e.currentTarget.style.borderBottom = '2px solid #d3d3d3' // ホバー時に下線を表示
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.borderBottom = '3px solid transparent' // ホバー解除時に下線を透明に戻す
+                if(tab === 'home') {
+                    return
+                }
+              e.currentTarget.style.borderBottom = '2px solid transparent' // ホバー解除時に下線を透明に戻す
             }}
             onClick={() => setTab('home')}
           >
@@ -142,13 +148,19 @@ const HomePage = () => {
               cursor: 'pointer',
               borderBottom:
                 tab === 'bluesky'
-                  ? '2px solid #d3d3d3'
+                  ? '3px solid #d3d3d3'
                   : '1px solid transparent', // 初期状態は透明の下線を設定
             }}
             onMouseOver={(e) => {
+                if(tab === 'bluesky') {
+                    return
+                }
               e.currentTarget.style.borderBottom = '2px solid #d3d3d3' // ホバー時に下線を表示
             }}
             onMouseOut={(e) => {
+                if(tab === 'bluesky') {
+                    return
+                }
               e.currentTarget.style.borderBottom = '2px solid transparent' // ホバー解除時に下線を透明に戻す
             }}
             onClick={() => setTab('bluesky')}
