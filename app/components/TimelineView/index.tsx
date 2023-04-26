@@ -3,6 +3,7 @@ import { Button, Loading, Row, Spacer, styled, Text } from '@nextui-org/react'
 import { ReactNode } from 'react'
 import InfiniteScroll from 'react-infinite-scroller'
 import { FeedView } from '../FeedView'
+import {useMuteWords} from "@/atoms/settings";
 
 const TimelineContainer = styled('div', {
   maxHeight: '100dvh',
@@ -46,6 +47,9 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
     header,
   } = props
   const onLoadNewTimeline = props.onLoadNewTimeline ?? (() => {})
+  const [muteWords, setMuteWords] = useMuteWords()
+
+
 
   return (
     <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
@@ -84,11 +88,19 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
           useWindow={false}
         >
           {header}
-          {posts.map((feed, key) => (
-            <Row key={`${feed.post.cid}${key}`} css={{ my: '$8' }}>
-              <FeedView feed={feed} />
-            </Row>
-          ))}
+          <>
+              {posts.map((feed, key) => {
+                  if (muteWords.some(word => feed.post.record?.text.includes(word))) {
+                      return null; // マッチする要素がある場合は何も返さず、非表示にする
+                  }
+                  return (
+                      <Row key={`${feed.post.cid}${key}`} css={{ my: '$8' }}>
+                          <FeedView feed={feed} />
+                      </Row>
+                  )
+              })}
+          </>
+
           <Row css={{ my: 64 }} justify="center">
             <Text color="rgba(0, 0, 0, 0.5)" b>
               end of feed
