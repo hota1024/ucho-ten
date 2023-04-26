@@ -35,3 +35,13 @@ Ucho-ten では以下の技術を使用しています。
 - Next.js
 - NextUI
 - Vercel
+
+## Develop
+
+```shell
+yarn install
+yarn next
+```
+
+動作確認にはBlueSkyのアカウントが利用可能です。セキュリティのためAppPasswordの発行をおすすめします。
+
