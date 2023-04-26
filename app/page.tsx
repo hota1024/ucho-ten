@@ -202,7 +202,7 @@ const HomePage = () => {
                 width: '100%',
               }}
             >
-              {`what's hot(工事中)`}
+              {`what's hot(soon)`}
             </div>
           </div>
         </div>
