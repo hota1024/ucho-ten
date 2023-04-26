@@ -31,9 +31,30 @@ const Timeline = () => {
 
 const BlueskyTimeline = () => {
   const fetchTimeline: TimelineFetcher = async ({ agent, cursor }) => {
-    const res = await fetch(
+    const res1 = await fetch(
       'https://search.bsky.social/search/posts?q=青空'
     ).then((r) => r.json())
+
+    const res2 = await fetch(
+      'https://search.bsky.social/search/posts?q=bluesky'
+    ).then((r) => r.json())
+
+    const res3 = await fetch(
+        'https://search.bsky.social/search/posts?q=sky'
+    ).then((r) => r.json())
+    let res = [...res1, ...res2, ...res3]
+    //tidが被ったものを削除
+    res = res.filter((x:any, i:number, self:any) => self.findIndex((y:any) => y.tid === x.tid) === i)
+
+    //resの中身のpost.createdAtが新しい順に並び替え
+    res.sort((a, b) => {
+        if (a.post.createdAt > b.post.createdAt) {
+            return -1
+        } else {
+            return 1
+        }
+    })
+    console.log(res)
 
     let data = await Promise.all(
       res.map((p:any) =>
