@@ -38,7 +38,7 @@ Ucho-ten では以下の技術を使用しています。
 
 ## 🙏 Spacial Thanks (敬称略,順不同)
 
-- [ATProtocol API referenced by from TOKIMEKI Bluesky](https://tokimekibluesky.vercel.app/)
+- [ATProtocol API referenced from TOKIMEKI Bluesky](https://tokimekibluesky.vercel.app/)
 - [ほりべあ @holybea.bsky.social](https://staging.bsky.app/profile/holybea.bsky.social)
 - [Beta icon designed by ふにゃ](https://twitter.com/funya_)
 - [UX design adviced by pengu](https://twitter.com/_P3NGU)
