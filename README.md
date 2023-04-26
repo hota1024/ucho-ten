@@ -33,3 +33,10 @@ Ucho-ten(有頂天) は「数字」の表示を抑えた Bluesky クライアン
 - Next.js
 - NextUI
 - Vercel
+
+## 🙏 Spacial Thanks (敬称略,順不同)
+
+- [ATProtocol API referenced by from TOKIMEKI Bluesky](https://tokimekibluesky.vercel.app/)
+- [ほりべあ @holybea.bsky.social](https://staging.bsky.app/profile/holybea.bsky.social)
+- [Beta icon designed by ふにゃ](https://twitter.com/funya_)
+- [UX design adviced by pengu](https://twitter.com/_P3NGU)
