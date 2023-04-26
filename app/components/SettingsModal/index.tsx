@@ -141,7 +141,7 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
             />
           </Col>
           <Spacer x={0.5} />
-          <Button auto onPress={handleMuteWordAddClick} disabled>
+          <Button auto onPress={handleMuteWordAddClick}>
             Add
           </Button>
         </Row>
