@@ -11,6 +11,12 @@ export default function RootLayout({
       <head>
         <title>Home | Ucho-ten</title>
         <link rel="shortcut icon" href="favicon.svg" type="image/svg+xml" />
+        <meta property='og:url' content='https://ucho-ten.net'></meta>
+        <meta property='og:type' content='website'></meta>
+        <meta property='og:title' content='Ucho-ten Bluesky Client'></meta>
+        <meta property='og:description' content='test'></meta>
+        <meta property='og:site_name' content='Ucho-ten'></meta>
+        <meta property='og:image' content='/images/Logo/Ucho-ten.svg'></meta>
       </head>
       <body
         style={{
