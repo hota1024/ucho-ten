@@ -67,6 +67,9 @@ export const LoginForm = (props: LoginFormProps) => {
           required
           disabled={loading}
         />
+        <Text css={{ mt: '$5' }}>
+          We recommend using the app password. <a href="https://github.com/bluesky-social/atproto-ecosystem/blob/main/app-passwords.md">Read More</a>.
+        </Text>
       </Card.Body>
 
       <Card.Footer>
