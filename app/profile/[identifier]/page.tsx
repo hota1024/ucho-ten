@@ -235,7 +235,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                       src={
                         profile.avatar
                           ? profile.avatar
-                          : '/images/profileDefaultIcon/bosatsu.png'
+                          : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'
                       }
                       squared
                       size="xl"

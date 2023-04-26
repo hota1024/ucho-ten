@@ -240,7 +240,7 @@ export const Post = (props: PostProps) => {
                     src={
                       author.avatar
                         ? author.avatar
-                        : '/images/profileDefaultIcon/bosatsu.png'
+                        : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'
                     }
                     size="lg"
                     name={author.displayName}
@@ -277,7 +277,7 @@ export const Post = (props: PostProps) => {
               src={
                 author.avatar
                   ? author.avatar
-                  : '/images/profileDefaultIcon/bosatsu.png'
+                  : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'
               }
               size={isEmbed ? 'md' : 'lg'}
             />
