@@ -45,6 +45,8 @@ export const PostButton = (props: PostButtonProps) => {
         open={dialog}
         onClose={() => setDialog(false)}
         onSubmit={post}
+        title="Post"
+        submitText="Post"
       />
     </>
   )

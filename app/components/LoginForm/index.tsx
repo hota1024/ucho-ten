@@ -27,9 +27,13 @@ export const LoginForm = (props: LoginFormProps) => {
   const { value: password, bindings: bindPassword } = useInput('')
 
   const handleSubmit = (event: FormEvent) => {
-    event.preventDefault()
-    onSubmit({ identifier, password })
-  }
+    event.preventDefault();
+    if (/^[a-zA-Z0-9-]+$/.test(identifier)) {
+      onSubmit({ identifier: identifier + ".bsky.social", password });
+    } else {
+      onSubmit({ identifier, password });
+    }
+  };
 
   return (
     <Card as="form" onSubmit={handleSubmit} css={{ mw: '420px', p: '$8' }}>
@@ -47,7 +51,8 @@ export const LoginForm = (props: LoginFormProps) => {
         <Input
           {...bindIdentifier}
           name="handle"
-          placeholder="ハンドル"
+          placeholder="Handle or your domain"
+          aria-label="handle"
           contentLeft={<FontAwesomeIcon icon={faAt} />}
           required
           disabled={loading}
@@ -56,7 +61,8 @@ export const LoginForm = (props: LoginFormProps) => {
         <Input.Password
           {...bindPassword}
           name="password"
-          placeholder="パスワード"
+          placeholder="Password"
+          aria-label="password"
           contentLeft={<FontAwesomeIcon icon={faLock} />}
           required
           disabled={loading}

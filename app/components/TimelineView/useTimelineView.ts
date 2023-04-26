@@ -12,60 +12,68 @@ export type TimelineFetcher = (args: {
   feed: FeedViewPost[]
 }> | void
 
+export type TimelineFilter = (post: FeedViewPost) => boolean
+
 export const useTimelineView = (
-  fetchTimeline: TimelineFetcher
+  fetchTimeline: TimelineFetcher,
+  filter: TimelineFilter = () => true
 ): TimelineViewProps => {
   const [agent] = useAgent()
   const [feeds, setFeeds] = useState<FeedViewPost[]>([])
   const [cursor, setCursor] = useState<string>()
   const [loading, setLoading] = useState(true)
   const [hasMore, setHasMore] = useState(true)
-  const [newTimeline, setNewTimeline] = useState<FeedViewPost[] | null>()
-  const [newCursor, setNewCursor] = useState<string | undefined>()
+  const [hasNewTimeline, setHasNewTimeline] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const updateFeed = useCallback(async () => {
-    if (!agent) {
-      return
-    }
+  const updateFeed = useCallback(
+    async (turn: number, loadTop = false) => {
+      if (!agent) {
+        return
+      }
 
-    setLoading(true)
-    const result = await fetchTimeline({
-      agent,
-      cursor,
-    })
-    setLoading(false)
+      setLoading(true)
+      const result = await fetchTimeline({
+        agent,
+        cursor: loadTop ? undefined : cursor,
+      })
+      setLoading(false)
 
-    if (!result) {
-      return
-    }
+      if (!result) {
+        return
+      }
 
-    setFeeds((feeds) => [...feeds, ...result.feed])
-    setNewCursor(result.cursor)
+      // if (result.feed[0]?.post.uri === feeds[0]?.post.uri) {
+      //   return
+      // }
 
-    if (!result.cursor) {
-      setHasMore(false)
-    }
-  }, [agent, cursor, fetchTimeline])
+      if (loadTop) {
+        setFeeds(() => [...result.feed])
+      } else {
+        setFeeds((feeds) => [...feeds, ...result.feed])
+      }
+
+      if (cursor === result.cursor) {
+        setCursor(undefined)
+      } else {
+        setCursor(result.cursor)
+      }
+
+      if (!result.cursor) {
+        setHasMore(false)
+      }
+    },
+    [agent, cursor, fetchTimeline]
+  )
 
   const reloadTimeline = useCallback(async () => {
-    if (!newTimeline) {
-      return
-    }
-
-    setFeeds(newTimeline)
-    setNewCursor(newCursor)
-
-    setNewTimeline(null)
+    updateFeed(0, true)
+    setHasNewTimeline(false)
 
     if (containerRef.current) {
       containerRef.current.scrollTo(0, 0)
     }
-
-    if (!newCursor) {
-      setHasMore(false)
-    }
-  }, [newCursor, newTimeline])
+  }, [updateFeed])
 
   useEffect(() => {
     const id = setInterval(async () => {
@@ -76,7 +84,6 @@ export const useTimelineView = (
       setLoading(true)
       const result = await fetchTimeline({
         agent,
-        cursor,
       })
       setLoading(false)
 
@@ -84,28 +91,29 @@ export const useTimelineView = (
         return
       }
 
-      if (result.feed[0]?.post.uri !== feeds[0]?.post.uri) {
-        setNewTimeline(result.feed)
-        setNewCursor(result.cursor)
+      if (!result.feed[0]) {
+        return
       }
-    }, 10000)
+
+      if (result.feed[0]?.post.uri !== feeds[0]?.post.uri) {
+        setHasNewTimeline(true)
+      }
+    }, 5000)
 
     return () => {
       clearInterval(id)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [agent, feeds])
+  }, [agent, feeds, cursor, fetchTimeline])
 
   useEffect(() => {
-    setFeeds([])
-    updateFeed()
+    updateFeed(0, true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agent])
 
   return {
-    posts: feeds,
+    posts: feeds.filter(filter),
     hasMorePosts: hasMore && !loading,
-    hasNewTimeline: !!newTimeline,
+    hasNewTimeline,
     onLoadMorePosts: updateFeed,
     onLoadNewTimeline: reloadTimeline,
     containerRef,

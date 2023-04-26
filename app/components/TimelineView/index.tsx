@@ -1,5 +1,5 @@
 import { FeedViewPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
-import { Button, Loading, Row, styled } from '@nextui-org/react'
+import { Button, Loading, Row, Spacer, styled, Text } from '@nextui-org/react'
 import { ReactNode } from 'react'
 import InfiniteScroll from 'react-infinite-scroller'
 import { FeedView } from '../FeedView'
@@ -26,7 +26,7 @@ export type TimelineViewProps = {
   hasNewTimeline?: boolean
   hasMorePosts?: boolean
   onLoadNewTimeline?: () => void
-  onLoadMorePosts: () => void
+  onLoadMorePosts: (turn: number, loadTop?: boolean) => void
   posts: FeedViewPost[]
   containerRef?: React.RefObject<HTMLDivElement>
 
@@ -55,7 +55,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         }}
       >
         <Button shadow color="primary" auto onPress={onLoadNewTimeline}>
-          新しい投稿があります
+          Load New posts
         </Button>
       </ReloadButtonContainer>
       <TimelineContainer
@@ -89,6 +89,11 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
               <FeedView feed={feed} />
             </Row>
           ))}
+          <Row css={{ my: 64 }} justify="center">
+            <Text color="rgba(0, 0, 0, 0.5)" b>
+              end of feed
+            </Text>
+          </Row>
         </InfiniteScroll>
       </TimelineContainer>
     </div>

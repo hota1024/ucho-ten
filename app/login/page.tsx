@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { NextPage } from 'next'
 
-import { Container } from '@nextui-org/react'
+import { Container, Image, Spacer } from '@nextui-org/react'
 
 import { LoginForm } from '@/components/LoginForm'
 import { BskyAgent } from '@atproto/api'
@@ -57,8 +57,10 @@ const LoginPage = () => {
         display="flex"
         alignItems="center"
         justify="center"
-        css={{ minHeight: '100dvh' }}
+        css={{ minHeight: '100dvh', flexFlow: 'column' }}
       >
+        <Image src="/images/Logo/ucho-ten.svg" height="64px" alt="logo" />
+        <Spacer y={1} />
         <LoginForm
           loading={loading}
           errorMessage={errorMessage}

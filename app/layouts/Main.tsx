@@ -1,6 +1,7 @@
 'use client'
 
 import { ReactNode, useEffect, useState } from 'react'
+import Konami from 'react-konami-code'
 
 import {
   Badge,
@@ -15,16 +16,19 @@ import {
   styled,
   Text,
   User,
+  Image,
 } from '@nextui-org/react'
 import { PostButton } from '@/components/PostButton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHome, faSignOut } from '@fortawesome/free-solid-svg-icons'
+import { faGear, faHome, faSignOut } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link'
 import { useAgent } from '@/atoms/agent'
 import { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
 import { faBell, faUser } from '@fortawesome/free-regular-svg-icons'
 import { Notification } from '@atproto/api/dist/client/types/app/bsky/notification/listNotifications'
 import { NotificationCardList } from '@/components/NotificationCardList'
+import { useShowPostNumbers } from '@/atoms/settings'
+import { SetttingsModal } from '@/components/SettingsModal'
 
 const Container = styled('div', {
   maxWidth: '1200px',
@@ -43,7 +47,7 @@ const LeftActionsContainer = styled('div', {
 })
 
 const UchoTen = styled('div', {
-  marginTop: '$8',
+  marginTop: '$7',
   fontSize: '2rem',
   fontWeight: 'bold',
   textAlign: 'center',
@@ -65,9 +69,11 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
   const [agent] = useAgent()
   const [profile, setProfile] = useState<ProfileViewDetailed | null>(null)
   const [logoutLoading, setLogoutLoading] = useState(false)
+  const [settingsModal, setSettingsModal] = useState(false)
   const [notificationCount, setNotificationCount] = useState(0)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loadingNotifications, setLoadingNotifications] = useState(false)
+  const [showPostNumbers, setShowPostNumbers] = useShowPostNumbers()
 
   const logout = () => {
     setLogoutLoading(true)
@@ -126,6 +132,10 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
     }
   }, [agent])
 
+  const handleKonami = () => {
+    setShowPostNumbers((v) => !v)
+  }
+
   return (
     <Container>
       <Modal open={logoutLoading} blur preventClose>
@@ -136,8 +146,23 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
         </Modal.Header>
       </Modal>
 
+      <SetttingsModal
+        open={settingsModal}
+        onClose={() => setSettingsModal(false)}
+      />
+
       <LeftActionsContainer>
-        <UchoTen>Ucho-ten</UchoTen>
+        <div style={{ display: 'none' }}>
+          <Konami action={handleKonami}></Konami>
+        </div>
+        <UchoTen>
+          <Image
+            src={'/images/Logo/ucho-ten.svg'}
+            alt="Icon"
+            height={'70%'}
+            width={'70%'}
+          ></Image>
+        </UchoTen>
         <Button
           as={Link}
           href="/"
@@ -150,14 +175,13 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
           <Popover.Trigger>
             <Button
               icon={
-                <Badge
-                  content={notificationCount}
-                  size="xs"
-                  color="error"
-                  isInvisible={notificationCount === 0}
-                >
+                notificationCount > 0 ? (
+                  <Badge content={''} size="md" color="error" variant="dot">
+                    <FontAwesomeIcon icon={faBell} size="lg" />
+                  </Badge>
+                ) : (
                   <FontAwesomeIcon icon={faBell} size="lg" />
-                </Badge>
+                )
               }
             >
               Notification
@@ -181,18 +205,48 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
         {profile && (
           <Dropdown placement="bottom-left">
             <Dropdown.Trigger>
-              <User
-                as="button"
-                size="lg"
-                squared
-                src={profile.avatar}
-                name={profile.displayName ?? profile.handle}
-                description={`@${profile.handle}`}
-              ></User>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  padding: '4px',
+                  borderRadius: '16px',
+                  cursor: 'pointer',
+                }}
+              >
+                <User
+                  as="button"
+                  size="lg"
+                  squared
+                  src={
+                    profile.avatar
+                      ? profile.avatar
+                      : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'
+                  }
+                  css={{
+                    '.nextui-user-desc': {
+                      color: '$gray400',
+                    },
+                  }}
+                  name={
+                    <Text color="white">
+                      {profile.displayName ?? profile.handle}
+                    </Text>
+                  }
+                  description={`@${profile.handle}`}
+                ></User>
+              </div>
             </Dropdown.Trigger>
             <Dropdown.Menu
               disabledKeys={[logoutLoading ? 'logout' : '']}
-              onAction={(key) => key === 'logout' && logout()}
+              onAction={(key) =>
+                key === 'logout'
+                  ? logout()
+                  : key === 'settings'
+                  ? setSettingsModal(true)
+                  : null
+              }
             >
               <Dropdown.Item
                 key="profile"
@@ -203,12 +257,18 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
                 </Link>
               </Dropdown.Item>
               <Dropdown.Item
+                key="settings"
+                icon={<FontAwesomeIcon icon={faGear} />}
+              >
+                <Text>Settings</Text>
+              </Dropdown.Item>
+              <Dropdown.Item
                 key="logout"
                 withDivider
                 color="error"
                 icon={<FontAwesomeIcon icon={faSignOut} />}
               >
-                <Text color="inherit">ログアウト</Text>
+                <Text color="inherit">Log out</Text>
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>

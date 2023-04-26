@@ -9,6 +9,7 @@ import { useAgent } from '@/atoms/agent'
 import { useCallback, useState } from 'react'
 import { PostModal } from '../PostModal'
 import { PostRecordPost } from '@/types/posts'
+import { useShowPostNumbers } from '@/atoms/settings'
 
 interface PostViewCardProps {
   post: PostView
@@ -36,6 +37,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
   const record = post.record as Record
   const embed = post.embed as unknown as AppBskyEmbedRecord.ViewRecord
   const [agent] = useAgent()
+  const [myDid, setMyDid] = useState<string | undefined>(agent?.session!.did)
   const [isMuted, setIsMuted] = useState(!!post.viewer?.mute)
   const [isLiked, setIsLiked] = useState(!!post.viewer?.like)
   const [likeCount, setLikeCount] = useState(post.likeCount ?? 0)
@@ -46,11 +48,12 @@ export const PostViewCard = (props: PostViewCardProps) => {
   const [repostCount, setRepostCount] = useState(post.repostCount ?? 0)
   const [followLoading, setFollowLoading] = useState(false)
   const [replyDialog, setReplyDialog] = useState(false)
+  const [repostDialog, setRepostDialog] = useState(false)
+  const [showPostNumbers] = useShowPostNumbers()
 
   if (
     post.cid === 'bafyreievvr466th5wonvdoxazkbly6ziide2s7hjiu35poxeicfnh6vlfa'
   ) {
-    // console.log('render time', { post })
   }
 
   const handleLikeClick = useCallback(async () => {
@@ -139,6 +142,10 @@ export const PostViewCard = (props: PostViewCardProps) => {
     setReplyDialog(true)
   }
 
+  const handleQuoteRepostClick = () => {
+    setRepostDialog(true)
+  }
+
   const onReplySubmit = async (postRecord: PostRecordPost) => {
     if (!agent) {
       return
@@ -157,9 +164,27 @@ export const PostViewCard = (props: PostViewCardProps) => {
     await agent.post(postRecord)
   }
 
+  const onRepostSubmit = async (postRecord: PostRecordPost) => {
+    if (!agent) {
+      return
+    }
+
+    if (!postRecord.embed) {
+      postRecord.embed = {} as unknown as AppBskyEmbedRecord.Main
+    }
+
+    postRecord.embed = {
+      $type: 'app.bsky.embed.record',
+      record: post,
+    }
+
+    await agent.post(postRecord)
+  }
+
   return (
     <>
       <Post
+        myDid={myDid}
         postUri={post.uri.split('/').pop()}
         record={record}
         embed={embed}
@@ -170,9 +195,9 @@ export const PostViewCard = (props: PostViewCardProps) => {
         replyCount={post.replyCount}
         repostCount={repostCount}
         likeCount={likeCount}
-        showReplyCount={showReplyCount}
-        showRepostCount={showRepostCount}
-        showLikeCount={showLikeCount}
+        showReplyCount={showPostNumbers}
+        showRepostCount={showPostNumbers}
+        showLikeCount={showPostNumbers}
         isMuted={isMuted}
         isLiked={isLiked}
         isReposted={isReposted}
@@ -181,12 +206,23 @@ export const PostViewCard = (props: PostViewCardProps) => {
         onRepostClick={handleRepostClick}
         onFollowClick={handleFollowClick}
         onReplyClick={handleReplyClick}
+        onQuoteRepostClick={handleQuoteRepostClick}
       />
       <PostModal
         open={replyDialog}
         onClose={() => setReplyDialog(false)}
         onSubmit={onReplySubmit}
         parentPostView={post}
+        title="Reply"
+        submitText="Reply"
+      />
+      <PostModal
+        open={repostDialog}
+        onClose={() => setRepostDialog(false)}
+        onSubmit={onRepostSubmit}
+        parentPostView={post}
+        title="Quote Repost"
+        submitText="Quote Repost"
       />
     </>
   )

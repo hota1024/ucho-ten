@@ -1,7 +1,7 @@
 import { Record } from '@atproto/api/dist/client/types/app/bsky/feed/post'
 import { useAgent } from '@/atoms/agent'
 import { PostRecordPost } from '@/types/posts'
-import { RichText } from '@atproto/api'
+import { BlobRef, RichText } from '@atproto/api'
 import { PostView } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 import {
   Button,
@@ -11,11 +11,15 @@ import {
   Spacer,
   Text,
   Textarea,
+  Image,
+  Row,
+  Col,
 } from '@nextui-org/react'
 import { useState } from 'react'
 import { Post } from '../Post/Post'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faImage } from '@fortawesome/free-solid-svg-icons'
 import Zoom from 'react-medium-image-zoom'
 
 export interface PostModalProps {
@@ -23,10 +27,12 @@ export interface PostModalProps {
   onClose: () => void
   onSubmit: (record: PostRecordPost) => void
   parentPostView?: PostView
+  title: string
+  submitText: string
 }
 
 export const PostModal = (props: PostModalProps) => {
-  const { open, onClose, onSubmit, parentPostView } = props
+  const { title, submitText, open, onClose, onSubmit, parentPostView } = props
   const [agent] = useAgent()
   const [contentText, setContentText] = useState<string>('')
   const [contentImage, setContentImages] = useState<File[]>([])
@@ -45,21 +51,35 @@ export const PostModal = (props: PostModalProps) => {
 
     setLoading(true)
 
+    const blobs: BlobRef[] = []
+    for (const file of contentImage) {
+      const binary = new Uint8Array(await file.arrayBuffer())
+      const result = await agent.uploadBlob(binary, {
+        encoding: file.type,
+      })
+
+      blobs.push(result.data.blob)
+    }
+
+    const images = blobs.map((blob, key) => ({
+      image: blob,
+      alt: `image${key + 1}`,
+    }))
+
     const rt = new RichText({ text: contentText })
     await rt.detectFacets(agent)
 
     await onSubmit({
       text: rt.text,
       facets: rt.facets,
+      embed:
+        blobs.length > 0
+          ? {
+              $type: 'app.bsky.embed.images',
+              images,
+            }
+          : undefined,
     })
-    //contentImage.lengthが0枚または5枚以上のときは画像を投稿しない
-    // if (contentImage.length > 0 && contentImage.length < 5) {
-    //     const formData = new FormData();
-    //     contentImage.forEach((image) => {
-    //         formData.append("images", image);
-    //     });
-    //     await agent.post(formData);
-    // }
 
     setLoading(false)
     onClose()
@@ -72,9 +92,18 @@ export const PostModal = (props: PostModalProps) => {
     }
   }
 
-  const handleOnAddImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOnAddImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return
-    setContentImages([...contentImage, ...e.target.files])
+
+    const files = e.target.files;
+    if (files) {
+      const allSizesValid = Array.from(files).every(file => file.size <= 976560);
+      if(allSizesValid === false) {
+        return
+      }
+      //console.log(allSizesValid); // true or false
+    }
+    setContentImages((b) => [...b, ...(e.target.files ?? [])])
   }
 
   const handleOnRemoveImage = (index: number) => {
@@ -92,7 +121,8 @@ export const PostModal = (props: PostModalProps) => {
     >
       <Modal.Header>
         <Text size="$lg" b>
-          {parentPostView ? '返信する' : '投稿する'}
+          {/* {parentPostView ? '返信する' : '投稿する'} */}
+          {title}
         </Text>
       </Modal.Header>
       {parentPostView && (
@@ -109,7 +139,8 @@ export const PostModal = (props: PostModalProps) => {
       )}
       <Modal.Body>
         <Textarea
-          placeholder="投稿内容"
+          aria-label="content"
+          placeholder="content"
           rows={8}
           maxLength={300}
           initialValue={contentText}
@@ -120,9 +151,11 @@ export const PostModal = (props: PostModalProps) => {
         />
       </Modal.Body>
       <Modal.Footer>
-        <Text size="$sm" color="error">
-          画像はあと{4 - contentImage.length}枚までです.
-        </Text>
+        {contentImage.length > 0 && (
+          <Text size="$sm" color="error">
+            画像はあと{4 - contentImage.length}枚までです.
+          </Text>
+        )}
         {contentImage.length > 0 && (
           <div style={{ display: 'flex', width: '100%', height: '100px' }}>
             {contentImage.map((image, index) => (
@@ -136,7 +169,7 @@ export const PostModal = (props: PostModalProps) => {
                 }}
               >
                 <Zoom>
-                  <img
+                  <Image
                     src={URL.createObjectURL(image)}
                     alt="preview"
                     style={{
@@ -144,7 +177,7 @@ export const PostModal = (props: PostModalProps) => {
                       height: '88px',
                       objectFit: 'cover',
                     }}
-                  />
+                  ></Image>
                 </Zoom>
                 <div style={{ position: 'absolute', top: 0, left: 0 }}>
                   <Button
@@ -165,45 +198,54 @@ export const PostModal = (props: PostModalProps) => {
             ))}
           </div>
         )}
-        <label htmlFor={inputId}>
-          <Button disabled={isImageMaxLimited} as="span" auto>
-            追加
-          </Button>
-          <input
-            hidden
-            id={inputId}
-            type="file"
-            multiple
-            accept="image/*,.png,.jpg,.jpeg"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              handleOnAddImage(e)
-            }
-            disabled={isImageMaxLimited}
-          />
-        </label>
+        <Row justify="space-between">
+          <label htmlFor={inputId}>
+            <Button
+              disabled={loading || isImageMaxLimited}
+              as="span"
+              auto
+              light
+              icon={<FontAwesomeIcon icon={faImage} size="lg" />}
+            />
 
-        <Button auto flat onPress={onClose} disabled={loading}>
-          キャンセル
-        </Button>
-        <Button
-          auto
-          onClick={handlePostClick}
-          disabled={
-            loading ||
-            (!isPostable && isImageMinLimited) ||
-            contentImage.length >= 5
-          }
-        >
-          {loading ? (
-            <>
-              <Loading size="xs" />
-              <Spacer x={0.5} />
-              投稿中...
-            </>
-          ) : (
-            '投稿'
-          )}
-        </Button>
+            <input
+              hidden
+              id={inputId}
+              type="file"
+              multiple
+              accept="image/*,.png,.jpg,.jpeg"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                handleOnAddImage(e)
+              }
+              disabled={isImageMaxLimited}
+            />
+          </label>
+
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Button auto light onPress={onClose} disabled={loading}>
+              Cancel
+            </Button>
+            <Button
+              auto
+              onClick={handlePostClick}
+              disabled={
+                loading ||
+                (!isPostable && isImageMinLimited) ||
+                contentImage.length >= 5
+              }
+            >
+              {loading ? (
+                <>
+                  <Loading size="xs" />
+                  <Spacer x={0.5} />
+                  Submitting...
+                </>
+              ) : (
+                submitText
+              )}
+            </Button>
+          </div>
+        </Row>
       </Modal.Footer>
     </Modal>
   )

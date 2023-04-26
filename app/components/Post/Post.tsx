@@ -26,6 +26,7 @@ import {
   Grid,
   Image,
   Text,
+  Dropdown,
 } from '@nextui-org/react'
 import Link from 'next/link'
 import { useState, useMemo, useCallback, useEffect } from 'react'
@@ -102,6 +103,7 @@ const ReplyLine = styled('div', {
 })
 
 interface PostProps {
+  myDid?: string
   postUri?: string
   reasonRepost?: ReasonRepost
 
@@ -132,6 +134,7 @@ interface PostProps {
   isReposted?: boolean
   onLikeClick?: () => void
   onRepostClick?: () => void
+  onQuoteRepostClick?: () => void
 
   isFollowing?: boolean
   onFollowClick?: () => void
@@ -141,6 +144,7 @@ interface PostProps {
 
 export const Post = (props: PostProps) => {
   const {
+    myDid,
     postUri,
     reasonRepost,
     author,
@@ -165,6 +169,7 @@ export const Post = (props: PostProps) => {
   } = props
   const onLikeClick = props.onLikeClick ?? (() => {})
   const onRepostClick = props.onRepostClick ?? (() => {})
+  const onQuoteRepostClick = props.onQuoteRepostClick ?? (() => {})
   const onFollowClick = props.onFollowClick ?? (() => {})
 
   const [agent] = useAgent()
@@ -174,6 +179,10 @@ export const Post = (props: PostProps) => {
 
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
+
+  const handleRepostMarkClick = () => {
+    //onRepostClick()
+  }
 
   const updateElapsed = useCallback(() => {
     if (!time) return 0
@@ -228,7 +237,11 @@ export const Post = (props: PostProps) => {
                 <Col span={7}>
                   <User
                     squared
-                    src={author.avatar ? author.avatar : undefined}
+                    src={
+                      author.avatar
+                        ? author.avatar
+                        : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'
+                    }
                     size="lg"
                     name={author.displayName}
                     description={`@${author.handle}`}
@@ -244,12 +257,13 @@ export const Post = (props: PostProps) => {
                     bordered={isFollowing}
                     color={isFollowing && followHover ? 'error' : 'primary'}
                     css={{ ml: '$10', width: `5ch` }}
+                    disabled={myDid === author.did}
                   >
                     {isFollowing
                       ? followHover
-                        ? 'フォロー解除'
-                        : 'フォロー中'
-                      : 'フォロー'}
+                        ? 'UnFollow'
+                        : 'Following'
+                      : 'Follow'}
                   </Button>
                 </Col>
               </Row>
@@ -260,7 +274,11 @@ export const Post = (props: PostProps) => {
             <Avatar
               pointer
               squared
-              src={author.avatar ? author.avatar : undefined}
+              src={
+                author.avatar
+                  ? author.avatar
+                  : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'
+              }
               size={isEmbed ? 'md' : 'lg'}
             />
           </Link>
@@ -271,8 +289,7 @@ export const Post = (props: PostProps) => {
         {reasonRepost && (
           <Link href={`/profile/${reasonRepost.by.handle}`}>
             <RepostByLabel>
-              {reasonRepost.by.displayName}
-              さんがリポスト
+              Reposted by {reasonRepost.by.displayName}
             </RepostByLabel>
           </Link>
         )}
@@ -309,76 +326,104 @@ export const Post = (props: PostProps) => {
           </>
         )}
         {images.length === 1 && (
-            <div
-                style={{
-                  display: 'grid',
-                  gap: '$4',
-                  marginTop: '$4',
-                  borderRadius: '10px',
-                  overflow: 'hidden',
-                  width: '100%',
-                  maxHeight: '500px',
-                  objectFit: 'cover',
-                }}
-            >
-              {images.map((image, key) => (
-                  <Zoom key={key}>
-                    <Image
-                        src={image.fullsize}
-                        alt={image.alt}
-                        style={{
-                          height: '100%',
-                          width: '100%',
-                          objectFit: 'cover',
-                        }}
-                    />
-                  </Zoom>
-              ))}
-            </div>
+          <div
+            style={{
+              display: 'grid',
+              gap: '$4',
+              marginTop: '$4',
+              borderRadius: '10px',
+              overflow: 'hidden',
+              width: '100%',
+              maxHeight: '500px',
+              objectFit: 'cover',
+            }}
+          >
+            {images.map((image, key) => (
+              <Zoom key={key}>
+                <Image
+                  src={image.fullsize}
+                  alt={image.alt}
+                  style={{
+                    height: '100%',
+                    width: '100%',
+                    objectFit: 'cover',
+                  }}
+                />
+              </Zoom>
+            ))}
+          </div>
         )}
+
+
         {images.length === 2 && (
-            <div style={{display:"flex", width:'100%', maxHeight : '500px', borderRadius : '10px', overflow : 'hidden', gap:'0px 3px'}}>
-              <div style={{width:`calc(100% / 2)`, height:'100%',}}>
-                <Zoom>
-                  <img  src={images[0].fullsize} alt="preview" style={{width:`100%`, height:'100%',marginBottom:'-10px',objectFit: 'cover'}}/>
-                </Zoom>
-              </div>
-              <div style={{width:`calc(100% / 2)`, height:'100%',}}>
-                <Zoom>
-                  <img  src={images[1].fullsize} alt="preview" style={{width:`100%`, height:'100%',marginBottom:'-10px'}}/>
-                </Zoom>
-              </div>
+          <div
+            style={{
+              display: 'flex',
+              width: '100%',
+              maxHeight: '500px',
+              borderRadius: '10px',
+              overflow: 'hidden',
+              gap: '0px 3px',
+            }}
+          >
+            <div style={{ width: `calc(100% / 2)`, height: '100%' }}>
+              <Zoom>
+                <img
+                  src={images[0].fullsize}
+                  alt="preview"
+                  style={{
+                    width: `100%`,
+                    height: '100%',
+                    marginBottom: '-10px',
+                    objectFit: 'cover',
+                  }}
+                />
+              </Zoom>
             </div>
+            <div style={{ width: `calc(100% / 2)`, height: '100%' }}>
+              <Zoom>
+                <img
+                  src={images[1].fullsize}
+                  alt="preview"
+                  style={{
+                    width: `100%`,
+                    height: '100%',
+                    marginBottom: '-10px',
+                  }}
+                />
+              </Zoom>
+            </div>
+          </div>
         )}
-
         {images.length === 3 && (
-            <div style={{display:"flex",width:'100%', maxHeight : '500px', borderRadius : '10px', overflow : 'hidden',gap:'0px 2px'}}>
-              <div style={{width:'calc(100% + 2px)', height:'100%', marginBottom : '-10px'}}>
-                <Zoom>
-                  <img  src={images[0].fullsize} alt="preview" style={{width:`100%`, height:'100%'}}/>
-                </Zoom>
+          <div style={{width:'100%', height:'100%', maxHeight:'400px',display:'flex',flexWrap:'wrap', overflow :'hidden', borderRadius:'10px'}}>
+            <div style={{height:'100%', width : 'calc(50% - 4px)', marginRight : '4px'}}>
+              <img src={images[0].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
+            </div>
+            <div style={{height:'100%', width : '50%'}}>
+              <div style={{height:'50%', width : '100%' ,marginBottom:'4px'}}>
+                <img src={images[1].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
               </div>
-              <div style={{width:'50%', height:'100%'}}>
-                <Zoom>
-                  <img  src={images[1].fullsize} alt="preview" style={{width:`100%`, height:'50%',marginBottom:'-4px'}}/>
-                </Zoom>
-                <Zoom>
-                  <img  src={images[2].fullsize} alt="preview" style={{width:`100%`, height:'50%',marginBottom:'-10px'}}/>
-                </Zoom>
+              <div style={{height:'50%', width : '100%', marginTop:'4px'}}>
+                <img src={images[2].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
               </div>
             </div>
+          </div>
         )}
-
-
         {images.length === 4 && (
-            <div style={{display:"flex",flexWrap:'wrap', width:'100%', maxHeight : '500px', borderRadius : '10px', overflow : 'hidden', gap:'7px 3px'}}>
-              {images.slice(0, 4).map((image, key) => ( // imagesをスライスしてmap関数に渡す
-                  <div key={key} style={{width:`calc(50% - 1.5px)`, height:`calc(100%)`,}}>
-                    <Zoom>
-                      <img  src={images[key].fullsize} alt="preview" style={{width:`100%`, height:'100%',marginBottom:'-10px'}}/>
-                    </Zoom>
-                  </div>
-              ))}
+            <div style={{width:'100%', height:'100%', maxHeight:'400px',display:'flex',flexWrap:'wrap', overflow :'hidden', borderRadius:'10px'}}>
+              <div style={{width:'calc(50% - 2px)', height:'50%', marginRight:'2px', marginBottom:'2px'}}>
+                <img src={images[0].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
+              </div>
+              <div style={{width:'calc(50% - 2px)', height:'50%', marginLeft:'2px', marginBottom:'2px'}}>
+                <img src={images[1].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
+              </div>
+              <div style={{width:'calc(50% - 2px)', height:'50%', marginRight:'2px', marginTop:'2px'}}>
+                <img src={images[2].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
+              </div>
+              <div style={{width:'calc(50% - 2px)', height:'50%', marginLeft:'2px', marginTop:'2px'}}>
+                <img src={images[3].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
+              </div>
             </div>
         )}
 
@@ -389,23 +434,46 @@ export const Post = (props: PostProps) => {
                 <FontAwesomeIcon
                   icon={faComment}
                   color="#787F85"
-                  style={{cursor: 'pointer'}}
+                  style={{ cursor: 'pointer' }}
                   onClick={onReplyClick}
                 />
                 {showReplyCount && replyCount}
               </PostAction>
             </Col>
             <Col>
-              <PostAction>
-                <FontAwesomeIcon
-                  onClick={onRepostClick}
-                  icon={faRetweetSolid}
-                  //color="#787F85"
-                  color={isReposted ? '#36BA7A' : '#787F85'}
-                  style={{cursor: 'pointer'}}
-                />
-                {showRepostCount && repostCount}
-              </PostAction>
+              <Dropdown placement="bottom-left">
+                <Dropdown.Trigger>
+                  <PostAction>
+                    <FontAwesomeIcon
+                      //onClick={onRepostClick}
+                      icon={faRetweetSolid}
+                      //color="#787F85"
+                      color={isReposted ? '#36BA7A' : '#787F85'}
+                      style={{ cursor: 'pointer' }}
+                    />
+                    {showRepostCount && repostCount}
+                  </PostAction>
+                </Dropdown.Trigger>
+                <Dropdown.Menu
+                  onAction={(key) => {
+                    if (key === 'repost') {
+                      onRepostClick()
+                    } else if (key === 'quoteRepost') {
+                      onQuoteRepostClick()
+                    }
+                  }}
+                >
+                  <Dropdown.Item key="repost">
+                    {isReposted === false && <Text>Repost</Text>}
+                    {isReposted === true && (
+                      <Text color={'error'}>UnRepost</Text>
+                    )}
+                  </Dropdown.Item>
+                  <Dropdown.Item key="quoteRepost">
+                    <Text>Quote Repost</Text>
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             </Col>
             <Col>
               <PostAction>
@@ -413,7 +481,7 @@ export const Post = (props: PostProps) => {
                   onClick={onLikeClick}
                   icon={isLiked ? faHeartSolid : faHeartRegular}
                   color={isLiked ? '#F31260' : '#787F85'}
-                  style={{cursor: 'pointer'}}
+                  style={{ cursor: 'pointer' }}
                 />
                 {showLikeCount && likeCount}
               </PostAction>
