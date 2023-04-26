@@ -18,7 +18,7 @@ export default function RootLayout({
         <meta property="og:site_name" content="Ucho-ten"></meta>
         <meta
           property="og:image"
-          content="https://staging.ucho-ten.net/images/Logo/ucho-ten-ogp.png"
+          content="https://ucho-ten.net/images/Logo/ucho-ten-ogp.png"
         ></meta>
       </head>
       <body
