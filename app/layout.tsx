@@ -16,7 +16,7 @@ export default function RootLayout({
         <meta property='og:title' content='Ucho-ten Bluesky Client'></meta>
         <meta property='og:description' content='test'></meta>
         <meta property='og:site_name' content='Ucho-ten'></meta>
-        <meta property='og:image' content='/images/Logo/Ucho-ten.svg'></meta>
+        <meta property='og:image' content='/images/Logo/Ucho-ten-ogp.png'></meta>
       </head>
       <body
         style={{
