@@ -29,6 +29,8 @@ Ucho-ten(有頂天) は「数字」の表示を抑えた Bluesky クライアン
 
 ## 🔨 技術スタック
 
+Ucho-ten では以下の技術を使用しています。
+
 - `@atproto/api`
 - Next.js
 - NextUI
