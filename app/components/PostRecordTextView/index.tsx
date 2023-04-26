@@ -28,7 +28,7 @@ export const PostRecordTextView = (props: PostRecordTextViewProps) => {
       <>
         {text.split('\n').map((line, i) => (
           <p key={i}>
-            {reactStringReplace(line, /(@[a-zA-Z0-9-.]+|https?:\/\/[a-zA-Z0-9-./?=_%&:]+)/g, (match, j) => {
+            {reactStringReplace(line, /(@[a-zA-Z0-9-.]+|https?:\/\/[a-zA-Z0-9-./?=_%&:#]+)/g, (match, j) => {
               if (match.startsWith('@')) {
                 let domain = match.substring(1) // remove "@" symbol from match
                 if (domain.endsWith('.')){
