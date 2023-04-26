@@ -40,24 +40,27 @@ const BlueskyTimeline = () => {
     ).then((r) => r.json())
 
     const res3 = await fetch(
-        'https://search.bsky.social/search/posts?q=sky'
+      'https://search.bsky.social/search/posts?q=sky'
     ).then((r) => r.json())
     let res = [...res1, ...res2, ...res3]
     //tidが被ったものを削除
-    res = res.filter((x:any, i:number, self:any) => self.findIndex((y:any) => y.tid === x.tid) === i)
+    res = res.filter(
+      (x: any, i: number, self: any) =>
+        self.findIndex((y: any) => y.tid === x.tid) === i
+    )
 
     //resの中身のpost.createdAtが新しい順に並び替え
     res.sort((a, b) => {
-        if (a.post.createdAt > b.post.createdAt) {
-            return -1
-        } else {
-            return 1
-        }
+      if (a.post.createdAt > b.post.createdAt) {
+        return -1
+      } else {
+        return 1
+      }
     })
     console.log(res)
 
-    let data = await Promise.all(
-      res.map((p:any) =>
+    let data: any = await Promise.all(
+      res.map((p: any) =>
         agent
           .getPostThread({ uri: `at://${p.user.did}/${p.tid}` })
           .then((p) => p)
@@ -65,12 +68,12 @@ const BlueskyTimeline = () => {
       )
     )
     data = data.filter(
-      (v) =>
+      (v: any) =>
         !!v && v.data.thread.post.embed?.$type === 'app.bsky.embed.images#view'
     )
 
     console.log(data)
-    const feed = data.map((v) => ({
+    const feed = data.map((v: any) => ({
       post: v.data.thread.post,
     }))
 
@@ -135,15 +138,15 @@ const HomePage = () => {
                 tab === 'home' ? '3px solid #d3d3d3' : '1px solid transparent', // 初期状態は透明の下線を設定
             }}
             onMouseOver={(e) => {
-                if(tab === 'home') {
-                    return
-                }
+              if (tab === 'home') {
+                return
+              }
               e.currentTarget.style.borderBottom = '2px solid #d3d3d3' // ホバー時に下線を表示
             }}
             onMouseOut={(e) => {
-                if(tab === 'home') {
-                    return
-                }
+              if (tab === 'home') {
+                return
+              }
               e.currentTarget.style.borderBottom = '2px solid transparent' // ホバー解除時に下線を透明に戻す
             }}
             onClick={() => setTab('home')}
@@ -173,15 +176,15 @@ const HomePage = () => {
                   : '1px solid transparent', // 初期状態は透明の下線を設定
             }}
             onMouseOver={(e) => {
-                if(tab === 'bluesky') {
-                    return
-                }
+              if (tab === 'bluesky') {
+                return
+              }
               e.currentTarget.style.borderBottom = '2px solid #d3d3d3' // ホバー時に下線を表示
             }}
             onMouseOut={(e) => {
-                if(tab === 'bluesky') {
-                    return
-                }
+              if (tab === 'bluesky') {
+                return
+              }
               e.currentTarget.style.borderBottom = '2px solid transparent' // ホバー解除時に下線を透明に戻す
             }}
             onClick={() => setTab('bluesky')}
