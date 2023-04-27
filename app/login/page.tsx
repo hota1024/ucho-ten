@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { NextPage } from 'next'
 
-import { Container, Image, Spacer } from '@nextui-org/react'
+import {Container, Card, Image, Spacer, Text} from '@nextui-org/react'
 
 import { LoginForm } from '@/components/LoginForm'
 import { BskyAgent } from '@atproto/api'
@@ -66,6 +66,13 @@ const LoginPage = () => {
           errorMessage={errorMessage}
           onSubmit={handleSubmit}
         />
+        <Card css={{ mt: '$10' , width: '420px'}}>
+          <Card.Body>
+            <Text css={{textAlign:'center'}}>
+              We recommend using the App Passwords. <a href="https://github.com/bluesky-social/atproto-ecosystem/blob/main/app-passwords.md" target="_blank" rel="noopener noreferrer">Read More</a>.
+            </Text>
+          </Card.Body>
+        </Card>
       </Container>
     </>
   )
