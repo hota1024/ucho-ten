@@ -11,6 +11,7 @@ import Link from 'next/link'
 import reactStringReplace from 'react-string-replace'
 import { ViewRecord } from '@atproto/api/dist/client/types/app/bsky/embed/record'
 import { AppBskyFeedPost } from '@atproto/api'
+import parse from 'html-react-parser'
 
 interface PostRecordTextViewProps {
   record: Record
@@ -20,42 +21,74 @@ export const PostRecordTextView = (props: PostRecordTextViewProps) => {
   const { record } = props
   let elements: ReactNode[] = []
 
+  function getByteLength(str: string): number {
+    let byteLength = 0;
+    for (let i = 0; i < str.length; i++) {
+      const charCode = str.charCodeAt(i);
+      if (charCode <= 0x007f) {
+        byteLength += 1;
+      } else if (charCode <= 0x07ff) {
+        byteLength += 2;
+      } else if (charCode <= 0xffff) {
+        byteLength += 3;
+      } else if (charCode <= 0x1fffff) {
+        byteLength += 4;
+      } else if (charCode <= 0x1fffff) {
+        byteLength += 5;
+      } else if (charCode <= 0x7fffffff) {
+        byteLength += 6;
+      }
+    }
+    return byteLength;
+  }
+  function extractTextByByteRange(json:any) {
+    const text: string = json.text;
+    const facets: any[] = json.facets;
+    let replacedText: string = text;
+    for (let i = 0; i < facets.length; i++) {
+      const byteStart: number = facets[i].index.byteStart;
+      const byteEnd: number = facets[i].index.byteEnd;
+      let charCount = 0;
+      let extractedText = "";
+      for (let j = 0; j < text.length; j++) {
+        const charCode = text.charCodeAt(j);
+        const charByteLength = charCode <= 0x007f ? 1 : charCode <= 0x07ff ? 2 : charCode <= 0xffff ? 3 : charCode <= 0x1fffff ? 4 : charCode <= 0x3ffffff ? 5 : charCode <= 0x7fffffff ? 6 : 0;
+        if (charCount >= byteStart && charCount < byteEnd) {
+          extractedText += text.charAt(j);
+        }
+        charCount += charByteLength;
+      }
+      const regex = new RegExp(extractedText, 'g');
+      console.log(extractedText)
+      if(extractedText.slice(0,1) === '@'){
+        console.log('@')
+        replacedText = replacedText.replace(regex, `<Link href="/profile/${extractedText.slice(1)}">${extractedText}</Link>`);
+      }else{
+        console.log('https')
+        replacedText = replacedText.replace(regex, `<a href="${extractedText}" target="_blank" rel="noopener noreferrer">${extractedText}</a>`);
+      }
+    }
+    return replacedText;
+  }
+
   if (record.facets && record.facets.length > 0) {
     // facetsがある場合にのみ処理する
     const text = record.text
+    const replacedText = extractTextByByteRange(record)
+    console.log(replacedText)
+
+
     let i = 0
     elements.push(
-      <>
-        {text.split('\n').map((line, i) => (
-          <p key={i}>
-            {reactStringReplace(line, /(@[a-zA-Z0-9-.]+|https?:\/\/[a-zA-Z0-9-./?=_%&:#]+)/g, (match, j) => {
-              if (match.startsWith('@')) {
-                let domain = match.substring(1) // remove "@" symbol from match
-                if (domain.endsWith('.')){
-                  domain = domain.slice(0, -1)
-                }
-                return (
-                  <Link key={j} href={`/profile/${domain}`}>
-                    {match}
-                  </Link>
-                )
-              } else if (match.startsWith('http')) {
-                let url = match
-                if(url.endsWith('.')){
-                  url = url.slice(0, -1)
-                }
-                return (
-                  <a key={j} href={url} target="_blank" rel="noopener noreferrer">
-                    {match}
-                  </a>
-                )
-              } else {
-                return match
-              }
-            })}
-          </p>
-        ))}
-      </>
+        //parse(replacedText)
+        <>
+            {replacedText.split('\n').map((line, index) => (
+                <React.Fragment key={index}>
+                    {parse(line)}
+                    <br />
+                </React.Fragment>
+            ))}
+        </>
     )
   } else if (record.entities && record.entities.length > 0) {
     // entitiesがある場合にのみ処理する
