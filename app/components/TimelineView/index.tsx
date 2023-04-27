@@ -90,7 +90,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
           {header}
           <>
               {posts.map((feed, key) => {
-                  if (muteWords.some(word => feed.post.record?.text.includes(word))) {
+                  if (muteWords.some(word => (feed.post.record as any)?.text.includes(word))) {
                       return null; // マッチする要素がある場合は何も返さず、非表示にする
                   }
                   return (
