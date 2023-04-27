@@ -98,7 +98,7 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
           />
         </Row>
         <Text size={20} b>
-          Mute words
+          Mute words (soon)
         </Text>
         <Row>
           <Col
