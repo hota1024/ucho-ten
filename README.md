@@ -51,6 +51,6 @@ Pull Request の作成時はマージ先を `develop` ブランチにしてい�
 
 - [ATProtocol API referenced from TOKIMEKI Bluesky](https://tokimekibluesky.vercel.app/)
 - [ほりべあ @holybea.bsky.social](https://staging.bsky.app/profile/holybea.bsky.social)
-- [Beta icon designed by ふにゃ](https://twitter.com/funya_)
+- [Beta icon designed by ふにゃ](https://twitter.com/_FUNY4)
 - [UX design adviced by pengu](https://twitter.com/_P3NGU)
 
