@@ -47,6 +47,8 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
   const [muteWord, setMuteWord] = useState('')
   const muteWordInputRef = useRef<HTMLInputElement>(null)
 
+  const isPostable = muteWord.length > 0
+  
   const handleMuteWordAddClick = () => {
     if (muteWord.length === 0) {
       return
@@ -59,6 +61,12 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
     setMuteWords([...muteWords, muteWord])
     if (muteWordInputRef.current) {
       muteWordInputRef.current.value = ''
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      handleMuteWordAddClick()
     }
   }
 
@@ -138,10 +146,11 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
               placeholder="Mute word to add"
               ref={muteWordInputRef}
               onChange={(e) => setMuteWord(e.target.value)}
+              onKeyDown={isPostable ? handleKeyDown : undefined}
             />
           </Col>
           <Spacer x={0.5} />
-          <Button auto onPress={handleMuteWordAddClick} disabled>
+          <Button auto onPress={handleMuteWordAddClick}>
             Add
           </Button>
         </Row>
