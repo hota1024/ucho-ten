@@ -137,6 +137,7 @@ interface PostProps {
   onQuoteRepostClick?: () => void
 
   isFollowing?: boolean
+  isReactionProcessing?: boolean
   onFollowClick?: () => void
 
   onReplyClick?: () => void
@@ -165,6 +166,7 @@ export const Post = (props: PostProps) => {
     isLiked,
     isReposted,
     isFollowing,
+    isReactionProcessing,
     onReplyClick,
   } = props
   const onLikeClick = props.onLikeClick ?? (() => {})
@@ -478,7 +480,7 @@ export const Post = (props: PostProps) => {
             <Col>
               <PostAction>
                 <FontAwesomeIcon
-                  onClick={onLikeClick}
+                  onClick={!isReactionProcessing ? onLikeClick : undefined}
                   icon={isLiked ? faHeartSolid : faHeartRegular}
                   color={isLiked ? '#F31260' : '#787F85'}
                   style={{ cursor: 'pointer' }}

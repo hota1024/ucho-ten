@@ -50,6 +50,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
   const [replyDialog, setReplyDialog] = useState(false)
   const [repostDialog, setRepostDialog] = useState(false)
   const [showPostNumbers] = useShowPostNumbers()
+  const [isReactionProcessing, setIsReactionProcessing] = useState(false)
 
   if (
     post.cid === 'bafyreievvr466th5wonvdoxazkbly6ziide2s7hjiu35poxeicfnh6vlfa'
@@ -60,6 +61,12 @@ export const PostViewCard = (props: PostViewCardProps) => {
     if (!agent) {
       return
     }
+    //非同期のlikeがまだ処理中だったらreturn
+    if(isReactionProcessing){
+      return
+    }
+    setIsReactionProcessing(true)
+
 
     setIsLiked((v) => {
       if (v) {
@@ -72,10 +79,14 @@ export const PostViewCard = (props: PostViewCardProps) => {
     })
     let fetchedPost = await onFetch()
 
+
     if (fetchedPost.viewer?.like) {
+
       await agent.deleteLike(fetchedPost.viewer?.like)
+      setIsReactionProcessing(false)
     } else {
       await agent.like(post.uri, post.cid)
+      setIsReactionProcessing(false)
     }
 
     await onFetch()
@@ -202,6 +213,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
         isLiked={isLiked}
         isReposted={isReposted}
         isFollowing={isFollowing}
+        isReactionProcessing={isReactionProcessing}
         onLikeClick={handleLikeClick}
         onRepostClick={handleRepostClick}
         onFollowClick={handleFollowClick}
