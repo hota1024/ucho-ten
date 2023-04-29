@@ -24,6 +24,8 @@ import reactStringReplace from 'react-string-replace'
 import Link from 'next/link'
 import Zoom from 'react-medium-image-zoom'
 import { ProfileEditModal } from '@/components/ProfileEditModal'
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 
 /**
  * Home page.
@@ -250,6 +252,10 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                       description={`@${profile.handle}`}
                     />
                   </Col>
+                  <Button auto rounded bordered color="primary">
+                    <FontAwesomeIcon icon={faEllipsis} size={'xl'}></FontAwesomeIcon>
+                  </Button>
+                  <Spacer y={1} />
                   <Button
                     rounded
                     bordered={isFollowing}
