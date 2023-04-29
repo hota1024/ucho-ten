@@ -37,6 +37,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
   const [isFollowing, setIsFollowing] = useState(!!profile?.viewer?.following)
   const [followLoading, setFollowLoading] = useState(false)
   const [isMuted, setIsMuted] = useState(!!profile?.viewer?.muted)
+  const [MuteLoading, setMuteLoading] = useState(false)
   const [isBlocked, setIsBlocked] = useState(false)
   const [isLabeled, setIsLabeled] = useState(false)
   const [whatLabel, setWhatLabel] = useState('')
@@ -146,13 +147,20 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
     if (!agent) {
       return
     }
+    const mute = profile?.viewer?.muted
+    setMuteLoading(true)
 
-    const muted = profile?.viewer?.muted
-    const profile = await agent.getProfile({
-      actor: author.did,
-    })
+    if (mute) {
+      await agent.unmute(profile.did)
+      setIsMuted(false)
+    } else if (profile?.did) {
+      await agent.mute(profile.did)
+      setIsMuted(true)
+    }
 
     await fetchProfile()
+    setMuteLoading(false)
+
   }
 
   const newlineCodeToBr = (text: string) => {
@@ -262,7 +270,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                       squared
                       size="xl"
                       name={profile.displayName}
-                      description={`@${profile.handle}`}
+                      description={`@${profile.handle}${isMuted?' (Muted)':''}`}
                     />
                   </Col>
                   {!isMe && (
@@ -275,14 +283,8 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                           <Dropdown.Menu
                               onAction={(key) => {
                                   if (key === 'mute') {
-                                    if(isMuted){
-                                      console.log('hoge')
-                                      setIsMuted(false)
-                                    } else {
-                                      console.log('hoge')
-                                      setIsMuted(true)
-                                    }
-                                  } else if (key === 'quoteRepost') {
+                                    handleMuteClick()
+                                  } else if (key === 'block') {
                                       console.log('block')
                                   }
                               }}
