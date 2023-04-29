@@ -36,9 +36,12 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
   const [followHover, setFollowHover] = useState(false)
   const [isFollowing, setIsFollowing] = useState(!!profile?.viewer?.following)
   const [followLoading, setFollowLoading] = useState(false)
+
   const [isMuted, setIsMuted] = useState(!!profile?.viewer?.muted)
   const [MuteLoading, setMuteLoading] = useState(false)
-  const [isBlocked, setIsBlocked] = useState(false)
+  const [isBlocked, setIsBlocked] = useState(!!profile?.viewer?.blocking)
+  const [BlockLoading, setBlockLoading] = useState(false)
+
   const [isLabeled, setIsLabeled] = useState(false)
   const [whatLabel, setWhatLabel] = useState('')
   const [isMe, setIsMe] = useState(false)
@@ -155,6 +158,26 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
       setIsMuted(false)
     } else if (profile?.did) {
       await agent.mute(profile.did)
+      setIsMuted(true)
+    }
+
+    await fetchProfile()
+    setMuteLoading(false)
+
+  }
+
+  const handleBlockClick = async () => {
+    if (!agent) {
+      return
+    }
+    const blocking = profile?.viewer?.blocking
+    setBlockLoading(true)
+
+    if (blocking !== undefined) {
+      // await agent.unblock(profile.did)
+      setIsMuted(false)
+    } else if (profile?.did) {
+      // await agent.block(profile.did)
       setIsMuted(true)
     }
 
@@ -285,7 +308,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                                   if (key === 'mute') {
                                     handleMuteClick()
                                   } else if (key === 'block') {
-                                      console.log('block')
+                                    handleBlockClick()
                                   }
                               }}
                           >
