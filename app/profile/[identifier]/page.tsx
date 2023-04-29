@@ -3,7 +3,7 @@
 import {
   Button,
   Card,
-  Col,
+  Col, Dropdown,
   Loading,
   Row,
   Spacer,
@@ -36,7 +36,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
   const [followHover, setFollowHover] = useState(false)
   const [isFollowing, setIsFollowing] = useState(!!profile?.viewer?.following)
   const [followLoading, setFollowLoading] = useState(false)
-  const [isMuted, setIsMuted] = useState(false)
+  const [isMuted, setIsMuted] = useState(!!profile?.viewer?.muted)
   const [isBlocked, setIsBlocked] = useState(false)
   const [isLabeled, setIsLabeled] = useState(false)
   const [whatLabel, setWhatLabel] = useState('')
@@ -140,6 +140,19 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
 
   const handleEditProfileClick = async () => {
     setProfileEditModal(true)
+  }
+
+  const handleMuteClick = async () => {
+    if (!agent) {
+      return
+    }
+
+    const muted = profile?.viewer?.muted
+    const profile = await agent.getProfile({
+      actor: author.did,
+    })
+
+    await fetchProfile()
   }
 
   const newlineCodeToBr = (text: string) => {
@@ -252,9 +265,40 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                       description={`@${profile.handle}`}
                     />
                   </Col>
-                  <Button auto rounded bordered color="primary">
-                    <FontAwesomeIcon icon={faEllipsis} size={'xl'}></FontAwesomeIcon>
-                  </Button>
+                  {!isMe && (
+                      <Dropdown placement="bottom-left">
+                          <Dropdown.Trigger>
+                              <Button auto rounded bordered color="primary">
+                                  <FontAwesomeIcon icon={faEllipsis} size={'xl'}></FontAwesomeIcon>
+                              </Button>
+                          </Dropdown.Trigger>
+                          <Dropdown.Menu
+                              onAction={(key) => {
+                                  if (key === 'mute') {
+                                    if(isMuted){
+                                      console.log('hoge')
+                                      setIsMuted(false)
+                                    } else {
+                                      console.log('hoge')
+                                      setIsMuted(true)
+                                    }
+                                  } else if (key === 'quoteRepost') {
+                                      console.log('block')
+                                  }
+                              }}
+                          >
+                              <Dropdown.Item key="mute">
+                                  {!isMuted && <Text>Mute</Text>}
+                                  {isMuted && (
+                                      <Text color={'error'}>UnMute</Text>
+                                  )}
+                              </Dropdown.Item>
+                              <Dropdown.Item key="block">
+                                  <Text>block</Text>
+                              </Dropdown.Item>
+                          </Dropdown.Menu>
+                      </Dropdown>
+                      )}
                   <Spacer y={1} />
                   <Button
                     rounded
