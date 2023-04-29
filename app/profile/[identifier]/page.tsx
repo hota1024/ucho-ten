@@ -35,6 +35,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
   const [isFollowing, setIsFollowing] = useState(!!profile?.viewer?.following)
   const [followLoading, setFollowLoading] = useState(false)
   const [isMuted, setIsMuted] = useState(false)
+  const [isBlocked, setIsBlocked] = useState(false)
   const [isLabeled, setIsLabeled] = useState(false)
   const [whatLabel, setWhatLabel] = useState('')
   const [isMe, setIsMe] = useState(false)
@@ -82,7 +83,11 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
       setProfile(result.data)
       setIsFollowing(!!result.data?.viewer?.following)
 
-      if (result.data.viewer?.muted) {
+      if(result.data.viewer?.blocking || !!result.data.viewer?.blockedBy){
+        setIsBlocked(true)
+      }
+
+      if (result.data.viewer?.muted || result.data.viewer?.blocking || !!result.data.viewer?.blockedBy) {
         setShow(false)
       }
     } catch (error) {
@@ -113,6 +118,8 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
     if (!agent || followLoading) {
       return
     }
+
+
 
     const following = profile?.viewer?.following
     setFollowLoading(true)
