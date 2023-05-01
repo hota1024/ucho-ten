@@ -41,6 +41,7 @@ export const PostModal = (props: PostModalProps) => {
   const [contentText, setContentText] = useState<string>('')
   const [contentImage, setContentImages] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
   const isPostable = contentText.length > 0
   const isImageMaxLimited =
@@ -117,7 +118,7 @@ export const PostModal = (props: PostModalProps) => {
     setContentImages(newImages)
   }
 
-  const onEmojiClick = (event, emojiObject) => {
+  const onEmojiClick = (event:any, emojiObject:any) => {
     setContentText(contentText + event.native)
   };
 
@@ -214,7 +215,11 @@ export const PostModal = (props: PostModalProps) => {
                 light
                 icon={<FontAwesomeIcon icon={faFaceSurprise} size='lg'/>}
                 onPress={() => {
-                  return
+                  if(!showEmojiPicker) {
+                    setShowEmojiPicker(true)
+                  }else {
+                    setShowEmojiPicker(false)
+                  }
                 }}
             />
           </div>
@@ -266,7 +271,9 @@ export const PostModal = (props: PostModalProps) => {
           </div>
         </Row>
       </Modal.Footer>
-      <Picker data={data} onEmojiSelect={onEmojiClick} style={{width:'100%'}}/>
+      {showEmojiPicker && (
+          <Picker data={data} onEmojiSelect={onEmojiClick} style={{width:'100%'}}/>
+      )}
     </Modal>
   )
 }
