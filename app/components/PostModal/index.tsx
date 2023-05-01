@@ -20,7 +20,11 @@ import { Post } from '../Post/Post'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { faImage } from '@fortawesome/free-solid-svg-icons'
+import { faFaceSurprise } from '@fortawesome/free-solid-svg-icons'
 import Zoom from 'react-medium-image-zoom'
+import data from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
+
 
 export interface PostModalProps {
   open: boolean
@@ -113,6 +117,10 @@ export const PostModal = (props: PostModalProps) => {
     setContentImages(newImages)
   }
 
+  const onEmojiClick = (event, emojiObject) => {
+    setContentText(contentText + event.native)
+  };
+
   return (
     <Modal
       open={open}
@@ -199,6 +207,17 @@ export const PostModal = (props: PostModalProps) => {
           </div>
         )}
         <Row justify="space-between">
+          <div>
+            <Button
+                as="span"
+                auto
+                light
+                icon={<FontAwesomeIcon icon={faFaceSurprise} size='lg'/>}
+                onPress={() => {
+                  return
+                }}
+            />
+          </div>
           <label htmlFor={inputId}>
             <Button
               disabled={loading || isImageMaxLimited}
@@ -247,6 +266,7 @@ export const PostModal = (props: PostModalProps) => {
           </div>
         </Row>
       </Modal.Footer>
+      <Picker data={data} onEmojiSelect={onEmojiClick} style={{width:'100%'}}/>
     </Modal>
   )
 }
