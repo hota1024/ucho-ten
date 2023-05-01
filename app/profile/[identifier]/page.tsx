@@ -153,7 +153,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
     const mute = profile?.viewer?.muted
     setMuteLoading(true)
 
-    if (mute) {
+    if (isMuted && profile?.did) {
       await agent.unmute(profile.did)
       setIsMuted(false)
     } else if (profile?.did) {
@@ -161,7 +161,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
       setIsMuted(true)
     }
 
-    await fetchProfile()
+    //await fetchProfile()
     setMuteLoading(false)
 
   }
@@ -181,7 +181,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
       setIsMuted(true)
     }
 
-    await fetchProfile()
+    //await fetchProfile()
     setMuteLoading(false)
 
   }
@@ -307,8 +307,6 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                               onAction={(key) => {
                                   if (key === 'mute') {
                                     handleMuteClick()
-                                  } else if (key === 'block') {
-                                    handleBlockClick()
                                   }
                               }}
                           >
@@ -317,9 +315,6 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                                   {isMuted && (
                                       <Text color={'error'}>UnMute</Text>
                                   )}
-                              </Dropdown.Item>
-                              <Dropdown.Item key="block">
-                                  <Text>block</Text>
                               </Dropdown.Item>
                           </Dropdown.Menu>
                       </Dropdown>
