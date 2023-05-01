@@ -14,6 +14,7 @@ import {
   Image,
   Row,
   Col,
+  Popover,
 } from '@nextui-org/react'
 import { useState } from 'react'
 import { Post } from '../Post/Post'
@@ -24,7 +25,6 @@ import { faFaceSurprise } from '@fortawesome/free-solid-svg-icons'
 import Zoom from 'react-medium-image-zoom'
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
-
 
 export interface PostModalProps {
   open: boolean
@@ -41,7 +41,6 @@ export const PostModal = (props: PostModalProps) => {
   const [contentText, setContentText] = useState<string>('')
   const [contentImage, setContentImages] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
   const isPostable = contentText.length > 0
   const isImageMaxLimited =
@@ -100,10 +99,12 @@ export const PostModal = (props: PostModalProps) => {
   const handleOnAddImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return
 
-    const files = e.target.files;
+    const files = e.target.files
     if (files) {
-      const allSizesValid = Array.from(files).every(file => file.size <= 976560);
-      if(allSizesValid === false) {
+      const allSizesValid = Array.from(files).every(
+        (file) => file.size <= 976560
+      )
+      if (allSizesValid === false) {
         return
       }
       //console.log(allSizesValid); // true or false
@@ -118,15 +119,16 @@ export const PostModal = (props: PostModalProps) => {
     setContentImages(newImages)
   }
 
-  const onEmojiClick = (event:any, emojiObject:any) => {
+  const onEmojiClick = (event: any, emojiObject: any) => {
     setContentText(contentText + event.native)
-  };
+  }
 
   return (
     <Modal
       open={open}
       onClose={loading ? () => {} : onClose}
       preventClose={loading}
+      className="post-modal"
     >
       <Modal.Header>
         <Text size="$lg" b>
@@ -209,19 +211,25 @@ export const PostModal = (props: PostModalProps) => {
         )}
         <Row justify="space-between">
           <div>
-            <Button
-                as="span"
-                auto
-                light
-                icon={<FontAwesomeIcon icon={faFaceSurprise} size='lg'/>}
-                onPress={() => {
-                  if(!showEmojiPicker) {
-                    setShowEmojiPicker(true)
-                  }else {
-                    setShowEmojiPicker(false)
-                  }
-                }}
-            />
+            <Popover placement="left">
+              <Popover.Trigger>
+                <Button
+                  as="span"
+                  auto
+                  light
+                  icon={<FontAwesomeIcon icon={faFaceSurprise} size="lg" />}
+                />
+              </Popover.Trigger>
+              <Popover.Content>
+                <Picker
+                  data={data}
+                  onEmojiSelect={onEmojiClick}
+                  style={{ width: '100%' }}
+                  theme="light"
+                  previewPosition="none"
+                />
+              </Popover.Content>
+            </Popover>
           </div>
           <label htmlFor={inputId}>
             <Button
@@ -271,9 +279,6 @@ export const PostModal = (props: PostModalProps) => {
           </div>
         </Row>
       </Modal.Footer>
-      {showEmojiPicker && (
-          <Picker data={data} onEmojiSelect={onEmojiClick} style={{width:'100%'}}/>
-      )}
     </Modal>
   )
 }
