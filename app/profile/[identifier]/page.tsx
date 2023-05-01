@@ -299,9 +299,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                   {!isMe && (
                       <Dropdown placement="bottom-left">
                           <Dropdown.Trigger>
-                              <Button auto rounded bordered color="primary">
-                                  <FontAwesomeIcon icon={faEllipsis} size={'xl'}></FontAwesomeIcon>
-                              </Button>
+                            <FontAwesomeIcon icon={faEllipsis} size={'xl'}></FontAwesomeIcon>
                           </Dropdown.Trigger>
                           <Dropdown.Menu
                               onAction={(key) => {
