@@ -158,6 +158,7 @@ export const PostModal = (props: PostModalProps) => {
           autoFocus={true}
           onChange={(e) => setContentText(e.target.value)}
           disabled={loading}
+          value={contentText}
           onKeyDown={isPostable ? handleKeyDown : undefined}
         />
       </Modal.Body>
