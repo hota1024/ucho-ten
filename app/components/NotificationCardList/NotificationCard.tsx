@@ -49,6 +49,8 @@ export const NotificationCard: React.VFC<NotificationCardProps> = (props) => {
   const { item , onFetch } = props
   const [post, setPost] = useState<ThreadViewPost | null>(null)
   const [isLiked, setIsLiked] = useState(false)
+  const [likeCount, setLikeCount] = useState(0)
+  const [repostCount, setRepostCount] = useState( 0)
   const [isReposted, setIsReposted] = useState(false)
   const [isReactionProcessing, setIsReactionProcessing] = useState(false)
   const [replyDialog, setReplyDialog] = useState(false)
@@ -75,6 +77,7 @@ export const NotificationCard: React.VFC<NotificationCardProps> = (props) => {
       setIsLiked(!!result.data.thread?.post?.viewer?.like)
       setIsReposted(!!result.data.thread?.post?.viewer?.repost)
 
+
       setPost(result.data.thread as ThreadViewPost)
     }
   }
@@ -89,6 +92,17 @@ export const NotificationCard: React.VFC<NotificationCardProps> = (props) => {
     if(isReactionProcessing){
       return
     }
+
+    setIsLiked((v) => {
+      if (v) {
+        setLikeCount((v) => v - 1)
+        return false
+      } else {
+        setLikeCount((v) => v + 1)
+        return true
+      }
+    })
+
     setIsReactionProcessing(true)
     const result = await agent.getPostThread({
       uri: item.uri,
@@ -108,12 +122,22 @@ export const NotificationCard: React.VFC<NotificationCardProps> = (props) => {
     if (!agent) {
       return
     }
-    console.log(item)
 
     //非同期のlikeがまだ処理中だったらreturn
     if(isReactionProcessing){
       return
     }
+
+    setIsReposted((v) => {
+      if (v) {
+        setRepostCount((v) => v - 1)
+        return false
+      } else {
+        setRepostCount((v) => v + 1)
+        return true
+      }
+    })
+
     const result = await agent.getPostThread({
       uri: item.uri,
     })
