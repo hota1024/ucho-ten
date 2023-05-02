@@ -20,6 +20,8 @@ import {faComment, faUser} from "@fortawesome/free-regular-svg-icons";
 import {
   faRetweet as faRetweetSolid,
 } from '@fortawesome/free-solid-svg-icons'
+import { PostModal } from '../PostModal'
+
 
 /**
  * NotificationCard props.
@@ -49,6 +51,8 @@ export const NotificationCard: React.VFC<NotificationCardProps> = (props) => {
   const [isLiked, setIsLiked] = useState(false)
   const [isReposted, setIsReposted] = useState(false)
   const [isReactionProcessing, setIsReactionProcessing] = useState(false)
+  const [replyDialog, setReplyDialog] = useState(false)
+  const [repostDialog, setRepostDialog] = useState(false)
   //console.log(post)
   //console.log(isLiked)
 
@@ -61,7 +65,6 @@ export const NotificationCard: React.VFC<NotificationCardProps> = (props) => {
       const result = await agent.getPostThread({
         uri: item.record.subject.uri,
       })
-      console.log(result)
 
       setPost(result.data.thread as ThreadViewPost)
     } else if (AppBskyFeedPost.isRecord(item.record)) {
@@ -80,32 +83,49 @@ export const NotificationCard: React.VFC<NotificationCardProps> = (props) => {
     if (!agent) {
       return
     }
-    console.log('hogehoge')
+    console.log(item)
 
     //非同期のlikeがまだ処理中だったらreturn
     if(isReactionProcessing){
       return
     }
     setIsReactionProcessing(true)
+    const result = await agent.getPostThread({
+      uri: item.uri,
+    })
 
-
-    //let fetchedPost = await onFetch()
-    //console.log(fetchedPost)
-    console.log(post)
-    /*
-    if (fetchedPost.viewer?.like) {
-
-      await agent.deleteLike(fetchedPost.viewer?.like)
+    if (result?.data?.thread?.post?.viewer?.like) {
+      await agent.deleteLike(result?.data?.thread?.post?.viewer?.like)
       setIsReactionProcessing(false)
     } else {
-      await agent.like(post.uri, post.cid)
+      await agent.like(result?.data?.thread?.post?.uri, result?.data?.thread?.post?.cid)
       setIsReactionProcessing(false)
     }
-
-    await onFetch()
-     */
     setIsReactionProcessing(false)
+  }
 
+  const handleRepostClick = async () => {
+    if (!agent) {
+      return
+    }
+    console.log(item)
+
+    //非同期のlikeがまだ処理中だったらreturn
+    if(isReactionProcessing){
+      return
+    }
+    const result = await agent.getPostThread({
+      uri: item.uri,
+    })
+
+    if (result?.data?.thread?.post?.viewer?.like) {
+      await agent.deleteRepost(result?.data?.thread?.post?.viewer?.like)
+    } else {
+      await agent.repost(result?.data?.thread?.post?.uri, result?.data?.thread?.post?.cid)
+    }
+  }
+  const handleReplyClick = () => {
+    setReplyDialog(true)
   }
 
   useEffect(() => {
@@ -122,7 +142,6 @@ export const NotificationCard: React.VFC<NotificationCardProps> = (props) => {
                 {item.author.displayName ?? item.author.handle}
               </Link>{' '}
               liked your post{' '}
-              <FontAwesomeIcon icon={faHeart} color={'#F31260'} />
             </Text>
           </Card.Header>
           <Card.Divider />
@@ -164,6 +183,7 @@ export const NotificationCard: React.VFC<NotificationCardProps> = (props) => {
                       <Col>
                         <PostAction>
                           <FontAwesomeIcon
+                              onClick={handleReplyClick}
                               icon={faComment}
                               color="#787F85"
                               style={{ cursor: 'pointer' }}
@@ -186,7 +206,7 @@ export const NotificationCard: React.VFC<NotificationCardProps> = (props) => {
                           <Dropdown.Menu
                               onAction={(key) => {
                                 if (key === 'repost') {
-                                  console.log('')
+                                  handleRepostClick()
                                 } else if (key === 'quoteRepost') {
                                   console.log('')
                                 }
