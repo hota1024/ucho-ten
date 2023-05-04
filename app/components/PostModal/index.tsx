@@ -15,8 +15,9 @@ import {
   Row,
   Col,
   Popover,
+  styled,
 } from '@nextui-org/react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Post } from '../Post/Post'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
@@ -25,6 +26,14 @@ import { faFaceSurprise } from '@fortawesome/free-solid-svg-icons'
 import Zoom from 'react-medium-image-zoom'
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
+
+const PostTextarea = styled('textarea', {
+  background: '#efefef',
+  border: '1px solid #eaeaea',
+  borderRadius: '$sm',
+  resize: 'none',
+  padding: '1rem',
+})
 
 export interface PostModalProps {
   open: boolean
@@ -149,12 +158,12 @@ export const PostModal = (props: PostModalProps) => {
         </Modal.Body>
       )}
       <Modal.Body>
-        <Textarea
+        <PostTextarea
           aria-label="content"
           placeholder="content"
           rows={8}
           maxLength={300}
-          initialValue={contentText}
+          value={contentText}
           autoFocus={true}
           onChange={(e) => setContentText(e.target.value)}
           disabled={loading}
