@@ -29,6 +29,10 @@ import { Notification } from '@atproto/api/dist/client/types/app/bsky/notificati
 import { NotificationCardList } from '@/components/NotificationCardList'
 import { useShowPostNumbers } from '@/atoms/settings'
 import { SetttingsModal } from '@/components/SettingsModal'
+import { PostView } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
+import { PostModal } from '@/components/PostModal'
+import { PostRecordPost } from '@/types/posts'
+import { AppBskyEmbedRecord, ComAtprotoRepoStrongRef } from '@atproto/api'
 
 const Container = styled('div', {
   maxWidth: '1200px',
@@ -74,6 +78,8 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loadingNotifications, setLoadingNotifications] = useState(false)
   const [showPostNumbers, setShowPostNumbers] = useShowPostNumbers()
+  const [replyTo, setReplyTo] = useState<PostView | null>(null)
+  const [quoteRepostTo, setQuoteRepostTo] = useState<PostView | null>(null)
 
   const logout = () => {
     setLogoutLoading(true)
@@ -136,6 +142,42 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
     setShowPostNumbers((v) => !v)
   }
 
+  const onReplySubmit = async (postRecord: PostRecordPost) => {
+    if (!agent || !replyTo) {
+      return
+    }
+
+    const parent: ComAtprotoRepoStrongRef.Main = {
+      uri: replyTo.uri,
+      cid: replyTo.cid,
+    }
+
+    postRecord.reply = {
+      root: replyTo,
+      parent,
+    }
+
+    await agent.post(postRecord)
+    setReplyTo(null)
+  }
+
+  const onQuoteRepostSubmit = async (postRecord: PostRecordPost) => {
+    if (!agent) {
+      return
+    }
+
+    if (!postRecord.embed) {
+      postRecord.embed = {} as unknown as AppBskyEmbedRecord.Main
+    }
+
+    postRecord.embed = {
+      $type: 'app.bsky.embed.record',
+      record: quoteRepostTo,
+    }
+
+    await agent.post(postRecord)
+  }
+
   return (
     <Container>
       <Modal open={logoutLoading} blur preventClose>
@@ -145,6 +187,24 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
           <Text>ログアウト中...</Text>
         </Modal.Header>
       </Modal>
+
+      <PostModal
+        open={!!quoteRepostTo}
+        onClose={() => setQuoteRepostTo(null)}
+        onSubmit={onQuoteRepostSubmit}
+        parentPostView={quoteRepostTo!}
+        title="Quote Repost"
+        submitText="Quote Repost"
+      />
+
+      <PostModal
+        open={!!replyTo}
+        onClose={() => setReplyTo(null)}
+        onSubmit={onReplySubmit}
+        parentPostView={replyTo!}
+        title="Reply"
+        submitText="Reply"
+      />
 
       <SetttingsModal
         open={settingsModal}
@@ -196,7 +256,11 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
               </Row>
             )}
 
-            <NotificationCardList notifications={notifications} />
+            <NotificationCardList
+              notifications={notifications}
+              onReplyClick={setReplyTo}
+              onQuoteRepostClick={setQuoteRepostTo}
+            />
           </Popover.Content>
         </Popover>
 
