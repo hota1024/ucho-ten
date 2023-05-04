@@ -50,6 +50,7 @@ export const PostModal = (props: PostModalProps) => {
   const [contentText, setContentText] = useState<string>('')
   const [contentImage, setContentImages] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const isPostable = contentText.length > 0
   const isImageMaxLimited =
@@ -129,7 +130,17 @@ export const PostModal = (props: PostModalProps) => {
   }
 
   const onEmojiClick = (event: any, emojiObject: any) => {
-    setContentText(contentText + event.native)
+    if (textareaRef.current) {
+      const target = textareaRef.current
+      const cursorPosition = target.selectionStart
+
+      const content = `${contentText.slice(0, cursorPosition)}${
+        event.native
+      }${contentText.slice(cursorPosition, contentText.length)}`
+      setContentText(content)
+    } else {
+      setContentText(contentText + event.native)
+    }
   }
 
   return (
@@ -159,6 +170,7 @@ export const PostModal = (props: PostModalProps) => {
       )}
       <Modal.Body>
         <PostTextarea
+          ref={textareaRef}
           aria-label="content"
           placeholder="content"
           rows={8}
