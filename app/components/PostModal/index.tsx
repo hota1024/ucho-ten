@@ -180,6 +180,7 @@ export const PostModal = (props: PostModalProps) => {
           onChange={(e) => setContentText(e.target.value)}
           disabled={loading}
           onKeyDown={isPostable ? handleKeyDown : undefined}
+          onFocus={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
         />
       </Modal.Body>
       <Modal.Footer>
