@@ -15,8 +15,9 @@ import {
   Row,
   Col,
   Popover,
+  styled,
 } from '@nextui-org/react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Post } from '../Post/Post'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
@@ -25,6 +26,14 @@ import { faFaceSurprise } from '@fortawesome/free-solid-svg-icons'
 import Zoom from 'react-medium-image-zoom'
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
+
+const PostTextarea = styled('textarea', {
+  background: '#efefef',
+  border: '1px solid #eaeaea',
+  borderRadius: '$sm',
+  resize: 'none',
+  padding: '1rem',
+})
 
 export interface PostModalProps {
   open: boolean
@@ -41,6 +50,7 @@ export const PostModal = (props: PostModalProps) => {
   const [contentText, setContentText] = useState<string>('')
   const [contentImage, setContentImages] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const isPostable = contentText.length > 0
   const isImageMaxLimited =
@@ -120,7 +130,17 @@ export const PostModal = (props: PostModalProps) => {
   }
 
   const onEmojiClick = (event: any, emojiObject: any) => {
-    setContentText(contentText + event.native)
+    if (textareaRef.current) {
+      const target = textareaRef.current
+      const cursorPosition = target.selectionStart
+
+      const content = `${contentText.slice(0, cursorPosition)}${
+        event.native
+      }${contentText.slice(cursorPosition, contentText.length)}`
+      setContentText(content)
+    } else {
+      setContentText(contentText + event.native)
+    }
   }
 
   return (
@@ -149,16 +169,18 @@ export const PostModal = (props: PostModalProps) => {
         </Modal.Body>
       )}
       <Modal.Body>
-        <Textarea
+        <PostTextarea
+          ref={textareaRef}
           aria-label="content"
           placeholder="content"
           rows={8}
           maxLength={300}
-          initialValue={contentText}
+          value={contentText}
           autoFocus={true}
           onChange={(e) => setContentText(e.target.value)}
           disabled={loading}
           onKeyDown={isPostable ? handleKeyDown : undefined}
+          onFocus={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
         />
       </Modal.Body>
       <Modal.Footer>
