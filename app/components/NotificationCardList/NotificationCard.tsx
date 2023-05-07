@@ -41,7 +41,6 @@ import { PostModal } from '../PostModal'
  */
 export type NotificationCardProps = {
   item: Notification
-  onFetch: () => PostView | Promise<PostView>
   onReplyClick?: (post: PostView) => void
   onQuoteRepostClick?: (post: PostView) => void
 }
@@ -61,7 +60,7 @@ const PostAction = styled('div', {
 
 export const NotificationCard: React.FC<NotificationCardProps> = (props) => {
   const [agent] = useAgent()
-  const { item, onFetch } = props
+  const { item } = props
   const onReplyClick = props.onReplyClick ?? (() => {})
   const onQuoteRepostClick = props.onQuoteRepostClick ?? (() => {})
 
