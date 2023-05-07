@@ -24,6 +24,7 @@
     "next": "13.0.5-canary.5",
     "react": "latest",
     "react-dom": "latest",
+    "react-dropzone": "^14.2.3",
     "react-infinite-scroller": "^1.2.6",
     "react-konami-code": "^2.3.0",
     "react-medium-image-zoom": "^5.1.3",
