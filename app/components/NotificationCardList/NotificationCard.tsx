@@ -1,10 +1,14 @@
 import { useAgent } from '@/atoms/agent'
 import {
+  AppBskyFeedDefs,
   AppBskyFeedLike,
   AppBskyFeedPost,
   AppBskyGraphFollow,
 } from '@atproto/api'
-import { ThreadViewPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
+import {
+  ThreadViewPost,
+  isThreadViewPost,
+} from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 import { Notification } from '@atproto/api/dist/client/types/app/bsky/notification/listNotifications'
 import {
   PostView,
@@ -88,6 +92,11 @@ export const NotificationCard: React.FC<NotificationCardProps> = (props) => {
         const result = await agent.getPostThread({
           uri: item.uri,
         })
+
+        if (!AppBskyFeedDefs.isThreadViewPost(result.data.thread)) {
+          return
+        }
+
         console.log(result)
         setIsLiked(!!result.data.thread?.post?.viewer?.like)
         setIsReposted(!!result.data.thread?.post?.viewer?.repost)
@@ -125,6 +134,10 @@ export const NotificationCard: React.FC<NotificationCardProps> = (props) => {
       uri: item.uri,
     })
 
+    if (!AppBskyFeedDefs.isThreadViewPost(result.data.thread)) {
+      return
+    }
+
     if (result?.data?.thread?.post?.viewer?.like) {
       await agent.deleteLike(result?.data?.thread?.post?.viewer?.like)
       setIsReactionProcessing(false)
@@ -161,6 +174,10 @@ export const NotificationCard: React.FC<NotificationCardProps> = (props) => {
     const result = await agent.getPostThread({
       uri: item.uri,
     })
+
+    if (!AppBskyFeedDefs.isThreadViewPost(result.data.thread)) {
+      return
+    }
 
     if (result?.data?.thread?.post?.viewer?.like) {
       await agent.deleteRepost(result?.data?.thread?.post?.viewer?.like)
