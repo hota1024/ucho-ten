@@ -249,7 +249,7 @@ export const PostModal = (props: PostModalProps) => {
           <PostTextarea
               ref={textareaRef}
               aria-label="Text"
-              placeholder="Text, images"
+              placeholder="Text, Drag & drop images here"
               rows={8}
               maxLength={300}
               value={contentText}
