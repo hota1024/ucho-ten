@@ -38,7 +38,7 @@ export const LoginForm = (props: LoginFormProps) => {
   return (
     <Card as="form" onSubmit={handleSubmit} css={{ mw: '420px', p: '$8' }}>
       <Card.Header>
-        <Text b>ログイン</Text>
+        <Text b>Sign in to Bluesky</Text>
       </Card.Header>
 
       <Card.Body>
@@ -71,7 +71,7 @@ export const LoginForm = (props: LoginFormProps) => {
 
       <Card.Footer>
         <Button type="submit" disabled={loading} css={{ width: '100%' }}>
-          {loading ? <Loading size="xs" /> : 'サインイン'}
+          {loading ? <Loading size="xs" /> : 'Sign in'}
         </Button>
       </Card.Footer>
     </Card>

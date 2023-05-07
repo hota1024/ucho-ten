@@ -14,13 +14,26 @@ import {
   Image,
   Row,
   Col,
+  Popover,
+  styled,
 } from '@nextui-org/react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Post } from '../Post/Post'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { faImage } from '@fortawesome/free-solid-svg-icons'
+import { faFaceSurprise } from '@fortawesome/free-solid-svg-icons'
 import Zoom from 'react-medium-image-zoom'
+import data from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
+
+const PostTextarea = styled('textarea', {
+  background: '#efefef',
+  border: '1px solid #eaeaea',
+  borderRadius: '$sm',
+  resize: 'none',
+  padding: '1rem',
+})
 
 export interface PostModalProps {
   open: boolean
@@ -37,6 +50,7 @@ export const PostModal = (props: PostModalProps) => {
   const [contentText, setContentText] = useState<string>('')
   const [contentImage, setContentImages] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const isPostable = contentText.length > 0
   const isImageMaxLimited =
@@ -95,10 +109,12 @@ export const PostModal = (props: PostModalProps) => {
   const handleOnAddImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return
 
-    const files = e.target.files;
+    const files = e.target.files
     if (files) {
-      const allSizesValid = Array.from(files).every(file => file.size <= 976560);
-      if(allSizesValid === false) {
+      const allSizesValid = Array.from(files).every(
+        (file) => file.size <= 976560
+      )
+      if (allSizesValid === false) {
         return
       }
       //console.log(allSizesValid); // true or false
@@ -113,11 +129,26 @@ export const PostModal = (props: PostModalProps) => {
     setContentImages(newImages)
   }
 
+  const onEmojiClick = (event: any, emojiObject: any) => {
+    if (textareaRef.current) {
+      const target = textareaRef.current
+      const cursorPosition = target.selectionStart
+
+      const content = `${contentText.slice(0, cursorPosition)}${
+        event.native
+      }${contentText.slice(cursorPosition, contentText.length)}`
+      setContentText(content)
+    } else {
+      setContentText(contentText + event.native)
+    }
+  }
+
   return (
     <Modal
       open={open}
       onClose={loading ? () => {} : onClose}
       preventClose={loading}
+      className="post-modal"
     >
       <Modal.Header>
         <Text size="$lg" b>
@@ -138,16 +169,18 @@ export const PostModal = (props: PostModalProps) => {
         </Modal.Body>
       )}
       <Modal.Body>
-        <Textarea
+        <PostTextarea
+          ref={textareaRef}
           aria-label="content"
           placeholder="content"
           rows={8}
           maxLength={300}
-          initialValue={contentText}
+          value={contentText}
           autoFocus={true}
           onChange={(e) => setContentText(e.target.value)}
           disabled={loading}
           onKeyDown={isPostable ? handleKeyDown : undefined}
+          onFocus={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
         />
       </Modal.Body>
       <Modal.Footer>
@@ -199,6 +232,27 @@ export const PostModal = (props: PostModalProps) => {
           </div>
         )}
         <Row justify="space-between">
+          <div>
+            <Popover placement="left">
+              <Popover.Trigger>
+                <Button
+                  as="span"
+                  auto
+                  light
+                  icon={<FontAwesomeIcon icon={faFaceSurprise} size="lg" />}
+                />
+              </Popover.Trigger>
+              <Popover.Content>
+                <Picker
+                  data={data}
+                  onEmojiSelect={onEmojiClick}
+                  style={{ width: '100%' }}
+                  theme="light"
+                  previewPosition="none"
+                />
+              </Popover.Content>
+            </Popover>
+          </div>
           <label htmlFor={inputId}>
             <Button
               disabled={loading || isImageMaxLimited}

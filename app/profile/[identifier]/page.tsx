@@ -3,7 +3,7 @@
 import {
   Button,
   Card,
-  Col,
+  Col, Dropdown,
   Loading,
   Row,
   Spacer,
@@ -24,6 +24,8 @@ import reactStringReplace from 'react-string-replace'
 import Link from 'next/link'
 import Zoom from 'react-medium-image-zoom'
 import { ProfileEditModal } from '@/components/ProfileEditModal'
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 
 /**
  * Home page.
@@ -34,7 +36,12 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
   const [followHover, setFollowHover] = useState(false)
   const [isFollowing, setIsFollowing] = useState(!!profile?.viewer?.following)
   const [followLoading, setFollowLoading] = useState(false)
-  const [isMuted, setIsMuted] = useState(false)
+
+  const [isMuted, setIsMuted] = useState(!!profile?.viewer?.muted)
+  const [MuteLoading, setMuteLoading] = useState(false)
+  const [isBlocked, setIsBlocked] = useState(!!profile?.viewer?.blocking)
+  const [BlockLoading, setBlockLoading] = useState(false)
+
   const [isLabeled, setIsLabeled] = useState(false)
   const [whatLabel, setWhatLabel] = useState('')
   const [isMe, setIsMe] = useState(false)
@@ -82,7 +89,11 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
       setProfile(result.data)
       setIsFollowing(!!result.data?.viewer?.following)
 
-      if (result.data.viewer?.muted) {
+      if(result.data.viewer?.blocking || !!result.data.viewer?.blockedBy){
+        setIsBlocked(true)
+      }
+
+      if (result.data.viewer?.muted || result.data.viewer?.blocking || !!result.data.viewer?.blockedBy) {
         setShow(false)
       }
     } catch (error) {
@@ -114,6 +125,8 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
       return
     }
 
+
+
     const following = profile?.viewer?.following
     setFollowLoading(true)
 
@@ -133,12 +146,52 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
     setProfileEditModal(true)
   }
 
+  const handleMuteClick = async () => {
+    if (!agent) {
+      return
+    }
+    const mute = profile?.viewer?.muted
+    setMuteLoading(true)
+
+    if (isMuted && profile?.did) {
+      await agent.unmute(profile.did)
+      setIsMuted(false)
+    } else if (profile?.did) {
+      await agent.mute(profile.did)
+      setIsMuted(true)
+    }
+
+    //await fetchProfile()
+    setMuteLoading(false)
+
+  }
+
+  const handleBlockClick = async () => {
+    if (!agent) {
+      return
+    }
+    const blocking = profile?.viewer?.blocking
+    setBlockLoading(true)
+
+    if (blocking !== undefined) {
+      // await agent.unblock(profile.did)
+      setIsMuted(false)
+    } else if (profile?.did) {
+      // await agent.block(profile.did)
+      setIsMuted(true)
+    }
+
+    //await fetchProfile()
+    setMuteLoading(false)
+
+  }
+
   const newlineCodeToBr = (text: string) => {
     return text.split('\n').map((line, i) => (
       <p key={i}>
         {reactStringReplace(
           line,
-          /(@[a-zA-Z0-9-.]+|https?:\/\/[a-zA-Z0-9-./?=_%&:#]+)/g,
+          /(@[a-zA-Z0-9-.]+|https?:\/\/[a-zA-Z0-9-./?=_%&:#@]+)/g,
           (match, j) => {
             if (match.startsWith('@')) {
               let domain = match.substring(1) // remove "@" symbol from match
@@ -240,9 +293,31 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                       squared
                       size="xl"
                       name={profile.displayName}
-                      description={`@${profile.handle}`}
+                      description={`@${profile.handle}${isMuted?' (Muted)':''}`}
                     />
                   </Col>
+                  {!isMe && (
+                      <Dropdown placement="bottom-left">
+                          <Dropdown.Trigger>
+                            <FontAwesomeIcon icon={faEllipsis} size={'xl'}></FontAwesomeIcon>
+                          </Dropdown.Trigger>
+                          <Dropdown.Menu
+                              onAction={(key) => {
+                                  if (key === 'mute') {
+                                    handleMuteClick()
+                                  }
+                              }}
+                          >
+                              <Dropdown.Item key="mute">
+                                  {!isMuted && <Text>Mute</Text>}
+                                  {isMuted && (
+                                      <Text color={'error'}>UnMute</Text>
+                                  )}
+                              </Dropdown.Item>
+                          </Dropdown.Menu>
+                      </Dropdown>
+                      )}
+                  <Spacer y={1} />
                   <Button
                     rounded
                     bordered={isFollowing}

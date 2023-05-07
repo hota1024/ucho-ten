@@ -30,12 +30,12 @@ import {
 } from '@nextui-org/react'
 import Link from 'next/link'
 import { useState, useMemo, useCallback, useEffect } from 'react'
-import Zoom from 'react-medium-image-zoom'
 import { utx, makeConsecutiveUnits, makeUnit } from 'utx'
 import { PostRecordTextView } from '../PostRecordTextView'
 import { ProfileViewBasic } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
 import { AppBskyEmbedRecord, AppBskyEmbedImages } from '@atproto/api'
 import { useAgent } from '@/atoms/agent'
+import { ImagesGrid } from '../ImagesGrid'
 
 const RepostByLabel = styled('div', {
   fontSize: '$sm',
@@ -137,6 +137,7 @@ interface PostProps {
   onQuoteRepostClick?: () => void
 
   isFollowing?: boolean
+  isReactionProcessing?: boolean
   onFollowClick?: () => void
 
   onReplyClick?: () => void
@@ -165,6 +166,7 @@ export const Post = (props: PostProps) => {
     isLiked,
     isReposted,
     isFollowing,
+    isReactionProcessing,
     onReplyClick,
   } = props
   const onLikeClick = props.onLikeClick ?? (() => {})
@@ -325,107 +327,8 @@ export const Post = (props: PostProps) => {
             />
           </>
         )}
-        {images.length === 1 && (
-          <div
-            style={{
-              display: 'grid',
-              gap: '$4',
-              marginTop: '$4',
-              borderRadius: '10px',
-              overflow: 'hidden',
-              width: '100%',
-              maxHeight: '500px',
-              objectFit: 'cover',
-            }}
-          >
-            {images.map((image, key) => (
-              <Zoom key={key}>
-                <Image
-                  src={image.fullsize}
-                  alt={image.alt}
-                  style={{
-                    height: '100%',
-                    width: '100%',
-                    objectFit: 'cover',
-                  }}
-                />
-              </Zoom>
-            ))}
-          </div>
-        )}
 
-
-        {images.length === 2 && (
-          <div
-            style={{
-              display: 'flex',
-              width: '100%',
-              maxHeight: '500px',
-              borderRadius: '10px',
-              overflow: 'hidden',
-              gap: '0px 3px',
-            }}
-          >
-            <div style={{ width: `calc(100% / 2)`, height: '100%' }}>
-              <Zoom>
-                <img
-                  src={images[0].fullsize}
-                  alt="preview"
-                  style={{
-                    width: `100%`,
-                    height: '100%',
-                    marginBottom: '-10px',
-                    objectFit: 'cover',
-                  }}
-                />
-              </Zoom>
-            </div>
-            <div style={{ width: `calc(100% / 2)`, height: '100%' }}>
-              <Zoom>
-                <img
-                  src={images[1].fullsize}
-                  alt="preview"
-                  style={{
-                    width: `100%`,
-                    height: '100%',
-                    marginBottom: '-10px',
-                  }}
-                />
-              </Zoom>
-            </div>
-          </div>
-        )}
-        {images.length === 3 && (
-          <div style={{width:'100%', height:'100%', maxHeight:'400px',display:'flex',flexWrap:'wrap', overflow :'hidden', borderRadius:'10px'}}>
-            <div style={{height:'100%', width : 'calc(50% - 4px)', marginRight : '4px'}}>
-              <img src={images[0].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
-            </div>
-            <div style={{height:'100%', width : '50%'}}>
-              <div style={{height:'50%', width : '100%' ,marginBottom:'4px'}}>
-                <img src={images[1].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
-              </div>
-              <div style={{height:'50%', width : '100%', marginTop:'4px'}}>
-                <img src={images[2].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
-              </div>
-            </div>
-          </div>
-        )}
-        {images.length === 4 && (
-            <div style={{width:'100%', height:'100%', maxHeight:'400px',display:'flex',flexWrap:'wrap', overflow :'hidden', borderRadius:'10px'}}>
-              <div style={{width:'calc(50% - 2px)', height:'50%', marginRight:'2px', marginBottom:'2px'}}>
-                <img src={images[0].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
-              </div>
-              <div style={{width:'calc(50% - 2px)', height:'50%', marginLeft:'2px', marginBottom:'2px'}}>
-                <img src={images[1].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
-              </div>
-              <div style={{width:'calc(50% - 2px)', height:'50%', marginRight:'2px', marginTop:'2px'}}>
-                <img src={images[2].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
-              </div>
-              <div style={{width:'calc(50% - 2px)', height:'50%', marginLeft:'2px', marginTop:'2px'}}>
-                <img src={images[3].fullsize} style={{width:'100%', height:'100%', objectFit: 'cover'}}></img>
-              </div>
-            </div>
-        )}
+        {images.length > 0 && <ImagesGrid images={images} />}
 
         {!hideActions && (
           <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
@@ -478,7 +381,7 @@ export const Post = (props: PostProps) => {
             <Col>
               <PostAction>
                 <FontAwesomeIcon
-                  onClick={onLikeClick}
+                  onClick={!isReactionProcessing ? onLikeClick : undefined}
                   icon={isLiked ? faHeartSolid : faHeartRegular}
                   color={isLiked ? '#F31260' : '#787F85'}
                   style={{ cursor: 'pointer' }}
