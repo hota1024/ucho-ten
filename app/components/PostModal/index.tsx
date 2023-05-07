@@ -206,7 +206,7 @@ export const PostModal = (props: PostModalProps) => {
         )}
         {compressProcessing && (
             <Text size="$sm">
-              画像圧縮中...
+              画像圧縮中...<Loading size="xs"/>
             </Text>
         )}
         {contentImage.length > 0 && (
