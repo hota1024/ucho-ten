@@ -26,6 +26,8 @@ import { faFaceSurprise } from '@fortawesome/free-solid-svg-icons'
 import Zoom from 'react-medium-image-zoom'
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
+import imageCompression from "browser-image-compression";
+
 
 const PostTextarea = styled('textarea', {
   background: '#efefef',
@@ -107,20 +109,30 @@ export const PostModal = (props: PostModalProps) => {
   }
 
   const handleOnAddImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return
+    if (!e.target.files) return;
 
-    const files = e.target.files
-    if (files) {
-      const allSizesValid = Array.from(files).every(
-        (file) => file.size <= 976560
-      )
-      if (allSizesValid === false) {
-        return
-      }
-      //console.log(allSizesValid); // true or false
-    }
-    setContentImages((b) => [...b, ...(e.target.files ?? [])])
-  }
+    const compressedImages = await Promise.all(
+        Array.from(e.target.files).map(async (file) => {
+          if (file.size > 975000) {
+            try {
+              const compressedFile = await imageCompression(file, {
+                maxSizeMB: 0.9,
+                maxWidthOrHeight: 1920,
+              });
+
+              return compressedFile;
+            } catch (error) {
+              console.error(error);
+              return file;
+            }
+          } else {
+            return file;
+          }
+        })
+    );
+
+    setContentImages((b) => [...b, ...compressedImages]);
+  };
 
   const handleOnRemoveImage = (index: number) => {
     // 選択した画像は削除可能
