@@ -3,7 +3,7 @@ import { styled } from '@nextui-org/react'
 import Zoom from 'react-medium-image-zoom'
 
 const GridContainer = styled('div', {
-  height: '300px',
+  aspectRatio: '16 / 9',
   display: 'grid',
   gap: '2px',
   borderRadius: '8px',
@@ -26,6 +26,7 @@ const GridContainer = styled('div', {
 
 const GridItem = styled('div', {
   height: '100%',
+  // overflow: 'hidden',
   '& div': {
     height: '100%',
   },
@@ -35,6 +36,9 @@ const GridItem = styled('div', {
 })
 
 const Img = styled('img', {
+  aspectRatio: '16 / 9',
+  display: 'block',
+  width: '100%',
   height: '100%',
   objectFit: 'cover',
 })
@@ -57,17 +61,17 @@ export const ImagesGrid: React.FC<ImagesGridProps> = (props) => {
       <GridContainer layout="2x2">
         <GridItem css={{ gridRow: '1 / 3', gridColumn: '1 / 2' }}>
           <Zoom>
-            <Img src={images[0].fullsize} alt={images[0].alt} />
+            <Img src={images[0].fullsize} alt={images[0].alt} height="100%" />
           </Zoom>
         </GridItem>
         <GridItem css={{ gridRow: '1 / 2', gridColumn: '2 / 3' }}>
           <Zoom>
-            <Img src={images[1].fullsize} alt={images[1].alt} />
+            <Img src={images[1].fullsize} alt={images[1].alt} height="100%" />
           </Zoom>
         </GridItem>
-        <GridItem css={{ gridRow: '2 / 2', gridColumn: '2 / 3' }}>
+        <GridItem css={{ gridRow: '2 / 3', gridColumn: '2 / 3' }}>
           <Zoom>
-            <Img src={images[2].fullsize} alt={images[2].alt} />
+            <Img src={images[2].fullsize} alt={images[2].alt} height="100%" />
           </Zoom>
         </GridItem>
       </GridContainer>
