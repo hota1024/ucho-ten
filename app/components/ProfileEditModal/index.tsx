@@ -160,9 +160,21 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
             <Row>
               <ImageContainer htmlFor="banner-input" fullWidth>
                 {bannerFile ? (
-                  <Image src={URL.createObjectURL(bannerFile)} alt="banner" />
+                  <Image src={URL.createObjectURL(bannerFile)} alt="banner" css={{
+                    '&:hover': {
+                      opacity: 0.8,
+                      filter: 'grayscale(100%)',
+                      boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'
+                    }
+                  }}/>
                 ) : profile.banner ? (
-                  <Image src={profile.banner} alt="banner" />
+                  <Image src={profile.banner} alt="banner" css={{
+                    '&:hover': {
+                      opacity: 0.8,
+                      filter: 'grayscale(100%)',
+                      boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'
+                    }
+                  }}/>
                 ) : (
                   <DummyBanner></DummyBanner>
                 )}
@@ -185,9 +197,22 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
                     squared
                     size="xl"
                     pointer
+                    css={{
+                      '&:hover': {
+                        opacity: 0.8,
+                        filter: 'grayscale(100%)',
+                        boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'
+                      }
+                    }}
                   />
                 ) : profile.avatar ? (
-                  <Avatar src={profile.avatar} squared size="xl" pointer />
+                  <Avatar src={profile.avatar} squared size="xl" pointer css={{
+                    '&:hover': {
+                      opacity: 0.8,
+                      filter: 'grayscale(100%)',
+                      boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'
+                    }
+                  }}/>
                 ) : (
                   <DummyAvatar></DummyAvatar>
                 )}
