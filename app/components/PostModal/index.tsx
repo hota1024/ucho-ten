@@ -53,6 +53,7 @@ export const PostModal = (props: PostModalProps) => {
   const [contentImage, setContentImages] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [compressProcessing, setCompressProcessing] = useState(false)
 
   const isPostable = contentText.length > 0
   const isImageMaxLimited =
@@ -115,10 +116,12 @@ export const PostModal = (props: PostModalProps) => {
         Array.from(e.target.files).map(async (file) => {
           if (file.size > 975000) {
             try {
+              setCompressProcessing(true)
               const compressedFile = await imageCompression(file, {
-                maxSizeMB: 0.9,
+                maxSizeMB: 0.975,
                 maxWidthOrHeight: 1920,
               });
+              setCompressProcessing(false)
 
               return compressedFile;
             } catch (error) {
@@ -200,6 +203,11 @@ export const PostModal = (props: PostModalProps) => {
           <Text size="$sm" color="error">
             画像はあと{4 - contentImage.length}枚までです.
           </Text>
+        )}
+        {compressProcessing && (
+            <Text size="$sm">
+              画像圧縮中...
+            </Text>
         )}
         {contentImage.length > 0 && (
           <div style={{ display: 'flex', width: '100%', height: '100px' }}>
