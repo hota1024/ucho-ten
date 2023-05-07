@@ -184,6 +184,9 @@ export const PostModal = (props: PostModalProps) => {
         </Modal.Body>
       )}
       <Modal.Body>
+        <div style={{position: 'absolute', right:'50px', bottom:'-15px'}}>
+          <Text>{300 - contentText.length}</Text>
+        </div>
         <PostTextarea
           ref={textareaRef}
           aria-label="content"
