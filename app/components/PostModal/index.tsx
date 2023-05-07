@@ -26,6 +26,8 @@ import { faFaceSurprise } from '@fortawesome/free-solid-svg-icons'
 import Zoom from 'react-medium-image-zoom'
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
+import imageCompression from "browser-image-compression";
+
 
 const PostTextarea = styled('textarea', {
   background: '#efefef',
@@ -51,6 +53,7 @@ export const PostModal = (props: PostModalProps) => {
   const [contentImage, setContentImages] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [compressProcessing, setCompressProcessing] = useState(false)
 
   const isPostable = contentText.length > 0
   const isImageMaxLimited =
@@ -107,20 +110,32 @@ export const PostModal = (props: PostModalProps) => {
   }
 
   const handleOnAddImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return
+    if (!e.target.files) return;
 
-    const files = e.target.files
-    if (files) {
-      const allSizesValid = Array.from(files).every(
-        (file) => file.size <= 976560
-      )
-      if (allSizesValid === false) {
-        return
-      }
-      //console.log(allSizesValid); // true or false
-    }
-    setContentImages((b) => [...b, ...(e.target.files ?? [])])
-  }
+    const compressedImages = await Promise.all(
+        Array.from(e.target.files).map(async (file) => {
+          if (file.size > 975000) {
+            try {
+              setCompressProcessing(true)
+              const compressedFile = await imageCompression(file, {
+                maxSizeMB: 0.975,
+                maxWidthOrHeight: 1920,
+              });
+              setCompressProcessing(false)
+
+              return compressedFile;
+            } catch (error) {
+              console.error(error);
+              return file;
+            }
+          } else {
+            return file;
+          }
+        })
+    );
+
+    setContentImages((b) => [...b, ...compressedImages]);
+  };
 
   const handleOnRemoveImage = (index: number) => {
     // 選択した画像は削除可能
@@ -188,6 +203,11 @@ export const PostModal = (props: PostModalProps) => {
           <Text size="$sm" color="error">
             画像はあと{4 - contentImage.length}枚までです.
           </Text>
+        )}
+        {compressProcessing && (
+            <Text size="$sm">
+              画像圧縮中...<Loading size="xs"/>
+            </Text>
         )}
         {contentImage.length > 0 && (
           <div style={{ display: 'flex', width: '100%', height: '100px' }}>
