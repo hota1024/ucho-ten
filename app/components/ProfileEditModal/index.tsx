@@ -129,6 +129,12 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
     onSave()
     onClose()
   }
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      handleSaveClick()
+
+    }
+  }
 
   useEffect(() => {
     if (!open || !agent) {
@@ -243,6 +249,7 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
                 fullWidth
                 rows={5}
                 onChange={(e) => setDescription(e.target.value)}
+                onKeyDown={hasChange ? handleKeyDown : undefined}
               />
             </Row>
           </Modal.Body>
