@@ -297,25 +297,27 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                     />
                   </Col>
                   {!isMe && (
-                      <Dropdown placement="bottom-left">
+                      <div style={{cursor:'pointer'}}>
+                        <Dropdown placement="bottom-left">
                           <Dropdown.Trigger>
                             <FontAwesomeIcon icon={faEllipsis} size={'xl'}></FontAwesomeIcon>
                           </Dropdown.Trigger>
                           <Dropdown.Menu
                               onAction={(key) => {
-                                  if (key === 'mute') {
-                                    handleMuteClick()
-                                  }
+                                if (key === 'mute') {
+                                  handleMuteClick()
+                                }
                               }}
                           >
-                              <Dropdown.Item key="mute">
-                                  {!isMuted && <Text>Mute</Text>}
-                                  {isMuted && (
-                                      <Text color={'error'}>UnMute</Text>
-                                  )}
-                              </Dropdown.Item>
+                            <Dropdown.Item key="mute">
+                              {!isMuted && <Text>Mute</Text>}
+                              {isMuted && (
+                                  <Text color={'error'}>UnMute</Text>
+                              )}
+                            </Dropdown.Item>
                           </Dropdown.Menu>
-                      </Dropdown>
+                        </Dropdown>
+                      </div>
                       )}
                   <Spacer y={1} />
                   <Button

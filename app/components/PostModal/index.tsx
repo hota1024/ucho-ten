@@ -27,6 +27,10 @@ import Zoom from 'react-medium-image-zoom'
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import imageCompression from "browser-image-compression";
+import { useDropzone, FileWithPath } from 'react-dropzone'
+import { useCallback, useMemo } from 'react';
+
+
 
 
 const PostTextarea = styled('textarea', {
@@ -55,7 +59,9 @@ export const PostModal = (props: PostModalProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [compressProcessing, setCompressProcessing] = useState(false)
 
+
   const isPostable = contentText.length > 0
+  const isContentLimitOver = contentText.length > 300
   const isImageMaxLimited =
     contentImage.length >= 5 || contentImage.length === 4 // 4枚まで
   const isImageMinLimited = contentImage.length === 0 // 4枚まで
@@ -158,6 +164,49 @@ export const PostModal = (props: PostModalProps) => {
     }
   }
 
+  const handleDrop = (e:any) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    // ファイルの処理を行う
+  };
+
+  const handleDragOver = (e:any) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+  };
+
+  const onDrop = useCallback(async (files: File[]) => {
+    const maxFileSize = 975 * 1024; // 975KB
+    const compressedFiles = [];
+
+
+    for (const file of files) {
+      // 1. ファイルのサイズを確認する
+      if (file.size > maxFileSize) {
+        // 2. ファイルが画像かどうかを確認する
+        if (file.type.includes('image')) {
+          // 3. ファイルが975KB以上であるかどうかを確認する
+          setCompressProcessing(true);
+          const compressedFile = await imageCompression(file, {
+            maxSizeMB: 0.975, // 975KB
+            useWebWorker: true,
+          });
+          compressedFiles.push(compressedFile);
+          setCompressProcessing(false);
+        } else {
+          compressedFiles.push(file);
+        }
+      } else {
+        compressedFiles.push(file);
+      }
+    }
+
+    // 5. 圧縮されたファイルをsetContentImagesで設定する
+    setContentImages(compressedFiles);
+  }, []);
+  const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone({ onDrop });
+  const filesUpdated: FileWithPath[] = acceptedFiles;
+
   return (
     <Modal
       open={open}
@@ -184,19 +233,34 @@ export const PostModal = (props: PostModalProps) => {
         </Modal.Body>
       )}
       <Modal.Body>
-        <PostTextarea
-          ref={textareaRef}
-          aria-label="content"
-          placeholder="content"
-          rows={8}
-          maxLength={300}
-          value={contentText}
-          autoFocus={true}
-          onChange={(e) => setContentText(e.target.value)}
-          disabled={loading}
-          onKeyDown={isPostable ? handleKeyDown : undefined}
-          onFocus={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
-        />
+        <div style={{position: 'absolute', right:'45px', bottom:'0px'}}>
+          {contentText.length > 300 &&(
+                <Text color="red" size="$sm" b>
+                  {300 - contentText.length}
+                </Text>
+          )}
+          {contentText.length <= 300 &&(
+              <Text size="$sm">{300 - contentText.length}</Text>
+          )}
+        </div>
+        <div
+            {...getRootProps({ onDrop: handleDrop, onDragOver: handleDragOver })}
+        >
+          <PostTextarea
+              ref={textareaRef}
+              aria-label="Text"
+              placeholder="Text, Drag & drop images here"
+              rows={8}
+              maxLength={300}
+              value={contentText}
+              autoFocus={true}
+              onChange={(e) => setContentText(e.target.value)}
+              disabled={loading}
+              onKeyDown={isPostable ? handleKeyDown : undefined}
+              onFocus={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
+              style={{border: isDragActive ? '2px dashed #000' : 'none', width:'100%', height:'100%'}}
+          />
+        </div>
       </Modal.Body>
       <Modal.Footer>
         {contentImage.length > 0 && (
@@ -275,7 +339,7 @@ export const PostModal = (props: PostModalProps) => {
           </div>
           <label htmlFor={inputId}>
             <Button
-              disabled={loading || isImageMaxLimited}
+              disabled={loading || compressProcessing || isImageMaxLimited}
               as="span"
               auto
               light
@@ -291,7 +355,7 @@ export const PostModal = (props: PostModalProps) => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 handleOnAddImage(e)
               }
-              disabled={isImageMaxLimited}
+              disabled={loading || compressProcessing || isImageMaxLimited}
             />
           </label>
 
@@ -305,6 +369,7 @@ export const PostModal = (props: PostModalProps) => {
               disabled={
                 loading ||
                 (!isPostable && isImageMinLimited) ||
+                  compressProcessing || isContentLimitOver ||
                 contentImage.length >= 5
               }
             >

@@ -67,7 +67,7 @@ export const useTimelineView = (
   )
 
   const reloadTimeline = useCallback(async () => {
-    updateFeed(0, true)
+    await updateFeed(0, true)
     setHasNewTimeline(false)
 
     if (containerRef.current) {
