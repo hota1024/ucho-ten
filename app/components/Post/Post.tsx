@@ -182,6 +182,10 @@ export const Post = (props: PostProps) => {
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
 
+  if (!author) {
+    console.log('ブロック対象ユーザー')
+  }
+
   const handleRepostMarkClick = () => {
     //onRepostClick()
   }
@@ -210,6 +214,10 @@ export const Post = (props: PostProps) => {
       clearInterval(id)
     }
   }, [time, updateElapsed])
+
+  if (!author) {
+    return <></>
+  }
 
   return (
     <Row
