@@ -354,7 +354,7 @@ export const Post = (props: PostProps) => {
                 isFollowing={(embed.record as Record).author.viewer?.following as boolean}
                 postUri={((embed.record as Record).uri).split('/').pop() as string}
                 createdAt={(embed.record as Record).indexedAt as string}
-                embed={(embed.record as Record)?.embeds[0] as AppBskyEmbedRecord.ViewRecord}
+                embed={embed?.record?.embeds[0] as AppBskyEmbedRecord.ViewRecord}
 
                 isEmbed
                 hideActions
@@ -364,6 +364,7 @@ export const Post = (props: PostProps) => {
         )}
 
         {images.length > 0 && <ImagesGrid images={images} />}
+        {embed?.media && embed?.media?.images?.length > 0 && <ImagesGrid images={embed?.media?.images} />}
 
         {embed && embed.$type === "app.bsky.embed.external#view" && (
             <a href={embed?.external?.uri} target="_blank" rel="noopener noreferrer">
@@ -390,7 +391,7 @@ export const Post = (props: PostProps) => {
                   //isFollowing={(embed.record as Record).author.viewer?.following as boolean}
                   //postUri={((embed.record as Record).uri).split('/').pop() as string}
                   //createdAt={(embed.record as Record).indexedAt as string}
-                  embed={embed.media as AppBskyEmbedRecord.ViewRecord}
+                  embed={(embed.record as Record)?.record?.embeds[0] as AppBskyEmbedRecord.ViewRecord}
                   isEmbed
                   hideActions
               />
