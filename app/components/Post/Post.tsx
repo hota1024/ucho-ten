@@ -182,7 +182,7 @@ export const Post = (props: PostProps) => {
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
 
-  if(!author){
+  if (!author) {
     console.log('ブロック対象ユーザー')
   }
 
@@ -215,8 +215,8 @@ export const Post = (props: PostProps) => {
     }
   }, [time, updateElapsed])
 
-  if(!author){
-    return
+  if (!author) {
+    return <></>
   }
 
   return (
