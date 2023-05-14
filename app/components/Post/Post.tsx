@@ -206,8 +206,8 @@ export const Post = (props: PostProps) => {
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
 
-  if(embed && embed.$type === "app.bsky.embed.external#view"){
-    console.log(embed.external)
+  if(embed && embed.$type === "app.bsky.embed.recordWithMedia#view"){
+    console.log(embed)
   }
 
   const updateElapsed = useCallback(() => {
@@ -372,13 +372,30 @@ export const Post = (props: PostProps) => {
                   <img src={embed?.external?.thumb}></img>
                 </URLCardThumb>
                 <URLCardDetail>
-                  <div style={{verticalAlign: 'middle'}}>
+                  <div>
                     <div>{embed?.external?.title}</div>
                     <div>{embed?.external?.description}</div>
                   </div>
                 </URLCardDetail>
               </URLCard>
             </a>
+        )}
+
+        {embed && embed.$type === "app.bsky.embed.recordWithMedia#view" && (
+            <>
+              <Post
+                  //myDid={myDid}
+                  record={(embed.record as Record)?.record.value as Record}
+                  author={(embed.record as Record)?.record.author as ProfileViewBasic}
+                  //isFollowing={(embed.record as Record).author.viewer?.following as boolean}
+                  //postUri={((embed.record as Record).uri).split('/').pop() as string}
+                  //createdAt={(embed.record as Record).indexedAt as string}
+                  embed={embed.media as AppBskyEmbedRecord.ViewRecord}
+                  isEmbed
+                  hideActions
+              />
+
+            </>
         )}
 
         {!hideActions && (
