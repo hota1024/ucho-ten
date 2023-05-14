@@ -324,6 +324,7 @@ export const Post = (props: PostProps) => {
         {embed && embed.$type === 'app.bsky.embed.record#view' && (
           <>
             <Post
+                myDid={myDid}
                 record={(embed.record as Record).value as Record}
                 author={(embed.record as Record).author as ProfileViewBasic}
                 isFollowing={(embed.record as Record).author.viewer?.following as boolean}
