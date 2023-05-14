@@ -102,6 +102,30 @@ const ReplyLine = styled('div', {
   bottom: 2,
 })
 
+const URLCard = styled('div', {
+  height: '100px',
+  width: '100%',
+  borderRadius : ' 10px',
+  overflow: 'hidden',
+  border: '1px solid $gray600',
+  display: 'flex',
+  alignItems: 'center',
+  color: '$gray800'
+
+})
+
+const URLCardThumb = styled('div', {
+  height: '100px',
+  width: '100px',
+  borderRight: '1px solid $gray600',
+})
+const URLCardDetail = styled('div', {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginLeft : '10px',
+})
+
 interface PostProps {
   myDid?: string
   postUri?: string
@@ -182,8 +206,8 @@ export const Post = (props: PostProps) => {
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
 
-  if(embed && embed.$type === 'app.bsky.embed.record#view'){
-    console.log(embed.record)
+  if(embed && embed.$type === "app.bsky.embed.external#view"){
+    console.log(embed.external)
   }
 
   const updateElapsed = useCallback(() => {
@@ -340,6 +364,22 @@ export const Post = (props: PostProps) => {
         )}
 
         {images.length > 0 && <ImagesGrid images={images} />}
+
+        {embed && embed.$type === "app.bsky.embed.external#view" && (
+            <a href={embed?.external?.uri} target="_blank" rel="noopener noreferrer">
+              <URLCard>
+                <URLCardThumb>
+                  <img src={embed?.external?.thumb}></img>
+                </URLCardThumb>
+                <URLCardDetail>
+                  <div style={{verticalAlign: 'middle'}}>
+                    <div>{embed?.external?.title}</div>
+                    <div>{embed?.external?.description}</div>
+                  </div>
+                </URLCardDetail>
+              </URLCard>
+            </a>
+        )}
 
         {!hideActions && (
           <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
