@@ -182,12 +182,8 @@ export const Post = (props: PostProps) => {
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
 
-  if (!author) {
-    console.log('ブロック対象ユーザー')
-  }
-
-  const handleRepostMarkClick = () => {
-    //onRepostClick()
+  if(embed && embed.$type === 'app.bsky.embed.record#view'){
+    console.log(embed.record)
   }
 
   const updateElapsed = useCallback(() => {
@@ -328,11 +324,15 @@ export const Post = (props: PostProps) => {
         {embed && embed.$type === 'app.bsky.embed.record#view' && (
           <>
             <Post
-              record={(embed.record as Record).value as Record}
-              author={(embed.record as Record).author as ProfileViewBasic}
-              isEmbed
-              hideActions
+                record={(embed.record as Record).value as Record}
+                author={(embed.record as Record).author as ProfileViewBasic}
+                postUri={((embed.record as Record).uri.split('/').pop()) as string}
+                createdAt={createdAt}
+                embed={(embed.record as Record).embeds[0] as AppBskyEmbedRecord.ViewRecord}
+                isEmbed
+                hideActions
             />
+
           </>
         )}
 
