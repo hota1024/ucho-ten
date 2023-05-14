@@ -326,9 +326,11 @@ export const Post = (props: PostProps) => {
             <Post
                 record={(embed.record as Record).value as Record}
                 author={(embed.record as Record).author as ProfileViewBasic}
-                postUri={((embed.record as Record).uri.split('/').pop()) as string}
-                createdAt={createdAt}
-                embed={(embed.record as Record).embeds[0] as AppBskyEmbedRecord.ViewRecord}
+                isFollowing={(embed.record as Record).author.viewer?.following as boolean}
+                postUri={((embed.record as Record).uri).split('/').pop() as string}
+                createdAt={(embed.record as Record).indexedAt as string}
+                embed={(embed.record as Record)?.embeds[0] as AppBskyEmbedRecord.ViewRecord}
+
                 isEmbed
                 hideActions
             />
