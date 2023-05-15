@@ -52,8 +52,8 @@ export const PostViewCard = (props: PostViewCardProps) => {
   const [showPostNumbers] = useShowPostNumbers()
   const [isReactionProcessing, setIsReactionProcessing] = useState(false)
 
-  console.log(post.record?.embed?.record?.embed as any)
-
+  //console.log(post.record?.embed?.record?.embed as any)
+  //console.log(post)
 
   if (
     post.cid === 'bafyreievvr466th5wonvdoxazkbly6ziide2s7hjiu35poxeicfnh6vlfa'
