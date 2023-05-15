@@ -102,6 +102,45 @@ const ReplyLine = styled('div', {
   bottom: 2,
 })
 
+const URLCard = styled('div', {
+  height: '100px',
+  width: '485px',
+  borderRadius: ' 10px',
+  overflow: 'hidden',
+  border: '1px solid $gray600',
+  display: 'flex',
+  alignItems: 'center',
+  color: '$gray800',
+})
+
+const URLCardThumb = styled('div', {
+  height: '100px',
+  width: '100px',
+  borderRight: '1px solid $gray600',
+})
+const URLCardDetail = styled('div', {
+  display: 'flex',
+  alignItems: 'center',
+  marginLeft: '10px',
+  height: '100%',
+  width: 'calc(100% - 110px)',
+})
+const URLCardTitle = styled('div', {
+  fontSize: '$sm',
+  fontWeight: 'bold',
+  color: '$gray800',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  width: '100%',
+  marginBottom: '$1',
+})
+const URLCardDesc = styled('div', {
+  fontSize: '$xs',
+  color: '$gray700',
+  marginTop: '$1',
+})
+
 interface PostProps {
   myDid?: string
   postUri?: string
@@ -176,19 +215,16 @@ export const Post = (props: PostProps) => {
 
   const [agent] = useAgent()
   const [followHover, setFollowHover] = useState(false)
+  const [showEmbedImages, setShowEmbedImages] = useState(!isEmbed)
 
   const images = AppBskyEmbedImages.isView(embed) ? embed.images ?? [] : []
 
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
 
-  if (!author) {
-    console.log('ブロック対象ユーザー')
-  }
-
-  const handleRepostMarkClick = () => {
-    //onRepostClick()
-  }
+  /*if(embed && embed.$type === "app.bsky.embed.record#view" && embed?.record?.embeds?.length != 0){
+    console.log(embed)
+  }*/
 
   const updateElapsed = useCallback(() => {
     if (!time) return 0
@@ -324,19 +360,100 @@ export const Post = (props: PostProps) => {
         </PostInfo>
 
         <PostRecordTextView record={record} />
+        {embed &&
+          isEmbed &&
+          showEmbedImages &&
+          embed.$type === 'app.bsky.embed.images#view' && (
+            <a onClick={() => setShowEmbedImages(false)}>hide images</a>
+          )}
+        {embed &&
+          isEmbed &&
+          !showEmbedImages &&
+          embed.$type === 'app.bsky.embed.images#view' && (
+            <a onClick={() => setShowEmbedImages(true)}>show images</a>
+          )}
 
-        {embed && embed.$type === 'app.bsky.embed.record#view' && (
+        {embed && !isEmbed && embed.$type === 'app.bsky.embed.record#view' && (
           <>
             <Post
+              myDid={myDid}
               record={(embed.record as Record).value as Record}
               author={(embed.record as Record).author as ProfileViewBasic}
+              isFollowing={
+                !!((embed.record as Record).author as ProfileViewBasic).viewer
+                  ?.following
+              }
+              postUri={
+                (embed.record as { uri: string }).uri.split('/').pop() as string
+              }
+              createdAt={(embed.record as Record).indexedAt as string}
+              embed={
+                (embed?.record as any)?.embeds?.length
+                  ? ((embed.record as any)
+                      .embeds[0] as AppBskyEmbedRecord.ViewRecord as any)
+                  : null
+              }
               isEmbed
               hideActions
             />
           </>
         )}
 
-        {images.length > 0 && <ImagesGrid images={images} />}
+        {images.length > 0 && showEmbedImages && <ImagesGrid images={images} />}
+        {!!embed?.media && (embed?.media as any)?.images?.length > 0 && (
+          <ImagesGrid images={(embed?.media as any)?.images} />
+        )}
+
+        {embed && !isEmbed && embed.$type === 'app.bsky.embed.external#view' && (
+          <a
+            href={(embed as any)?.external?.uri}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <URLCard>
+              <URLCardThumb>
+                <img
+                  src={(embed as any)?.external?.thumb}
+                  style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                  alt={(embed as any)?.external?.alt}
+                ></img>
+              </URLCardThumb>
+              <URLCardDetail>
+                <div>
+                  <URLCardTitle style={{ color: 'black' }}>
+                    {(embed as any)?.external?.title}
+                  </URLCardTitle>
+                  <URLCardDesc style={{ fontSize: 'small' }}>
+                    {(embed as any)?.external?.description}
+                  </URLCardDesc>
+                </div>
+              </URLCardDetail>
+            </URLCard>
+          </a>
+        )}
+
+        {embed &&
+          !isEmbed &&
+          embed.$type === 'app.bsky.embed.recordWithMedia#view' && (
+            <>
+              <Post
+                //myDid={myDid}
+                record={(embed.record as any)?.record.value as Record}
+                author={
+                  (embed.record as any)?.record.author as ProfileViewBasic
+                }
+                //isFollowing={(embed.record as Record).author.viewer?.following as boolean}
+                //postUri={((embed.record as Record).uri).split('/').pop() as string}
+                //createdAt={(embed.record as Record).indexedAt as string}
+                embed={
+                  (embed.record as any)?.record
+                    ?.embeds[0] as AppBskyEmbedRecord.ViewRecord
+                }
+                isEmbed
+                hideActions
+              />
+            </>
+          )}
 
         {!hideActions && (
           <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
