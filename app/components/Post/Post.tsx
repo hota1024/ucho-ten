@@ -393,7 +393,7 @@ export const Post = (props: PostProps) => {
             <a href={embed?.external?.uri} target="_blank" rel="noopener noreferrer">
               <URLCard>
                 <URLCardThumb>
-                  <img src={embed?.external?.thumb} style={{objectFit: 'cover',width :'100%', height:'100%'}}></img>
+                  <Image src={embed?.external?.thumb} style={{objectFit: 'cover',width :'100%', height:'100%'}} alt={embed?.external?.alt}></Image>
                 </URLCardThumb>
                 <URLCardDetail>
                   <div>
