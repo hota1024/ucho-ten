@@ -222,7 +222,7 @@ export const Post = (props: PostProps) => {
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
 
-  /*if(embed && embed.$type === "app.bsky.embed.record#view" && embed?.record?.embeds?.length != 0){
+  /*if(embed && embed.$type === "app.bsky.embed.recordWithMedia#view"){
     console.log(embed)
   }*/
 
@@ -437,14 +437,14 @@ export const Post = (props: PostProps) => {
           embed.$type === 'app.bsky.embed.recordWithMedia#view' && (
             <>
               <Post
-                //myDid={myDid}
+                myDid={myDid}
                 record={(embed.record as any)?.record.value as Record}
                 author={
                   (embed.record as any)?.record.author as ProfileViewBasic
                 }
-                //isFollowing={(embed.record as Record).author.viewer?.following as boolean}
-                //postUri={((embed.record as Record).uri).split('/').pop() as string}
-                //createdAt={(embed.record as Record).indexedAt as string}
+                isFollowing={(embed.record as any).record?.author?.viewer?.following as boolean}
+                postUri={(embed.record as any).record?.uri.split('/').pop() as string}
+                createdAt={(embed.record as any).record?.indexedAt as string}
                 embed={
                   (embed.record as any)?.record
                     ?.embeds[0] as AppBskyEmbedRecord.ViewRecord
