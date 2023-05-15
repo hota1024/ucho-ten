@@ -342,11 +342,14 @@ export const Post = (props: PostProps) => {
         <PostInfo>
           <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
             <AuthorDisplayName>
-              {author.displayName ?? `@${author.handle}`}
+              {!isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 25 ? (author.displayName ?? `@${author.handle}`).slice(0, 25) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 25) ? '...' : '')}
+              {isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 20 ? (author.displayName ?? `@${author.handle}`).slice(0, 17) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 17) ? '...' : '')}
             </AuthorDisplayName>
           </Link>
           <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
-            <AuthorHandle>@{author.handle}</AuthorHandle>
+            <AuthorHandle>
+              @{author.handle.length >= 30 ? `${author.handle.slice(0,25)}...`: author.handle}
+            </AuthorHandle>
           </Link>
           <PostDate>
             <Link
