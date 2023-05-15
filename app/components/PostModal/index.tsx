@@ -93,7 +93,7 @@ export const PostModal = (props: PostModalProps) => {
     await rt.detectFacets(agent)
 
     await onSubmit({
-      text: rt.text,
+      text: rt.text.trimStart().trimEnd(),
       facets: rt.facets,
       embed:
         blobs.length > 0
