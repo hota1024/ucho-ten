@@ -122,8 +122,9 @@ const URLCardThumb = styled('div', {
 const URLCardDetail = styled('div', {
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
   marginLeft : '10px',
+  height:'100%',
+  width: 'calc(100% - 110px)',
 })
 
 interface PostProps {
@@ -345,7 +346,7 @@ export const Post = (props: PostProps) => {
 
         <PostRecordTextView record={record} />
 
-        {embed && embed.$type === 'app.bsky.embed.record#view' && (
+        {embed && !isEmbed && embed.$type === 'app.bsky.embed.record#view' && (
           <>
             <Post
                 myDid={myDid}
@@ -366,23 +367,23 @@ export const Post = (props: PostProps) => {
         {images.length > 0 && <ImagesGrid images={images} />}
         {embed?.media && embed?.media?.images?.length > 0 && <ImagesGrid images={embed?.media?.images} />}
 
-        {embed && embed.$type === "app.bsky.embed.external#view" && (
+        {embed && !isEmbed && embed.$type === "app.bsky.embed.external#view" && (
             <a href={embed?.external?.uri} target="_blank" rel="noopener noreferrer">
               <URLCard>
                 <URLCardThumb>
-                  <img src={embed?.external?.thumb}></img>
+                  <img src={embed?.external?.thumb} style={{objectFit: 'cover',width :'100%'}}></img>
                 </URLCardThumb>
                 <URLCardDetail>
                   <div>
-                    <div>{embed?.external?.title}</div>
-                    <div>{embed?.external?.description}</div>
+                    <div style={{color:'black'}}>{embed?.external?.title}</div>
+                    <div style={{fontSize :'small'}}>{embed?.external?.description}</div>
                   </div>
                 </URLCardDetail>
               </URLCard>
             </a>
         )}
 
-        {embed && embed.$type === "app.bsky.embed.recordWithMedia#view" && (
+        {embed && !isEmbed && embed.$type === "app.bsky.embed.recordWithMedia#view" && (
             <>
               <Post
                   //myDid={myDid}
