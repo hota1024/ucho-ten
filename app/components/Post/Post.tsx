@@ -104,7 +104,7 @@ const ReplyLine = styled('div', {
 
 const URLCard = styled('div', {
   height: '100px',
-  width: '100%',
+  width: '485px',
   borderRadius : ' 10px',
   overflow: 'hidden',
   border: '1px solid $gray600',
@@ -125,7 +125,21 @@ const URLCardDetail = styled('div', {
   marginLeft : '10px',
   height:'100%',
   width: 'calc(100% - 110px)',
-  overflow: 'hidden',
+})
+const URLCardTitle = styled('div', {
+    fontSize: '$sm',
+    fontWeight: 'bold',
+    color: '$gray800',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    width: '100%',
+    marginBottom: '$1',
+})
+const URLCardDesc = styled('div', {
+    fontSize: '$xs',
+    color: '$gray700',
+    marginTop: '$1',
 })
 
 interface PostProps {
@@ -383,8 +397,8 @@ export const Post = (props: PostProps) => {
                 </URLCardThumb>
                 <URLCardDetail>
                   <div>
-                    <div style={{color:'black'}}>{embed?.external?.title}</div>
-                    <div style={{fontSize :'small'}}>{embed?.external?.description}</div>
+                    <URLCardTitle style={{color:'black'}}>{embed?.external?.title}</URLCardTitle>
+                    <URLCardDesc style={{fontSize :'small'}}>{embed?.external?.description}</URLCardDesc>
                   </div>
                 </URLCardDetail>
               </URLCard>
