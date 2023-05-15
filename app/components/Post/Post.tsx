@@ -125,6 +125,7 @@ const URLCardDetail = styled('div', {
   marginLeft : '10px',
   height:'100%',
   width: 'calc(100% - 110px)',
+  overflow: 'hidden',
 })
 
 interface PostProps {
@@ -378,7 +379,7 @@ export const Post = (props: PostProps) => {
             <a href={embed?.external?.uri} target="_blank" rel="noopener noreferrer">
               <URLCard>
                 <URLCardThumb>
-                  <img src={embed?.external?.thumb} style={{objectFit: 'cover',width :'100%'}}></img>
+                  <img src={embed?.external?.thumb} style={{objectFit: 'cover',width :'100%', height:'100%'}}></img>
                 </URLCardThumb>
                 <URLCardDetail>
                   <div>
