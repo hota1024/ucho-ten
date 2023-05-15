@@ -223,9 +223,9 @@ export const Post = (props: PostProps) => {
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
 
-  if(embed && embed.$type === "app.bsky.embed.record#view" && embed?.record?.embeds?.length != 0){
+  /*if(embed && embed.$type === "app.bsky.embed.record#view" && embed?.record?.embeds?.length != 0){
     console.log(embed)
-  }
+  }*/
 
   const updateElapsed = useCallback(() => {
     if (!time) return 0
