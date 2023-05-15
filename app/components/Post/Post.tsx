@@ -201,7 +201,7 @@ export const Post = (props: PostProps) => {
 
   const [agent] = useAgent()
   const [followHover, setFollowHover] = useState(false)
-  const [showEmbedImages, setShowEmbedImages] = useState(false)
+  const [showEmbedImages, setShowEmbedImages] = useState(!isEmbed)
 
   const images = AppBskyEmbedImages.isView(embed) ? embed.images ?? [] : []
 
@@ -346,10 +346,10 @@ export const Post = (props: PostProps) => {
         </PostInfo>
 
         <PostRecordTextView record={record} />
-        {embed && isEmbed && showEmbedImages &&(
+        {embed && isEmbed && showEmbedImages && embed.$type === 'app.bsky.embed.images#view' &&(
             <a onClick={() => setShowEmbedImages(false)}>hide images</a>
         )}
-        {embed && isEmbed && !showEmbedImages &&(
+        {embed && isEmbed && !showEmbedImages && embed.$type === 'app.bsky.embed.images#view' &&(
             <a onClick={() => setShowEmbedImages(true)}>show images</a>
         )}
 
