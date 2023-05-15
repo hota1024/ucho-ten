@@ -348,7 +348,7 @@ export const Post = (props: PostProps) => {
           </Link>
           <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
             <AuthorHandle>
-              @{author.handle.length >= 30 ? `${author.handle.slice(0,25)}...`: author.handle}
+              @{author.handle.length >= 30 ? `${author.handle.slice(0,22)}...`: author.handle}
             </AuthorHandle>
           </Link>
           <PostDate>
