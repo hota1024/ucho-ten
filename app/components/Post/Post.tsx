@@ -105,13 +105,12 @@ const ReplyLine = styled('div', {
 const URLCard = styled('div', {
   height: '100px',
   width: '485px',
-  borderRadius : ' 10px',
+  borderRadius: ' 10px',
   overflow: 'hidden',
   border: '1px solid $gray600',
   display: 'flex',
   alignItems: 'center',
-  color: '$gray800'
-
+  color: '$gray800',
 })
 
 const URLCardThumb = styled('div', {
@@ -122,24 +121,24 @@ const URLCardThumb = styled('div', {
 const URLCardDetail = styled('div', {
   display: 'flex',
   alignItems: 'center',
-  marginLeft : '10px',
-  height:'100%',
+  marginLeft: '10px',
+  height: '100%',
   width: 'calc(100% - 110px)',
 })
 const URLCardTitle = styled('div', {
-    fontSize: '$sm',
-    fontWeight: 'bold',
-    color: '$gray800',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    width: '100%',
-    marginBottom: '$1',
+  fontSize: '$sm',
+  fontWeight: 'bold',
+  color: '$gray800',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  width: '100%',
+  marginBottom: '$1',
 })
 const URLCardDesc = styled('div', {
-    fontSize: '$xs',
-    color: '$gray700',
-    marginTop: '$1',
+  fontSize: '$xs',
+  color: '$gray700',
+  marginTop: '$1',
 })
 
 interface PostProps {
@@ -361,66 +360,100 @@ export const Post = (props: PostProps) => {
         </PostInfo>
 
         <PostRecordTextView record={record} />
-        {embed && isEmbed && showEmbedImages && embed.$type === 'app.bsky.embed.images#view' &&(
+        {embed &&
+          isEmbed &&
+          showEmbedImages &&
+          embed.$type === 'app.bsky.embed.images#view' && (
             <a onClick={() => setShowEmbedImages(false)}>hide images</a>
-        )}
-        {embed && isEmbed && !showEmbedImages && embed.$type === 'app.bsky.embed.images#view' &&(
+          )}
+        {embed &&
+          isEmbed &&
+          !showEmbedImages &&
+          embed.$type === 'app.bsky.embed.images#view' && (
             <a onClick={() => setShowEmbedImages(true)}>show images</a>
-        )}
+          )}
 
         {embed && !isEmbed && embed.$type === 'app.bsky.embed.record#view' && (
           <>
             <Post
-                myDid={myDid}
-                record={(embed.record as Record).value as Record}
-                author={(embed.record as Record).author as ProfileViewBasic}
-                isFollowing={(embed.record as Record).author.viewer?.following as boolean}
-                postUri={((embed.record as Record).uri).split('/').pop() as string}
-                createdAt={(embed.record as Record).indexedAt as string}
-                embed={embed?.record?.embeds?.length ? embed.record.embeds[0] as AppBskyEmbedRecord.ViewRecord : null}
-
-                isEmbed
-                hideActions
+              myDid={myDid}
+              record={(embed.record as Record).value as Record}
+              author={(embed.record as Record).author as ProfileViewBasic}
+              isFollowing={
+                !!((embed.record as Record).author as ProfileViewBasic).viewer
+                  ?.following
+              }
+              postUri={
+                (embed.record as { uri: string }).uri.split('/').pop() as string
+              }
+              createdAt={(embed.record as Record).indexedAt as string}
+              embed={
+                (embed?.record as any)?.embeds?.length
+                  ? ((embed.record as any)
+                      .embeds[0] as AppBskyEmbedRecord.ViewRecord as any)
+                  : null
+              }
+              isEmbed
+              hideActions
             />
-
           </>
         )}
 
         {images.length > 0 && showEmbedImages && <ImagesGrid images={images} />}
-        {embed?.media && embed?.media?.images?.length > 0 && <ImagesGrid images={embed?.media?.images} />}
-
-        {embed && !isEmbed && embed.$type === "app.bsky.embed.external#view" && (
-            <a href={embed?.external?.uri} target="_blank" rel="noopener noreferrer">
-              <URLCard>
-                <URLCardThumb>
-                  <Image src={embed?.external?.thumb} style={{objectFit: 'cover',width :'100%', height:'100%'}} alt={embed?.external?.alt}></Image>
-                </URLCardThumb>
-                <URLCardDetail>
-                  <div>
-                    <URLCardTitle style={{color:'black'}}>{embed?.external?.title}</URLCardTitle>
-                    <URLCardDesc style={{fontSize :'small'}}>{embed?.external?.description}</URLCardDesc>
-                  </div>
-                </URLCardDetail>
-              </URLCard>
-            </a>
+        {!!embed?.media && (embed?.media as any)?.images?.length > 0 && (
+          <ImagesGrid images={(embed?.media as any)?.images} />
         )}
 
-        {embed && !isEmbed && embed.$type === "app.bsky.embed.recordWithMedia#view" && (
+        {embed && !isEmbed && embed.$type === 'app.bsky.embed.external#view' && (
+          <a
+            href={(embed as any)?.external?.uri}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <URLCard>
+              <URLCardThumb>
+                <Image
+                  src={(embed as any)?.external?.thumb}
+                  style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                  alt={(embed as any)?.external?.alt}
+                ></Image>
+              </URLCardThumb>
+              <URLCardDetail>
+                <div>
+                  <URLCardTitle style={{ color: 'black' }}>
+                    {(embed as any)?.external?.title}
+                  </URLCardTitle>
+                  <URLCardDesc style={{ fontSize: 'small' }}>
+                    {(embed as any)?.external?.description}
+                  </URLCardDesc>
+                </div>
+              </URLCardDetail>
+            </URLCard>
+          </a>
+        )}
+
+        {embed &&
+          !isEmbed &&
+          embed.$type === 'app.bsky.embed.recordWithMedia#view' && (
             <>
               <Post
-                  //myDid={myDid}
-                  record={(embed.record as Record)?.record.value as Record}
-                  author={(embed.record as Record)?.record.author as ProfileViewBasic}
-                  //isFollowing={(embed.record as Record).author.viewer?.following as boolean}
-                  //postUri={((embed.record as Record).uri).split('/').pop() as string}
-                  //createdAt={(embed.record as Record).indexedAt as string}
-                  embed={(embed.record as Record)?.record?.embeds[0] as AppBskyEmbedRecord.ViewRecord}
-                  isEmbed
-                  hideActions
+                //myDid={myDid}
+                record={(embed.record as any)?.record.value as Record}
+                author={
+                  (embed.record as any)?.record.author as ProfileViewBasic
+                }
+                //isFollowing={(embed.record as Record).author.viewer?.following as boolean}
+                //postUri={((embed.record as Record).uri).split('/').pop() as string}
+                //createdAt={(embed.record as Record).indexedAt as string}
+                embed={
+                  (embed.record as any)?.record
+                    ?.embeds[0] as AppBskyEmbedRecord.ViewRecord
+                }
+                isEmbed
+                hideActions
               />
-
             </>
-        )}
+          )}
 
         {!hideActions && (
           <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
