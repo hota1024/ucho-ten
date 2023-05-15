@@ -206,7 +206,7 @@ export const Post = (props: PostProps) => {
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
 
-  if(embed && embed.$type === "app.bsky.embed.recordWithMedia#view"){
+  if(embed && embed.$type === "app.bsky.embed.record#view" && embed?.record?.embeds?.length != 0){
     console.log(embed)
   }
 
@@ -354,7 +354,7 @@ export const Post = (props: PostProps) => {
                 isFollowing={(embed.record as Record).author.viewer?.following as boolean}
                 postUri={((embed.record as Record).uri).split('/').pop() as string}
                 createdAt={(embed.record as Record).indexedAt as string}
-                embed={embed?.record?.embeds[0] as AppBskyEmbedRecord.ViewRecord}
+                embed={embed?.record?.embeds?.length ? embed.record.embeds[0] as AppBskyEmbedRecord.ViewRecord : null}
 
                 isEmbed
                 hideActions
