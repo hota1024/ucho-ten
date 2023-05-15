@@ -293,8 +293,12 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                       squared
                       size="xl"
                       name={profile.displayName}
-                      description={`@${profile.handle}${isMuted?' (Muted)':''}`}
+                      //description={`@${profile.handle}${isMuted?' (Muted)':''}`}
+                        description={'　'}
                     />
+                    <div style={{width: '250px', position: 'absolute', top:'30px', left:'88px'}}>
+                      <Text css={{width:'100%', maxWidth:'100%' ,overflowWrap: 'break-word', fontSize:'13px', color:'$gray700'}}>{`@${profile.handle}${isMuted?' (Muted)':''}`}</Text>
+                    </div>
                   </Col>
                   {!isMe && (
                       <div style={{cursor:'pointer'}}>
