@@ -289,8 +289,9 @@ export const Post = (props: PostProps) => {
                         : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'
                     }
                     size="lg"
-                    name={author.displayName}
-                    description={`@${author.handle}`}
+                    name={((author.displayName ?? `@${author.handle}`).length >= 25 ? (author.displayName ?? `@${author.handle}`).slice(0, 25) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 25) ? '...' : '')}
+
+                    description={`@${author.handle.length >= 30 ? author.handle.slice(0, 25) + '...' : author.handle}`}
                   />
                 </Col>
                 <Col span={7}>
