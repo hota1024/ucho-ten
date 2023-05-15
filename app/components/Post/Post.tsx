@@ -412,11 +412,11 @@ export const Post = (props: PostProps) => {
           >
             <URLCard>
               <URLCardThumb>
-                <Image
+                <img
                   src={(embed as any)?.external?.thumb}
                   style={{ objectFit: 'cover', width: '100%', height: '100%' }}
                   alt={(embed as any)?.external?.alt}
-                ></Image>
+                ></img>
               </URLCardThumb>
               <URLCardDetail>
                 <div>
