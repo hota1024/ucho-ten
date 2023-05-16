@@ -473,7 +473,7 @@ export const Post = (props: PostProps) => {
               </PostAction>
             </Col>
             <Col>
-              <div>
+              <div style={{height:'16px', width:'18px'}}>
                 <Dropdown placement="bottom-left">
                   <Dropdown.Trigger>
                     <PostAction>
