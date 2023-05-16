@@ -384,7 +384,7 @@ export const Post = (props: PostProps) => {
               record={(embed.record as Record).value as Record}
               author={(embed.record as Record).author as ProfileViewBasic}
               isFollowing={
-                !!((embed.record as Record).author as ProfileViewBasic).viewer
+                !!((embed.record as Record).author as ProfileViewBasic)?.viewer
                   ?.following
               }
               postUri={
