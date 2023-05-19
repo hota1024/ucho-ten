@@ -134,11 +134,28 @@ const URLCardTitle = styled('div', {
   whiteSpace: 'nowrap',
   width: '100%',
   marginBottom: '$1',
+  display: '-webkit-box',
+  WebkitLineClamp: '1',
+  WebkitBoxOrient: 'vertical',
 })
 const URLCardDesc = styled('div', {
   fontSize: '$xs',
   color: '$gray700',
   marginTop: '$1',
+  display: '-webkit-box',
+  WebkitLineClamp: '2',
+  WebkitBoxOrient: 'vertical',
+  overflow: 'hidden',
+})
+
+const URLCardLink = styled('div', {
+    fontSize: '$xs',
+    color: '$gray700',
+    marginTop: '$1',
+    '& a': {
+        color: '$gray700',
+        textDecoration: 'underline',
+    },
 })
 
 interface PostProps {
@@ -222,9 +239,9 @@ export const Post = (props: PostProps) => {
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
 
-  /*if(embed && embed.$type === "app.bsky.embed.recordWithMedia#view"){
-    console.log(embed)
-  }*/
+  if(embed){
+    //console.log(embed)
+  }
 
   const updateElapsed = useCallback(() => {
     if (!time) return 0
@@ -253,6 +270,25 @@ export const Post = (props: PostProps) => {
 
   if (!author) {
     return <></>
+  }
+
+  const getOGP = async (url : string) => {
+    fetch(url).then(res => res.text()).then(text => {
+      const el = new DOMParser().parseFromString(text, "text/html")
+      const headEls = (el.head.children)
+
+      return Array.from(headEls).map(v => {
+        const prop = v.getAttribute('property')
+        if (!prop) return;
+        return { prop: prop.replace("og:",""),content: v.getAttribute("content")}
+      })
+    }).then(list=>{
+      return list.filter(v=>v)
+    }).then(result=>{
+      const title = (result.filter(v=>(v as any).prop==="title")[0] as any).content;
+      const url = (result.filter(v=>(v as any).prop==="url")[0] as any).content;
+      console.log(`${title} | ${url}`)
+    })
   }
 
   return (
@@ -414,25 +450,55 @@ export const Post = (props: PostProps) => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <URLCard>
-              <URLCardThumb>
-                <img
-                  src={(embed as any)?.external?.thumb}
-                  style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                  alt={(embed as any)?.external?.alt}
-                ></img>
-              </URLCardThumb>
-              <URLCardDetail>
-                <div>
-                  <URLCardTitle style={{ color: 'black' }}>
-                    {(embed as any)?.external?.title}
-                  </URLCardTitle>
-                  <URLCardDesc style={{ fontSize: 'small' }}>
-                    {(embed as any)?.external?.description}
-                  </URLCardDesc>
-                </div>
-              </URLCardDetail>
-            </URLCard>
+            {!(embed as any)?.external?.thumb && (embed as any)?.external?.title === '' && (embed as any)?.external?.description === '' && (
+
+                <URLCard>
+                  <URLCardThumb>
+                    <img
+                        src={(embed as any)?.external?.thumb}
+                        style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                        alt={(embed as any)?.external?.alt}
+                    ></img>
+                  </URLCardThumb>
+                  <URLCardDetail>
+                    <div>
+                      <URLCardTitle style={{ color: 'black' }}>
+                        {(embed as any)?.external?.title}
+                      </URLCardTitle>
+                      <URLCardDesc style={{ fontSize: 'small' }}>
+                        {(embed as any)?.external?.description}
+                      </URLCardDesc>
+                      <URLCardLink>
+                        {(embed as any)?.external?.uri}
+                      </URLCardLink>
+                    </div>
+                  </URLCardDetail>
+                </URLCard>
+            )}
+            {(embed as any)?.external?.thumb && (embed as any)?.external?.title != '' && (embed as any)?.external?.description != '' && (
+                <URLCard>
+                  <URLCardThumb>
+                    <img
+                        src={(embed as any)?.external?.thumb}
+                        style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                        alt={(embed as any)?.external?.alt}
+                    ></img>
+                  </URLCardThumb>
+                  <URLCardDetail>
+                    <div>
+                      <URLCardTitle style={{ color: 'black' }}>
+                        {(embed as any)?.external?.title}
+                      </URLCardTitle>
+                      <URLCardDesc style={{ fontSize: 'small' }}>
+                        {(embed as any)?.external?.description}
+                      </URLCardDesc>
+                      <URLCardLink>
+                        {(embed as any)?.external?.uri.match(/^https?:\/{2,}(.*?)(?:\/|\?|#|$)/)[1]}
+                      </URLCardLink>
+                    </div>
+                  </URLCardDetail>
+                </URLCard>
+            )}
           </a>
         )}
 
