@@ -450,55 +450,28 @@ export const Post = (props: PostProps) => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            {!(embed as any)?.external?.thumb && (embed as any)?.external?.title === '' && (embed as any)?.external?.description === '' && (
-
-                <URLCard>
-                  <URLCardThumb>
-                    <img
-                        src={(embed as any)?.external?.thumb}
-                        style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                        alt={(embed as any)?.external?.alt}
-                    ></img>
-                  </URLCardThumb>
-                  <URLCardDetail>
-                    <div>
-                      <URLCardTitle style={{ color: 'black' }}>
-                        {(embed as any)?.external?.title}
-                      </URLCardTitle>
-                      <URLCardDesc style={{ fontSize: 'small' }}>
-                        {(embed as any)?.external?.description}
-                      </URLCardDesc>
-                      <URLCardLink>
-                        {(embed as any)?.external?.uri}
-                      </URLCardLink>
-                    </div>
-                  </URLCardDetail>
-                </URLCard>
-            )}
-            {(embed as any)?.external?.thumb && (embed as any)?.external?.title != '' && (embed as any)?.external?.description != '' && (
-                <URLCard>
-                  <URLCardThumb>
-                    <img
-                        src={(embed as any)?.external?.thumb}
-                        style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                        alt={(embed as any)?.external?.alt}
-                    ></img>
-                  </URLCardThumb>
-                  <URLCardDetail>
-                    <div>
-                      <URLCardTitle style={{ color: 'black' }}>
-                        {(embed as any)?.external?.title}
-                      </URLCardTitle>
-                      <URLCardDesc style={{ fontSize: 'small' }}>
-                        {(embed as any)?.external?.description}
-                      </URLCardDesc>
-                      <URLCardLink>
-                        {(embed as any)?.external?.uri.match(/^https?:\/{2,}(.*?)(?:\/|\?|#|$)/)[1]}
-                      </URLCardLink>
-                    </div>
-                  </URLCardDetail>
-                </URLCard>
-            )}
+            <URLCard>
+              <URLCardThumb>
+                <img
+                    src={(embed as any)?.external?.thumb}
+                    style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                    alt={(embed as any)?.external?.alt}
+                ></img>
+              </URLCardThumb>
+              <URLCardDetail>
+                <div>
+                  <URLCardTitle style={{ color: 'black' }}>
+                    {(embed as any)?.external?.title}
+                  </URLCardTitle>
+                  <URLCardDesc style={{ fontSize: 'small' }}>
+                    {(embed as any)?.external?.description}
+                  </URLCardDesc>
+                  <URLCardLink>
+                    {(embed as any)?.external?.uri.match(/^https?:\/{2,}(.*?)(?:\/|\?|#|$)/)[1]}
+                  </URLCardLink>
+                </div>
+              </URLCardDetail>
+            </URLCard>
           </a>
         )}
 
