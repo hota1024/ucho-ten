@@ -30,14 +30,6 @@ export const NotificationCardList: React.VFC<NotificationCardListProps> = (
     <Container gap={1}>
       {notifications.map((item, key) => (
         <>
-          {AppBskyFeedLike.isRecord(item.record) && (
-            <NotificationCard
-              key={key}
-              item={item}
-              onReplyClick={onReplyClick}
-              onQuoteRepostClick={onQuoteRepostClick}
-            />
-          )}
           {AppBskyFeedPost.isRecord(item.record) && (
             <NotificationCard
               key={key}

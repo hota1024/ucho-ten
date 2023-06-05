@@ -12,6 +12,12 @@ import {
   faHeart as faHeartSolid,
   faRetweet as faRetweetSolid,
 } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCircle as faCircleRegular,
+} from '@fortawesome/free-regular-svg-icons'
+import {
+  faCircle as faCircleSolid,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   styled,
@@ -551,12 +557,11 @@ export const Post = (props: PostProps) => {
             <Col>
               <PostAction>
                 <FontAwesomeIcon
-                  onClick={!isReactionProcessing ? onLikeClick : undefined}
-                  icon={isLiked ? faHeartSolid : faHeartRegular}
-                  color={isLiked ? '#F31260' : '#787F85'}
-                  style={{ cursor: 'pointer' }}
-                />
-                {showLikeCount && likeCount}
+                    onClick={!isReactionProcessing ? onLikeClick : undefined}
+                    icon={isLiked && likeCount != 0 ? faCircleSolid : faCircleRegular}
+                    color={isLiked && likeCount != 0 ? `rgba(0, 0, 255, ${likeCount as number * 0.01})` : undefined}
+                    style={{ cursor: 'pointer' }}
+                ></FontAwesomeIcon>
               </PostAction>
             </Col>
           </Row>
