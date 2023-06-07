@@ -558,10 +558,11 @@ export const Post = (props: PostProps) => {
               <PostAction>
                 <FontAwesomeIcon
                     onClick={!isReactionProcessing ? onLikeClick : undefined}
-                    icon={isLiked && likeCount != 0 ? faCircleSolid : faCircleRegular}
-                    color={isLiked && likeCount != 0 ? `rgba(0, 0, 255, ${likeCount as number * 0.01})` : undefined}
+                    icon={isLiked ? faHeartSolid : faHeartRegular}
+                    color={isLiked ? '#F31260' : '#787F85'}
                     style={{ cursor: 'pointer' }}
-                ></FontAwesomeIcon>
+                />
+                {showLikeCount && likeCount}
               </PostAction>
             </Col>
           </Row>
