@@ -7,16 +7,14 @@ import {
 import {
   faComment,
   faHeart as faHeartRegular,
+  faCircle as faCircleRegular,
+  faSquare as faSquareRegular,
 } from '@fortawesome/free-regular-svg-icons'
 import {
   faHeart as faHeartSolid,
   faRetweet as faRetweetSolid,
-} from '@fortawesome/free-solid-svg-icons'
-import {
-  faCircle as faCircleRegular,
-} from '@fortawesome/free-regular-svg-icons'
-import {
   faCircle as faCircleSolid,
+  faSquare as faSquareSolid,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -98,6 +96,14 @@ const PostAction = styled('div', {
   fontWeight: '$medium',
   color: '$gray700',
   //cursor: 'pointer',
+})
+
+const BlueDot = styled('div', {
+  display: 'flex',
+  alignItems: 'right',
+  gap: '$4',
+  fontWeight: '$medium',
+  color: '$gray700',
 })
 
 const ReplyLine = styled('div', {
@@ -555,14 +561,15 @@ export const Post = (props: PostProps) => {
               </div>
             </Col>
             <Col>
-              <PostAction>
+              <BlueDot>
                 <FontAwesomeIcon
                     onClick={!isReactionProcessing ? onLikeClick : undefined}
-                    icon={isLiked && likeCount != 0 ? faCircleSolid : faCircleRegular}
-                    color={isLiked && likeCount != 0 ? `rgba(0, 0, 255, ${likeCount as number * 0.01})` : undefined}
+                    icon={myDid === author.did ? (likeCount !== 0 ? faSquareRegular : null) : (isLiked && likeCount !== 0 ? faSquareSolid : faSquareRegular)}
+                    color={myDid === author.did ? (likeCount !== 0 ? `rgba(49,171,183,0.2)` : undefined) : ( isLiked && likeCount !== 0 ? `rgba(49,171,183,${likeCount as number * 0.05})` : undefined)}
                     style={{ cursor: 'pointer' }}
+                    size={'sm'}
                 ></FontAwesomeIcon>
-              </PostAction>
+              </BlueDot>
             </Col>
           </Row>
         )}
