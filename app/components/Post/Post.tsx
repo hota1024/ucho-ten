@@ -564,9 +564,9 @@ export const Post = (props: PostProps) => {
               <BlueDot>
                 <FontAwesomeIcon
                     onClick={!isReactionProcessing ? onLikeClick : undefined}
-                    icon={myDid === author.did ? (likeCount !== 0 ? faSquareRegular : null) : (isLiked && likeCount !== 0 ? faSquareSolid : faSquareRegular)}
+                    icon={myDid === author.did ? (likeCount !== 0 ? faSquareRegular : faSquareRegular) : (isLiked && likeCount !== 0 ? faSquareSolid : faSquareRegular)}
                     color={myDid === author.did ? (likeCount !== 0 ? `rgba(49,171,183,0.2)` : undefined) : ( isLiked && likeCount !== 0 ? `rgba(49,171,183,${likeCount as number * 0.05})` : undefined)}
-                    style={{ cursor: 'pointer' }}
+                    style={{ display: myDid === author.did &&  (likeCount === 0)  ? 'none' : "block", cursor: 'pointer'}}
                     size={'sm'}
                 ></FontAwesomeIcon>
               </BlueDot>
