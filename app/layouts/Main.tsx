@@ -129,8 +129,17 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
 
     const id = setInterval(async () => {
       const result = await agent.countUnreadNotifications()
+      const notifications = await agent.listNotifications()
+      console.log(notifications)
+      let notify_num = 0
+      for(let i = 0; i < result.data.count; i++){
+        console.log(notifications.data.notifications[i])
+        if(notifications.data.notifications[i].reason === "follow" || notifications.data.notifications[i].reason === "mention" || notifications.data.notifications[i].reason === "reply" || notifications.data.notifications[i].reason === "quote"){
+          notify_num++
+        }
+      }
 
-      setNotificationCount(result.data.count)
+      setNotificationCount(notify_num)
     }, 10000)
 
     return () => {
