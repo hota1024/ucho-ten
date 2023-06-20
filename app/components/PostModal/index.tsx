@@ -206,6 +206,11 @@ export const PostModal = (props: PostModalProps) => {
   }, []);
   const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone({ onDrop });
   const filesUpdated: FileWithPath[] = acceptedFiles;
+  //一部環境でtextareaをクリックしたときに画像添付ファイらーが出るのを防止
+  const handleTextareaClick = (e:any) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
 
   return (
     <Modal
@@ -257,6 +262,7 @@ export const PostModal = (props: PostModalProps) => {
               onChange={(e) => setContentText(e.target.value)}
               disabled={loading}
               onKeyDown={isPostable ? handleKeyDown : undefined}
+              onClick={handleTextareaClick}
               onFocus={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
               style={{border: isDragActive ? '2px dashed #000' : 'none', width:'100%', height:'100%'}}
           />
