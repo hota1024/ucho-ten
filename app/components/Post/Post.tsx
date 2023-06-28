@@ -123,6 +123,9 @@ const URLCard = styled('div', {
   display: 'flex',
   alignItems: 'center',
   color: '$gray800',
+  '&:hover': {
+    backgroundColor: '$gray200',
+  }
 })
 
 const URLCardThumb = styled('div', {
@@ -168,6 +171,13 @@ const URLCardLink = styled('div', {
         color: '$gray700',
         textDecoration: 'underline',
     },
+})
+
+const PostContent = styled('div', {
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  //WebkitLineClamp: 7, // 行数指定
+  overflow: "hidden",
 })
 
 interface PostProps {
@@ -250,6 +260,8 @@ export const Post = (props: PostProps) => {
 
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
+
+  const [isExpanded, setIsExpanded] = useState(false)
 
   if(embed){
     //console.log(embed)
@@ -410,8 +422,9 @@ export const Post = (props: PostProps) => {
             </Link>
           </PostDate>
         </PostInfo>
-
-        <PostRecordTextView record={record} />
+        <PostContent>
+          <PostRecordTextView record={record} />
+        </PostContent>
         {embed &&
           isEmbed &&
           showEmbedImages &&
