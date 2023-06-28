@@ -404,7 +404,7 @@ export const Post = (props: PostProps) => {
           <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
             <AuthorDisplayName>
               {!isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 25 ? (author.displayName ?? `@${author.handle}`).slice(0, 25) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 25) ? '...' : '')}
-              {isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 20 ? (author.displayName ?? `@${author.handle}`).slice(0, 17) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 17) ? '...' : '')}
+              {isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 17 ? (author.displayName ?? `@${author.handle}`).slice(0, 14) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 17) ? '...' : '')}
             </AuthorDisplayName>
           </Link>
           <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
