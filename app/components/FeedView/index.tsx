@@ -51,7 +51,7 @@ export const FeedView = (props: FeedViewProps) => {
     }
 
     const thread = await agent.getPostThread({
-      uri: replyParent?.uri!,
+      uri: replyParent?.uri! as string,
     })
 
     const post = thread.data.thread
@@ -71,6 +71,7 @@ export const FeedView = (props: FeedViewProps) => {
             <PostContainer>
               <PostViewCard
                 hasReply
+                // @ts-ignore
                 post={replyParent}
                 reasonRepost={reasonRepost}
                 showLikeCount

@@ -123,6 +123,9 @@ const URLCard = styled('div', {
   display: 'flex',
   alignItems: 'center',
   color: '$gray800',
+  '&:hover': {
+    backgroundColor: '$gray200',
+  }
 })
 
 const URLCardThumb = styled('div', {
@@ -168,6 +171,13 @@ const URLCardLink = styled('div', {
         color: '$gray700',
         textDecoration: 'underline',
     },
+})
+
+const PostContent = styled('div', {
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  //WebkitLineClamp: 7, // 行数指定
+  overflow: "hidden",
 })
 
 interface PostProps {
@@ -250,6 +260,8 @@ export const Post = (props: PostProps) => {
 
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
+
+  const [isExpanded, setIsExpanded] = useState(false)
 
   if(embed){
     //console.log(embed)
@@ -392,7 +404,7 @@ export const Post = (props: PostProps) => {
           <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
             <AuthorDisplayName>
               {!isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 25 ? (author.displayName ?? `@${author.handle}`).slice(0, 25) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 25) ? '...' : '')}
-              {isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 20 ? (author.displayName ?? `@${author.handle}`).slice(0, 17) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 17) ? '...' : '')}
+              {isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 17 ? (author.displayName ?? `@${author.handle}`).slice(0, 14) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 17) ? '...' : '')}
             </AuthorDisplayName>
           </Link>
           <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
@@ -410,8 +422,9 @@ export const Post = (props: PostProps) => {
             </Link>
           </PostDate>
         </PostInfo>
-
-        <PostRecordTextView record={record} />
+        <PostContent>
+          <PostRecordTextView record={record} />
+        </PostContent>
         {embed &&
           isEmbed &&
           showEmbedImages &&

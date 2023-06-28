@@ -20,6 +20,11 @@ export const PostRecordTextView = (props: PostRecordTextViewProps) => {
   const { record } = props
   let elements: ReactNode[] = []
 
+  //record.textがない場合は何も表示しない
+  if(record.text === ""){
+    return <></>
+  }
+
   if (record.facets && record.facets.length > 0) {
     // facetsがある場合にのみ処理する
     const text = record.text

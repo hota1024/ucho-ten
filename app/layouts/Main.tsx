@@ -20,7 +20,7 @@ import {
 } from '@nextui-org/react'
 import { PostButton } from '@/components/PostButton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGear, faHome, faSignOut } from '@fortawesome/free-solid-svg-icons'
+import { faGear, faHome, faSignOut, faInbox } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link'
 import { useAgent } from '@/atoms/agent'
 import { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
@@ -246,14 +246,14 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
               icon={
                 notificationCount > 0 ? (
                   <Badge content={''} size="md" color="error" variant="dot">
-                    <FontAwesomeIcon icon={faBell} size="lg" />
+                    <FontAwesomeIcon icon={faInbox} size="lg" />
                   </Badge>
                 ) : (
-                  <FontAwesomeIcon icon={faBell} size="lg" />
+                  <FontAwesomeIcon icon={faInbox} size="lg" />
                 )
               }
             >
-              Notification
+              Inbox
             </Button>
           </Popover.Trigger>
           <Popover.Content

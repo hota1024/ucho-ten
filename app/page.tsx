@@ -89,12 +89,32 @@ const BlueskyTimeline = () => {
   return <TimelineView {...timeline} />
 }
 
+const LikeFeed = () => {
+    const fetchTimeline: TimelineFetcher = ({ agent, cursor }) => {
+        if (!agent) {
+        return
+        }
+
+        return agent
+        .app.bsky.feed.getFeed({
+          cursor: cursor,
+          limit: 20,
+          feed: 'at://did:plc:txandrhc7afdozk6a2itgltm/app.bsky.feed.generator/aaapc6cjz4c3e',
+        })
+        .then((result) => result.data)
+    }
+
+    const timeline = useTimelineView(fetchTimeline)
+
+    return <TimelineView {...timeline} />
+}
+
 /**
  * Home page.
  */
 const HomePage = () => {
   const { agent } = useRequiredSession()
-  const [tab, setTab] = useState<'home' | 'bluesky'>('home')
+  const [tab, setTab] = useState<'home' | 'bluesky' | 'likefeed' >('home')
 
   if (!agent) {
     return (
@@ -213,11 +233,18 @@ const HomePage = () => {
               borderBottom: '2px solid transparent',
             }}
             onMouseOver={(e) => {
+              if (tab === 'likefeed') {
+                  return
+              }
               e.currentTarget.style.borderBottom = '2px solid #d3d3d3'
             }}
             onMouseOut={(e) => {
+              if (tab === 'likefeed') {
+                  return
+              }
               e.currentTarget.style.borderBottom = '2px solid transparent'
             }}
+            onClick={() => setTab('likefeed')}
           >
             <div
               style={{
@@ -226,13 +253,14 @@ const HomePage = () => {
                 width: '100%',
               }}
             >
-              {`what's hot(soon)`}
+              {`public feed`}
             </div>
           </div>
         </div>
 
         {tab === 'home' && <Timeline />}
         {tab === 'bluesky' && <BlueskyTimeline />}
+        {tab === 'likefeed' && <LikeFeed />}
       </div>
     </MainLayout>
   )
