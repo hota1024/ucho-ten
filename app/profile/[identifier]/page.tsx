@@ -319,7 +319,7 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                               }}
                           >
                             <Dropdown.Item key="mute">
-                              {!isMuted && <Text>Mute</Text>}
+                              {!isMuted && <Text>Hide post from this user</Text>}
                               {isMuted && (
                                   <Text color={'error'}>UnMute</Text>
                               )}

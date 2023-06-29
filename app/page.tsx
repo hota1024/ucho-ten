@@ -230,7 +230,10 @@ const HomePage = () => {
               justifyContent: 'center',
               alignItems: 'center',
               cursor: 'pointer',
-              borderBottom: '2px solid transparent',
+                borderBottom:
+                    tab === 'likefeed'
+                        ? '3px solid #d3d3d3'
+                        : '1px solid transparent', // 初期状態は透明の下線を設定
             }}
             onMouseOver={(e) => {
               if (tab === 'likefeed') {
@@ -253,7 +256,7 @@ const HomePage = () => {
                 width: '100%',
               }}
             >
-              {`public feed`}
+              {`public (JP feed)`}
             </div>
           </div>
         </div>

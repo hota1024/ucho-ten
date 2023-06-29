@@ -218,6 +218,8 @@ export const PostModal = (props: PostModalProps) => {
       onClose={loading ? () => {} : onClose}
       preventClose={loading}
       className="post-modal"
+      width='600px'
+      css={{left: '2%'}}
     >
       <Modal.Header>
         <Text size="$lg" b>
