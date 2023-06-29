@@ -380,7 +380,7 @@ export const PostModal = (props: PostModalProps) => {
                     disallowEmptySelection
                     selectedKeys={PostContentLanguage}
                     //@ts-ignore
-                    onSelectionChange={setPostContentLanguage}
+                    onSelectionChange={PostContentLanguage.size >= 3 ? null : setPostContentLanguage}
                 >
                     <Dropdown.Item key='es'>Español</Dropdown.Item>
                     <Dropdown.Item key='fr'>Français</Dropdown.Item>
