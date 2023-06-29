@@ -234,6 +234,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = (props) => {
                 {item.author.displayName ?? item.author.handle}
               </Link>{' '}
               {item.reason === 'reply' && 'replied to your post  '}
+              {item.reason === 'mention' && 'mentioned to you  '}
               <FontAwesomeIcon icon={faArrowsTurnRight} color={'orange'} />
             </Text>
           </Card.Header>
