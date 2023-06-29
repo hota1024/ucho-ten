@@ -29,7 +29,14 @@ export default function RootLayout({
           backgroundBlendMode: 'lighten',
         }}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+            {children}
+            <div style={{position:"absolute", right:10, bottom:10}}>
+                <div style={{fontSize: '0.5em', color:'white'}}>
+                    code name: Nirvana
+                </div>
+            </div>
+        </Providers>
       </body>
     </html>
   )
