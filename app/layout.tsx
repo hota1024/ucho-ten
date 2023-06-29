@@ -30,11 +30,6 @@ export default function RootLayout({
         }}
       >
         <Providers>{children}</Providers>
-        <div style={{position:"absolute", right:10, bottom:10}}>
-            <div style={{fontSize: '0.5em', color:'white'}}>
-                code name: Nirvana
-            </div>
-        </div>
       </body>
     </html>
   )
