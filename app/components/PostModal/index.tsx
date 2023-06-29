@@ -15,13 +15,14 @@ import {
   Row,
   Col,
   Popover,
-  styled,
+  styled, Dropdown,
 } from '@nextui-org/react'
 import { useRef, useState } from 'react'
 import { Post } from '../Post/Post'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { faImage } from '@fortawesome/free-solid-svg-icons'
+import { faLanguage } from '@fortawesome/free-solid-svg-icons'
 import { faFaceSurprise } from '@fortawesome/free-solid-svg-icons'
 import Zoom from 'react-medium-image-zoom'
 import data from '@emoji-mart/data'
@@ -66,6 +67,7 @@ export const PostModal = (props: PostModalProps) => {
     contentImage.length >= 5 || contentImage.length === 4 // 4枚まで
   const isImageMinLimited = contentImage.length === 0 // 4枚まで
   const inputId = Math.random().toString(32).substring(2)
+  const [PostContentLanguage, setPostContentLanguage] = useState(new Set([navigator.language]))
 
   const handlePostClick = async () => {
     if (!agent) {
@@ -95,6 +97,7 @@ export const PostModal = (props: PostModalProps) => {
     await onSubmit({
       text: rt.text.trimStart().trimEnd(),
       facets: rt.facets,
+      langs: Array.from(PostContentLanguage),
       embed:
         blobs.length > 0
           ? {
@@ -366,6 +369,32 @@ export const PostModal = (props: PostModalProps) => {
               disabled={loading || compressProcessing || isImageMaxLimited}
             />
           </label>
+          <div>
+            <Dropdown>
+              <Dropdown.Button light css={{ tt: "capitalize" }}>
+                {PostContentLanguage.size === 1 ? PostContentLanguage : "Langs"}
+              </Dropdown.Button>
+                <Dropdown.Menu
+                    aria-label="Multiple selection actions"
+                    selectionMode="multiple"
+                    disallowEmptySelection
+                    selectedKeys={PostContentLanguage}
+                    //@ts-ignore
+                    onSelectionChange={setPostContentLanguage}
+                >
+                    <Dropdown.Item key='es'>Español</Dropdown.Item>
+                    <Dropdown.Item key='fr'>Français</Dropdown.Item>
+                    <Dropdown.Item key='de'>Deutsch</Dropdown.Item>
+                    <Dropdown.Item key='it'>Italiano</Dropdown.Item>
+                    <Dropdown.Item key='pt'>Português</Dropdown.Item>
+                    <Dropdown.Item key='ru'>Русский</Dropdown.Item>
+                    <Dropdown.Item key='zh'>中文</Dropdown.Item>
+                    <Dropdown.Item key='ko'>한국어</Dropdown.Item>
+                    <Dropdown.Item key='en'>English</Dropdown.Item>
+                    <Dropdown.Item key='ja'>日本語</Dropdown.Item>
+                </Dropdown.Menu>
+            </Dropdown>
+          </div>
 
           <div style={{ display: 'flex', gap: '8px' }}>
             <Button auto light onPress={onClose} disabled={loading}>
