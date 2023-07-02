@@ -31,7 +31,6 @@ import Picker from '@emoji-mart/react'
 import imageCompression from "browser-image-compression";
 import { useDropzone, FileWithPath } from 'react-dropzone'
 import { useCallback, useMemo } from 'react';
-import ogs from "open-graph-scraper";
 
 
 const URLCard = styled('div', {
@@ -294,15 +293,7 @@ export const PostModal = (props: PostModalProps) => {
   }
 
   const getOGP = async (url: string) => {
-    const options = { url: url };
-    const { result } = await ogs(options);
-    ogs(options)
-        .then((data) => {
-          const { error, result, response } = data;
-          console.log('error:', error);  // This returns true or false. True if there was an error. The error itself is inside the results object.
-          console.log('result:', result); // This contains all of the Open Graph results
-          console.log('response:', response); // This contains the HTML of page
-        })
+    //console.log(url)
   }
 
   return (
@@ -367,7 +358,7 @@ export const PostModal = (props: PostModalProps) => {
         </div>
       </Modal.Body>
       <Modal.Footer>
-        {isDetectURL && !isSettingURLCard && (
+        {false && isDetectURL && !isSettingURLCard && (
             <div style={{textAlign:'left'}}>
               {detectURLs.map((url, index) => (
                   <Button onClick={() => {
@@ -381,7 +372,7 @@ export const PostModal = (props: PostModalProps) => {
               ))}
             </div>
          )}
-        {isSettingURLCard && (
+        {isSettingURLCard && false && (
             <div>
               <URLCard>
                 <URLCardThumb>
