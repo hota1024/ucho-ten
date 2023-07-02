@@ -22,6 +22,7 @@ import { Post } from '../Post/Post'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { faImage } from '@fortawesome/free-solid-svg-icons'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { faLanguage } from '@fortawesome/free-solid-svg-icons'
 import { faFaceSurprise } from '@fortawesome/free-solid-svg-icons'
 import Zoom from 'react-medium-image-zoom'
@@ -30,7 +31,67 @@ import Picker from '@emoji-mart/react'
 import imageCompression from "browser-image-compression";
 import { useDropzone, FileWithPath } from 'react-dropzone'
 import { useCallback, useMemo } from 'react';
+import ogs from "open-graph-scraper";
 
+
+const URLCard = styled('div', {
+  height: '100px',
+  width: '485px',
+  borderRadius: ' 10px',
+  overflow: 'hidden',
+  border: '1px solid $gray600',
+  display: 'flex',
+  alignItems: 'center',
+  color: '$gray800',
+  '&:hover': {
+    backgroundColor: '$gray200',
+  }
+})
+
+const URLCardThumb = styled('div', {
+  height: '100px',
+  width: '100px',
+  borderRight: '1px solid $gray600',
+})
+const URLCardDetail = styled('div', {
+  display: 'flex',
+  alignItems: 'center',
+  marginLeft: '10px',
+  height: '100%',
+  width: 'calc(100% - 110px)',
+})
+const URLCardDetailContent = styled('div', {
+  hgiehgt: '100%',
+  width: '370px',
+  minWidth: "0",
+})
+const URLCardTitle = styled('div', {
+  fontSize: '$sm',
+  fontWeight: 'bold',
+  color: '$gray800',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+})
+const URLCardDesc = styled('div', {
+  fontSize: '$xs',
+  color: '$gray700',
+  marginTop: '$1',
+  display: '-webkit-box',
+  WebkitLineClamp: '2',
+  WebkitBoxOrient: 'vertical',
+  overflow: 'hidden',
+})
+
+const URLCardLink = styled('div', {
+  fontSize: '$xs',
+  color: '$gray700',
+  marginTop: '$1',
+  '& a': {
+    color: '$gray700',
+    textDecoration: 'underline',
+  },
+})
 
 
 
@@ -68,6 +129,9 @@ export const PostModal = (props: PostModalProps) => {
   const isImageMinLimited = contentImage.length === 0 // 4枚まで
   const inputId = Math.random().toString(32).substring(2)
   const [PostContentLanguage, setPostContentLanguage] = useState(new Set([navigator.language]))
+  const [isDetectURL, setIsDetectURL] = useState(false)
+  const [detectURLs, setDetectURLs] = useState<string[]>([])
+  const [isSettingURLCard, setIsSettingURLCard] = useState(false)
 
   const handlePostClick = async () => {
     if (!agent) {
@@ -215,6 +279,32 @@ export const PostModal = (props: PostModalProps) => {
     e.stopPropagation()
   }
 
+  const detectURL = (text: string) => {
+    // URLを検出する正規表現パターン
+    const urlPattern = /((?:https?|ftp):\/\/)(?:[\w-]+(?:\.[\w-]+)+)(?:\/[\w-]+)*(?:\/|\/[\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/gi
+    const urls = text.match(urlPattern)
+    setDetectURLs([])
+
+    if (urls && urls.length > 0) {
+      setIsDetectURL(true)
+      urls.forEach((url) => {
+        setDetectURLs(prevURLs => [...prevURLs, url])
+      })
+    }
+  }
+
+  const getOGP = async (url: string) => {
+    const options = { url: url };
+    const { result } = await ogs(options);
+    ogs(options)
+        .then((data) => {
+          const { error, result, response } = data;
+          console.log('error:', error);  // This returns true or false. True if there was an error. The error itself is inside the results object.
+          console.log('result:', result); // This contains all of the Open Graph results
+          console.log('response:', response); // This contains the HTML of page
+        })
+  }
+
   return (
     <Modal
       open={open}
@@ -264,7 +354,10 @@ export const PostModal = (props: PostModalProps) => {
               maxLength={300}
               value={contentText}
               autoFocus={true}
-              onChange={(e) => setContentText(e.target.value)}
+              onChange={(e) => {
+                setContentText(e.target.value)
+                detectURL(e.target.value)
+              }}
               disabled={loading}
               onKeyDown={isPostable ? handleKeyDown : undefined}
               onClick={handleTextareaClick}
@@ -274,6 +367,46 @@ export const PostModal = (props: PostModalProps) => {
         </div>
       </Modal.Body>
       <Modal.Footer>
+        {isDetectURL && !isSettingURLCard && (
+            <div style={{textAlign:'left'}}>
+              {detectURLs.map((url, index) => (
+                  <Button onClick={() => {
+                        setIsSettingURLCard(true)
+                        getOGP(url)
+                        }
+                      }
+                      key={index}
+                      flat
+                  >Add Linkcard: {url}</Button>
+              ))}
+            </div>
+         )}
+        {isSettingURLCard && (
+            <div>
+              <URLCard>
+                <URLCardThumb>
+                  <img
+                      src={undefined}
+                      style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                      alt={undefined}
+                  ></img>
+                </URLCardThumb>
+                <URLCardDetail>
+                  <URLCardDetailContent>
+                    <URLCardTitle style={{ color: 'black' }}>
+                      {undefined}
+                    </URLCardTitle>
+                    <URLCardDesc style={{ fontSize: 'small' }}>
+                      {undefined}
+                    </URLCardDesc>
+                    <URLCardLink>
+                      {undefined}
+                    </URLCardLink>
+                  </URLCardDetailContent>
+                </URLCardDetail>
+              </URLCard>
+            </div>
+        )}
         {contentImage.length > 0 && (
           <Text size="$sm" color="error">
             画像はあと{4 - contentImage.length}枚までです.

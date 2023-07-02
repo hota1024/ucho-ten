@@ -10,6 +10,7 @@ import {
   faCircle as faCircleRegular,
   faSquare as faSquareRegular,
 } from '@fortawesome/free-regular-svg-icons'
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons"
 import {
   faHeart as faHeartSolid,
   faRetweet as faRetweetSolid,
@@ -31,6 +32,7 @@ import {
   Image,
   Text,
   Dropdown,
+  Popover,
 } from '@nextui-org/react'
 import Link from 'next/link'
 import { useState, useMemo, useCallback, useEffect } from 'react'
@@ -140,18 +142,18 @@ const URLCardDetail = styled('div', {
   height: '100%',
   width: 'calc(100% - 110px)',
 })
+const URLCardDetailContent = styled('div', {
+  hgiehgt: '100%',
+  width: '370px',
+  minWidth: "0",
+})
 const URLCardTitle = styled('div', {
   fontSize: '$sm',
   fontWeight: 'bold',
   color: '$gray800',
+  whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-  width: '100%',
-  marginBottom: '$1',
-  display: '-webkit-box',
-  WebkitLineClamp: '1',
-  WebkitBoxOrient: 'vertical',
 })
 const URLCardDesc = styled('div', {
   fontSize: '$xs',
@@ -262,6 +264,11 @@ export const Post = (props: PostProps) => {
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
 
   const [isExpanded, setIsExpanded] = useState(false)
+  const [isLongPress, setIsLongPress] = useState(false)
+
+  const [showMenu, setShowMenu] = useState(false);
+  const [mouseX, setMouseX] = useState(0);
+  const [mouseY, setMouseY] = useState(0);
 
   if(embed){
     //console.log(embed)
@@ -315,6 +322,36 @@ export const Post = (props: PostProps) => {
     })
   }
 
+  const handleLongPress = () => {
+    console.log(props);
+    setIsExpanded(true);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsLongPress(true);
+    const timer = setTimeout(() => {
+      handleLongPress();
+      setShowMenu(true);
+      setMouseX(e.clientX);
+      setMouseY(e.screenY - e.pageY);
+    }, 300);
+
+    document.addEventListener('mouseup', () => {
+      setIsLongPress(false);
+      setIsExpanded(false);
+      clearTimeout(timer);
+    });
+    document.addEventListener('mousemove', () => {
+      setIsLongPress(false);
+      clearTimeout(timer);
+    });
+  };
+
+  const handleChildMouseDown = (e: React.MouseEvent<HTMLSpanElement>) => {
+    setIsLongPress(false);
+    e.stopPropagation();
+  };
+
   return (
     <Row
       align="stretch"
@@ -323,10 +360,25 @@ export const Post = (props: PostProps) => {
         border: isEmbed ? '2px solid $gray400' : undefined,
         borderRadius: '$md',
         padding: '$4',
+        backgroundColor: isExpanded ? '$gray400' : 'rgba(0,0,0,0)',
       }}
+      onMouseDown={handleMouseDown}
     >
+      {showMenu && (
+          <div
+            style={{
+                position: 'absolute',
+                backgroundColor: 'white',
+                zIndex: 10000,
+            }}
+          >
+            {author.did === myDid && (<div>delete post</div>)}
+            {author.did !== myDid && (<div>report</div>)}
+            {author.did !== myDid && (<div>dislike</div>)}
+          </div>
+      )}
       {hasReply && <ReplyLine />}
-      <div>
+      <div onMouseDown={handleChildMouseDown}>
         <Tooltip
           placement="right"
           isDisabled={disableTooltip}
@@ -421,6 +473,9 @@ export const Post = (props: PostProps) => {
               {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
             </Link>
           </PostDate>
+          <div>
+            <FontAwesomeIcon icon={faEllipsis}></FontAwesomeIcon>
+          </div>
         </PostInfo>
         <PostContent>
           <PostRecordTextView record={record} />
@@ -484,7 +539,7 @@ export const Post = (props: PostProps) => {
                 ></img>
               </URLCardThumb>
               <URLCardDetail>
-                <div>
+                <URLCardDetailContent>
                   <URLCardTitle style={{ color: 'black' }}>
                     {(embed as any)?.external?.title}
                   </URLCardTitle>
@@ -494,7 +549,7 @@ export const Post = (props: PostProps) => {
                   <URLCardLink>
                     {(embed as any)?.external?.uri.match(/^https?:\/{2,}(.*?)(?:\/|\?|#|$)/)[1]}
                   </URLCardLink>
-                </div>
+                </URLCardDetailContent>
               </URLCardDetail>
             </URLCard>
           </a>
@@ -584,6 +639,7 @@ export const Post = (props: PostProps) => {
                 ></FontAwesomeIcon>
               </BlueDot>
             </Col>
+
           </Row>
         )}
       </Col>
