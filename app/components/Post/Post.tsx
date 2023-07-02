@@ -64,10 +64,35 @@ const PostInfo = styled('div', {
 const AuthorDisplayName = styled('div', {
   color: '$text',
   fontWeight: 'bold',
+  maxWidth: '210px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+})
+
+const EmbedAuthorDisplayName = styled('div', {
+  color: '$text',
+  fontWeight: 'bold',
+  maxWidth: '160px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 })
 
 const AuthorHandle = styled('div', {
   color: '$gray700',
+  maxWidth: '240px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+})
+
+const EmbedAuthorHandle = styled('div', {
+  color: '$gray700',
+  maxWidth: '220px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 })
 
 const PostDate = styled('div', {
@@ -221,6 +246,9 @@ interface PostProps {
   onFollowClick?: () => void
 
   onReplyClick?: () => void
+
+  quotedUserDID?: string
+  embedUserDID?: string
 }
 
 export const Post = (props: PostProps) => {
@@ -248,6 +276,8 @@ export const Post = (props: PostProps) => {
     isFollowing,
     isReactionProcessing,
     onReplyClick,
+    quotedUserDID,
+    embedUserDID,
   } = props
   const onLikeClick = props.onLikeClick ?? (() => {})
   const onRepostClick = props.onRepostClick ?? (() => {})
@@ -269,6 +299,7 @@ export const Post = (props: PostProps) => {
   const [showMenu, setShowMenu] = useState(false);
   const [mouseX, setMouseX] = useState(0);
   const [mouseY, setMouseY] = useState(0);
+
 
   if(embed){
     //console.log(embed)
@@ -365,6 +396,7 @@ export const Post = (props: PostProps) => {
       onMouseDown={handleMouseDown}
     >
       {showMenu && (
+          /*
           <div
             style={{
                 position: 'absolute',
@@ -375,7 +407,8 @@ export const Post = (props: PostProps) => {
             {author.did === myDid && (<div>delete post</div>)}
             {author.did !== myDid && (<div>report</div>)}
             {author.did !== myDid && (<div>dislike</div>)}
-          </div>
+          </div>*/
+          <></>
       )}
       {hasReply && <ReplyLine />}
       <div onMouseDown={handleChildMouseDown}>
@@ -438,7 +471,7 @@ export const Post = (props: PostProps) => {
                   ? author.avatar
                   : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'
               }
-              size={isEmbed ? 'md' : 'lg'}
+              size={isEmbed ? 'sm' : 'lg'}
             />
           </Link>
         </Tooltip>
@@ -452,28 +485,52 @@ export const Post = (props: PostProps) => {
             </RepostByLabel>
           </Link>
         )}
-        <PostInfo>
-          <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
-            <AuthorDisplayName>
-              {!isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 25 ? (author.displayName ?? `@${author.handle}`).slice(0, 25) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 25) ? '...' : '')}
-              {isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 17 ? (author.displayName ?? `@${author.handle}`).slice(0, 14) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 17) ? '...' : '')}
-            </AuthorDisplayName>
-          </Link>
-          <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
-            <AuthorHandle>
-              @{author.handle.length >= 30 ? `${author.handle.slice(0,22)}...`: author.handle}
-            </AuthorHandle>
-          </Link>
-          <PostDate>
-            <Link
-              style={{ display: 'block' }}
-              href={`https://staging.bsky.app/profile/${author.handle}/post/${postUri}`}
-              target={'_blank'}
-            >
-              {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
-            </Link>
-          </PostDate>
-        </PostInfo>
+        {!isEmbed &&  (
+            <PostInfo>
+              <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
+                <AuthorDisplayName>
+                  {!isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 25 ? (author.displayName ?? `@${author.handle}`).slice(0, 25) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 25) ? '...' : '')}
+                </AuthorDisplayName>
+              </Link>
+              <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
+                <AuthorHandle>
+                  @{author.handle.length >= 30 ? `${author.handle.slice(0,22)}...`: author.handle}
+                </AuthorHandle>
+              </Link>
+              <PostDate>
+                <Link
+                    style={{ display: 'block' }}
+                    href={`https://staging.bsky.app/profile/${author.handle}/post/${postUri}`}
+                    target={'_blank'}
+                >
+                  {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
+                </Link>
+              </PostDate>
+            </PostInfo>
+        )}
+        {isEmbed && quotedUserDID !== embedUserDID && (
+            <PostInfo>
+              <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
+                <EmbedAuthorDisplayName>
+                  {isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 17 ? (author.displayName ?? `@${author.handle}`).slice(0, 14) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 17) ? '...' : '')}
+                </EmbedAuthorDisplayName>
+              </Link>
+              <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
+                <EmbedAuthorHandle>
+                  @{author.handle.length >= 30 ? `${author.handle.slice(0,22)}...`: author.handle}
+                </EmbedAuthorHandle>
+              </Link>
+              <PostDate>
+                <Link
+                    style={{ display: 'block' }}
+                    href={`https://staging.bsky.app/profile/${author.handle}/post/${postUri}`}
+                    target={'_blank'}
+                >
+                  {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
+                </Link>
+              </PostDate>
+            </PostInfo>
+        )}
         <PostContent>
           <PostRecordTextView record={record} />
         </PostContent>
@@ -510,6 +567,8 @@ export const Post = (props: PostProps) => {
                       .embeds[0] as AppBskyEmbedRecord.ViewRecord as any)
                   : null
               }
+              quotedUserDID={author.did as string}
+              embedUserDID={((embed.record as Record)?.author as any)?.did as string}
               isEmbed
               hideActions
             />
