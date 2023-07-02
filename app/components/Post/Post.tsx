@@ -473,9 +473,6 @@ export const Post = (props: PostProps) => {
               {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
             </Link>
           </PostDate>
-          <div>
-            <FontAwesomeIcon icon={faEllipsis}></FontAwesomeIcon>
-          </div>
         </PostInfo>
         <PostContent>
           <PostRecordTextView record={record} />
