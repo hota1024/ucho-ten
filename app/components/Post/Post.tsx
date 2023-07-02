@@ -70,9 +70,26 @@ const AuthorDisplayName = styled('div', {
   textOverflow: 'ellipsis',
 })
 
+const EmbedAuthorDisplayName = styled('div', {
+  color: '$text',
+  fontWeight: 'bold',
+  maxWidth: '160px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+})
+
 const AuthorHandle = styled('div', {
   color: '$gray700',
   maxWidth: '240px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+})
+
+const EmbedAuthorHandle = styled('div', {
+  color: '$gray700',
+  maxWidth: '220px',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
@@ -477,7 +494,7 @@ export const Post = (props: PostProps) => {
               </Link>
               <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
                 <AuthorHandle>
-                  {author.handle.length >= 30 ? `@${author.handle.slice(0,22)}...`: author.handle}
+                  @{author.handle.length >= 30 ? `${author.handle.slice(0,22)}...`: author.handle}
                 </AuthorHandle>
               </Link>
               <PostDate>
@@ -494,14 +511,14 @@ export const Post = (props: PostProps) => {
         {isEmbed && quotedUserDID !== embedUserDID && (
             <PostInfo>
               <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
-                <AuthorDisplayName>
+                <EmbedAuthorDisplayName>
                   {isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 17 ? (author.displayName ?? `@${author.handle}`).slice(0, 14) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 17) ? '...' : '')}
-                </AuthorDisplayName>
+                </EmbedAuthorDisplayName>
               </Link>
               <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
-                <AuthorHandle>
-                  {author.handle.length >= 30 ? `@${author.handle.slice(0,22)}...`: author.handle}
-                </AuthorHandle>
+                <EmbedAuthorHandle>
+                  @{author.handle.length >= 30 ? `${author.handle.slice(0,22)}...`: author.handle}
+                </EmbedAuthorHandle>
               </Link>
               <PostDate>
                 <Link
