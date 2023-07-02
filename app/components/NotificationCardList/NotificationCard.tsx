@@ -28,8 +28,10 @@ import { useCallback, useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faHeart,
-  faHeart as faHeartRegular,
-  faHeart as faHeartSolid,
+  faCheck as faCheckRegular,
+  faCheck as faCheckSolid,
+  faCircle as faCircleRegular,
+  faCheckCircle as faCheckCircleSolid,
 } from '@fortawesome/free-solid-svg-icons'
 import { faArrowsTurnRight } from '@fortawesome/free-solid-svg-icons'
 import { faComment, faUser } from '@fortawesome/free-regular-svg-icons'
@@ -282,8 +284,8 @@ export const NotificationCard: React.FC<NotificationCardProps> = (props) => {
                           }}
                         >
                           <Dropdown.Item key="repost">
-                            {isReposted === false && <Text>Repost</Text>}
-                            {isReposted === true && (
+                            {!isReposted && <Text>Repost</Text>}
+                            {isReposted  && (
                               <Text color={'error'}>UnRepost</Text>
                             )}
                           </Dropdown.Item>
@@ -299,8 +301,8 @@ export const NotificationCard: React.FC<NotificationCardProps> = (props) => {
                           onClick={
                             !isReactionProcessing ? handleLikeClick : undefined
                           }
-                          icon={isLiked ? faHeartSolid : faHeartRegular}
-                          color={isLiked ? '#F31260' : '#787F85'}
+                          icon={isLiked ? faCheckCircleSolid : faCircleRegular}
+                          color={isLiked ? `rgba(49,171,183,1)` : '#787F85'}
                           style={{ cursor: 'pointer' }}
                         />
                       </PostAction>

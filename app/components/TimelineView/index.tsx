@@ -4,6 +4,9 @@ import { ReactNode } from 'react'
 import InfiniteScroll from 'react-infinite-scroller'
 import { FeedView } from '../FeedView'
 import {useMuteWords} from "@/atoms/settings";
+import { useState } from 'react'
+import { useAgent } from '@/atoms/agent'
+
 
 const TimelineContainer = styled('div', {
   maxHeight: '100dvh',
@@ -46,8 +49,11 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
     onLoadMorePosts,
     header,
   } = props
+  const [agent] = useAgent()
   const onLoadNewTimeline = props.onLoadNewTimeline ?? (() => {})
   const [muteWords, setMuteWords] = useMuteWords()
+  const [rePostedList, setRePostedList] = useState<string[]>([])
+  //console.log(rePostedList)
 
 
 
@@ -90,13 +96,28 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
           {header}
           <>
               {posts.map((feed, key) => {
-                  if(feed?.reply){
-                      if(muteWords.some(word => (feed?.reply?.parent?.record as any)?.text.includes(word))){
-                        return null
-                      }
-                  }
+                  console.log(feed)
+                  //console.log(agent)
                   if (muteWords.some(word => (feed.post.record as any)?.text.includes(word))) {
                       return null; // マッチする要素がある場合は何も返さず、非表示にする
+                  }
+                  if(feed?.reply){
+                      // @ts-ignore
+                      if(!feed?.reply?.parent?.author?.viewer?.following as any && feed?.post.author.did !== agent?.session.did){
+                            return null
+                      }
+                      if(muteWords.some(word => (feed?.reply?.parent?.record as any)?.text.includes(word))){
+                          return null
+                      }
+                  }
+                  if(feed?.reason){
+                      //console.log(feed)
+                      if(feed?.reason.$type === 'app.bsky.feed.defs#reasonRepost'){
+                          if(rePostedList.includes(feed?.post?.cid as string)){
+                              return null
+                          }
+                          //setRePostedList([...rePostedList, feed?.post?.cid as string])
+                      }
                   }
                   return (
                       <Row key={`${feed.post.cid}${key}`} css={{ my: '$8' }}>
