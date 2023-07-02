@@ -53,9 +53,19 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
   const onLoadNewTimeline = props.onLoadNewTimeline ?? (() => {})
   const [muteWords, setMuteWords] = useMuteWords()
   const [rePostedList, setRePostedList] = useState<string[]>([])
-  //console.log(rePostedList)
+  //console.log(posts)
+    const uniqueItems:any = []
+    const cidSet = new Set<string>();
 
+    posts.forEach(item => {
+        const cid = item.post.cid;
+        if (!cidSet.has(cid)) {
+            cidSet.add(cid);
+            uniqueItems.push(item);
+        }
+    });
 
+    //console.log(uniqueItems)
 
   return (
     <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
@@ -95,8 +105,8 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         >
           {header}
           <>
-              {posts.map((feed, key) => {
-                  console.log(feed)
+              {uniqueItems.map((feed:any, key:any) => {
+                  //console.log(feed)
                   //console.log(agent)
                   if (muteWords.some(word => (feed.post.record as any)?.text.includes(word))) {
                       return null; // マッチする要素がある場合は何も返さず、非表示にする
