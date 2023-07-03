@@ -7,16 +7,15 @@ import {
 import {
   faComment,
   faHeart as faHeartRegular,
+  faCircle as faCircleRegular,
+  faSquare as faSquareRegular,
 } from '@fortawesome/free-regular-svg-icons'
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons"
 import {
   faHeart as faHeartSolid,
   faRetweet as faRetweetSolid,
-} from '@fortawesome/free-solid-svg-icons'
-import {
-  faCircle as faCircleRegular,
-} from '@fortawesome/free-regular-svg-icons'
-import {
   faCircle as faCircleSolid,
+  faSquare as faSquareSolid,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -33,6 +32,7 @@ import {
   Image,
   Text,
   Dropdown,
+  Popover,
 } from '@nextui-org/react'
 import Link from 'next/link'
 import { useState, useMemo, useCallback, useEffect } from 'react'
@@ -64,10 +64,35 @@ const PostInfo = styled('div', {
 const AuthorDisplayName = styled('div', {
   color: '$text',
   fontWeight: 'bold',
+  maxWidth: '210px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+})
+
+const EmbedAuthorDisplayName = styled('div', {
+  color: '$text',
+  fontWeight: 'bold',
+  maxWidth: '160px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 })
 
 const AuthorHandle = styled('div', {
   color: '$gray700',
+  maxWidth: '240px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+})
+
+const EmbedAuthorHandle = styled('div', {
+  color: '$gray700',
+  maxWidth: '220px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 })
 
 const PostDate = styled('div', {
@@ -100,6 +125,14 @@ const PostAction = styled('div', {
   //cursor: 'pointer',
 })
 
+const BlueDot = styled('div', {
+  display: 'flex',
+  alignItems: 'right',
+  gap: '$4',
+  fontWeight: '$medium',
+  color: '$gray700',
+})
+
 const ReplyLine = styled('div', {
   position: 'relative',
   borderLeft: '2px solid $gray700',
@@ -117,6 +150,9 @@ const URLCard = styled('div', {
   display: 'flex',
   alignItems: 'center',
   color: '$gray800',
+  '&:hover': {
+    backgroundColor: '$gray200',
+  }
 })
 
 const URLCardThumb = styled('div', {
@@ -131,20 +167,40 @@ const URLCardDetail = styled('div', {
   height: '100%',
   width: 'calc(100% - 110px)',
 })
+const URLCardDetailContent = styled('div', {
+  hgiehgt: '100%',
+  width: '370px',
+  minWidth: "0",
+})
 const URLCardTitle = styled('div', {
   fontSize: '$sm',
   fontWeight: 'bold',
   color: '$gray800',
+  whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-  width: '100%',
-  marginBottom: '$1',
 })
 const URLCardDesc = styled('div', {
   fontSize: '$xs',
   color: '$gray700',
   marginTop: '$1',
+})
+
+const URLCardLink = styled('div', {
+  fontSize: '$xs',
+  color: '$gray700',
+  marginTop: '$1',
+  '& a': {
+    color: '$gray700',
+    textDecoration: 'underline',
+  },
+})
+
+const PostContent = styled('div', {
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  //WebkitLineClamp: 7, // 行数指定
+  overflow: "hidden",
 })
 
 interface PostProps {
@@ -186,6 +242,9 @@ interface PostProps {
   onFollowClick?: () => void
 
   onReplyClick?: () => void
+
+  quotedUserDID?: string
+  embedUserDID?: string
 }
 
 export const Post = (props: PostProps) => {
@@ -213,6 +272,8 @@ export const Post = (props: PostProps) => {
     isFollowing,
     isReactionProcessing,
     onReplyClick,
+    quotedUserDID,
+    embedUserDID,
   } = props
   const onLikeClick = props.onLikeClick ?? (() => {})
   const onRepostClick = props.onRepostClick ?? (() => {})
@@ -228,9 +289,12 @@ export const Post = (props: PostProps) => {
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
 
-  /*if(embed && embed.$type === "app.bsky.embed.recordWithMedia#view"){
-    console.log(embed)
-  }*/
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [isLongPress, setIsLongPress] = useState(false)
+
+  const [showMenu, setShowMenu] = useState(false);
+  const [mouseX, setMouseX] = useState(0);
+  const [mouseY, setMouseY] = useState(0);
 
   const updateElapsed = useCallback(() => {
     if (!time) return 0
@@ -261,6 +325,55 @@ export const Post = (props: PostProps) => {
     return <></>
   }
 
+  const getOGP = async (url : string) => {
+    fetch(url).then(res => res.text()).then(text => {
+      const el = new DOMParser().parseFromString(text, "text/html")
+      const headEls = (el.head.children)
+
+      return Array.from(headEls).map(v => {
+        const prop = v.getAttribute('property')
+        if (!prop) return;
+        return { prop: prop.replace("og:",""),content: v.getAttribute("content")}
+      })
+    }).then(list=>{
+      return list.filter(v=>v)
+    }).then(result=>{
+      const title = (result.filter(v=>(v as any).prop==="title")[0] as any).content;
+      const url = (result.filter(v=>(v as any).prop==="url")[0] as any).content;
+      console.log(`${title} | ${url}`)
+    })
+  }
+
+  const handleLongPress = () => {
+    console.log(props);
+    setIsExpanded(true);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsLongPress(true);
+    const timer = setTimeout(() => {
+      handleLongPress();
+      setShowMenu(true);
+      setMouseX(e.clientX);
+      setMouseY(e.screenY - e.pageY);
+    }, 300);
+
+    document.addEventListener('mouseup', () => {
+      setIsLongPress(false);
+      setIsExpanded(false);
+      clearTimeout(timer);
+    });
+    document.addEventListener('mousemove', () => {
+      setIsLongPress(false);
+      clearTimeout(timer);
+    });
+  };
+
+  const handleChildMouseDown = (e: React.MouseEvent<HTMLSpanElement>) => {
+    setIsLongPress(false);
+    e.stopPropagation();
+  };
+
   return (
     <Row
       align="stretch"
@@ -269,10 +382,27 @@ export const Post = (props: PostProps) => {
         border: isEmbed ? '2px solid $gray400' : undefined,
         borderRadius: '$md',
         padding: '$4',
+        backgroundColor: isExpanded ? '$gray400' : 'rgba(0,0,0,0)',
       }}
+      onMouseDown={handleMouseDown}
     >
+      {showMenu && (
+          /*
+          <div
+            style={{
+                position: 'absolute',
+                backgroundColor: 'white',
+                zIndex: 10000,
+            }}
+          >
+            {author.did === myDid && (<div>delete post</div>)}
+            {author.did !== myDid && (<div>report</div>)}
+            {author.did !== myDid && (<div>dislike</div>)}
+          </div>*/
+          <></>
+      )}
       {hasReply && <ReplyLine />}
-      <div>
+      <div onMouseDown={handleChildMouseDown}>
         <Tooltip
           placement="right"
           isDisabled={disableTooltip}
@@ -332,7 +462,7 @@ export const Post = (props: PostProps) => {
                   ? author.avatar
                   : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'
               }
-              size={isEmbed ? 'md' : 'lg'}
+              size={isEmbed ? 'sm' : 'lg'}
             />
           </Link>
         </Tooltip>
@@ -346,30 +476,55 @@ export const Post = (props: PostProps) => {
             </RepostByLabel>
           </Link>
         )}
-        <PostInfo>
-          <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
-            <AuthorDisplayName>
-              {!isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 25 ? (author.displayName ?? `@${author.handle}`).slice(0, 25) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 25) ? '...' : '')}
-              {isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 20 ? (author.displayName ?? `@${author.handle}`).slice(0, 17) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 17) ? '...' : '')}
-            </AuthorDisplayName>
-          </Link>
-          <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
-            <AuthorHandle>
-              @{author.handle.length >= 30 ? `${author.handle.slice(0,22)}...`: author.handle}
-            </AuthorHandle>
-          </Link>
-          <PostDate>
-            <Link
-              style={{ display: 'block' }}
-              href={`https://staging.bsky.app/profile/${author.handle}/post/${postUri}`}
-              target={'_blank'}
-            >
-              {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
-            </Link>
-          </PostDate>
-        </PostInfo>
-
-        <PostRecordTextView record={record} />
+        {!isEmbed &&  (
+            <PostInfo>
+              <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
+                <AuthorDisplayName>
+                  {!isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 25 ? (author.displayName ?? `@${author.handle}`).slice(0, 25) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 25) ? '...' : '')}
+                </AuthorDisplayName>
+              </Link>
+              <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
+                <AuthorHandle>
+                  @{author.handle.length >= 30 ? `${author.handle.slice(0,22)}...`: author.handle}
+                </AuthorHandle>
+              </Link>
+              <PostDate>
+                <Link
+                    style={{ display: 'block' }}
+                    href={`https://staging.bsky.app/profile/${author.handle}/post/${postUri}`}
+                    target={'_blank'}
+                >
+                  {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
+                </Link>
+              </PostDate>
+            </PostInfo>
+        )}
+        {isEmbed && quotedUserDID !== embedUserDID && (
+            <PostInfo>
+              <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
+                <EmbedAuthorDisplayName>
+                  {isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 17 ? (author.displayName ?? `@${author.handle}`).slice(0, 14) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 17) ? '...' : '')}
+                </EmbedAuthorDisplayName>
+              </Link>
+              <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
+                <EmbedAuthorHandle>
+                  @{author.handle.length >= 30 ? `${author.handle.slice(0,22)}...`: author.handle}
+                </EmbedAuthorHandle>
+              </Link>
+              <PostDate>
+                <Link
+                    style={{ display: 'block' }}
+                    href={`https://staging.bsky.app/profile/${author.handle}/post/${postUri}`}
+                    target={'_blank'}
+                >
+                  {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
+                </Link>
+              </PostDate>
+            </PostInfo>
+        )}
+        <PostContent>
+          <PostRecordTextView record={record} />
+        </PostContent>
         {embed &&
           isEmbed &&
           showEmbedImages &&
@@ -390,7 +545,7 @@ export const Post = (props: PostProps) => {
               record={(embed.record as Record).value as Record}
               author={(embed.record as Record).author as ProfileViewBasic}
               isFollowing={
-                !!((embed.record as Record).author as ProfileViewBasic).viewer
+                !!((embed.record as Record).author as ProfileViewBasic)?.viewer
                   ?.following
               }
               postUri={
@@ -403,6 +558,8 @@ export const Post = (props: PostProps) => {
                       .embeds[0] as AppBskyEmbedRecord.ViewRecord as any)
                   : null
               }
+              quotedUserDID={author.did as string}
+              embedUserDID={((embed.record as Record)?.author as any)?.did as string}
               isEmbed
               hideActions
             />
@@ -429,14 +586,17 @@ export const Post = (props: PostProps) => {
                 ></img>
               </URLCardThumb>
               <URLCardDetail>
-                <div>
+                <URLCardDetailContent>
                   <URLCardTitle style={{ color: 'black' }}>
                     {(embed as any)?.external?.title}
                   </URLCardTitle>
                   <URLCardDesc style={{ fontSize: 'small' }}>
                     {(embed as any)?.external?.description}
                   </URLCardDesc>
-                </div>
+                  <URLCardLink>
+                    {(embed as any)?.external?.uri.match(/^https?:\/{2,}(.*?)(?:\/|\?|#|$)/)[1]}
+                  </URLCardLink>
+                </URLCardDetailContent>
               </URLCardDetail>
             </URLCard>
           </a>
@@ -514,16 +674,17 @@ export const Post = (props: PostProps) => {
               </Dropdown>
             </Col>
             <Col>
-              <PostAction>
+              <BlueDot>
                 <FontAwesomeIcon
                     onClick={!isReactionProcessing ? onLikeClick : undefined}
-                    icon={isLiked ? faHeartSolid : faHeartRegular}
-                    color={isLiked ? '#F31260' : '#787F85'}
-                    style={{ cursor: 'pointer' }}
-                />
-                {showLikeCount && likeCount}
-              </PostAction>
+                    icon={myDid === author.did ? (likeCount !== 0 ? faSquareRegular : faSquareRegular) : (isLiked && likeCount !== 0 ? faSquareSolid : faSquareRegular)}
+                    color={myDid === author.did ? (likeCount !== 0 ? `rgba(49,171,183,0.2)` : undefined) : ( isLiked && likeCount !== 0 ? `rgba(49,171,183,${likeCount as number * 0.05})` : undefined)}
+                    style={{ display: myDid === author.did &&  (likeCount === 0)  ? 'none' : "block", cursor: 'pointer'}}
+                    size={'sm'}
+                ></FontAwesomeIcon>
+              </BlueDot>
             </Col>
+            
           </Row>
         )}
       </Col>

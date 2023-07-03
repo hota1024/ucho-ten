@@ -4,6 +4,9 @@ import { ReactNode } from 'react'
 import InfiniteScroll from 'react-infinite-scroller'
 import { FeedView } from '../FeedView'
 import {useMuteWords} from "@/atoms/settings";
+import { useState } from 'react'
+import { useAgent } from '@/atoms/agent'
+
 
 const TimelineContainer = styled('div', {
   maxHeight: '100dvh',
@@ -46,10 +49,47 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
     onLoadMorePosts,
     header,
   } = props
+  const [agent] = useAgent()
   const onLoadNewTimeline = props.onLoadNewTimeline ?? (() => {})
   const [muteWords, setMuteWords] = useMuteWords()
+  //重複するrepostを一番古いものを一つだけ残して削除し、その削除したpostが何回被ったかをconsoleで出力する
+    const uniqueItems: Array<{ post: { cid: string }, reply?: any }> = posts.reduceRight((acc, item) => {
+        const isDuplicate = acc.some((i) => i.post.cid === item.post.cid);
+        if (!isDuplicate) {
+            acc.unshift(item);
+        }
+        return acc;
+    }, [] as Array<{ post: { cid: string }, reply?: any }>);
+
+  
+    //uniqueItemsをfor文で全て出力
+    const hogehoge = uniqueItems.filter((item) => {
+        if (item.reply === undefined) {
+            const hasDuplicate = uniqueItems.some((item2) => item2.reply !== undefined && item.post.cid === item2.reply.parent.cid);
+            if (hasDuplicate) {
+                console.log(item);
+                return false; // item を削除するために false を返す
+            }
+        }
+        return true; // item を残すために true を返す
+    });
 
 
+
+
+
+    /*
+    const deleteDuplicateReply = (replyItems: Array<{ post: { cid: string }, reply?: any }>) => {
+        replyItems.forEach((item, index, self) => {
+            if (item.reply !== undefined) {
+                const isDuplicate = self.some((i) => i.post.cid === item.reply?.parent?.cid);
+                if (isDuplicate) {
+                    self.splice(index, 1)
+                }
+            }
+        })
+    }
+     */
 
   return (
     <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
@@ -89,9 +129,20 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         >
           {header}
           <>
-              {posts.map((feed, key) => {
+              {hogehoge.map((feed:any, key:any) => {
+                  //console.log(feed)
+                  //console.log(agent)
                   if (muteWords.some(word => (feed.post.record as any)?.text.includes(word))) {
                       return null; // マッチする要素がある場合は何も返さず、非表示にする
+                  }
+                  if(feed?.reply){
+                      // @ts-ignore
+                      if(!feed?.reply?.parent?.author?.viewer?.following as any && feed?.post.author.did !== agent?.session.did){
+                            return null
+                      }
+                      if(muteWords.some(word => (feed?.reply?.parent?.record as any)?.text.includes(word))){
+                          return null
+                      }
                   }
                   return (
                       <Row key={`${feed.post.cid}${key}`} css={{ my: '$8' }}>
