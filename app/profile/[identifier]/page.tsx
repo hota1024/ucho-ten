@@ -285,17 +285,21 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                 <Row align="center" justify="space-between">
                   <Col>
                     <User
-                      src={
-                        profile.avatar
-                          ? profile.avatar
-                          : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'
-                      }
                       squared
                       size="xl"
                       name={profile.displayName}
                       //description={`@${profile.handle}${isMuted?' (Muted)':''}`}
                         description={'　'}
                     />
+                    <div style={{height:'64px', width : '64px', borderRadius:' 22px', overflow:'hidden', marginLeft : '12px', position:"absolute", top:'0px', zIndex : '999'}}>
+                      <Zoom>
+                        <img src={
+                          profile.avatar
+                              ? profile.avatar
+                              : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'
+                        }></img>
+                      </Zoom>
+                    </div>
                     <div style={{width: '250px', position: 'absolute', top:'30px', left:'88px'}}>
                       <Text css={{width:'100%', maxWidth:'100%' ,overflowWrap: 'break-word', fontSize:'13px', color:'$gray700'}}>{`@${profile.handle}${isMuted?' (Muted)':''}`}</Text>
                     </div>
