@@ -99,7 +99,7 @@ const LikeFeed = () => {
         .app.bsky.feed.getFeed({
           cursor: cursor,
           limit: 20,
-          feed: 'at://did:plc:txandrhc7afdozk6a2itgltm/app.bsky.feed.generator/aaapc6cjz4c3e',
+          feed: 'at://did:plc:txandrhc7afdozk6a2itgltm/app.bsky.feed.generator/aaabcedumt32w',
         })
         .then((result) => result.data)
     }
