@@ -184,6 +184,10 @@ const URLCardDesc = styled('div', {
   fontSize: '$xs',
   color: '$gray700',
   marginTop: '$1',
+  display: '-webkit-box',
+  WebkitLineClamp: '2',
+  WebkitBoxOrient: 'vertical',
+  overflow: 'hidden',
 })
 
 const URLCardLink = styled('div', {
