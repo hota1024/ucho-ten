@@ -52,20 +52,44 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
   const [agent] = useAgent()
   const onLoadNewTimeline = props.onLoadNewTimeline ?? (() => {})
   const [muteWords, setMuteWords] = useMuteWords()
-  const [rePostedList, setRePostedList] = useState<string[]>([])
-  //console.log(posts)
-    const uniqueItems:any = []
-    const cidSet = new Set<string>();
-
-    posts.forEach(item => {
-        const cid = item.post.cid;
-        if (!cidSet.has(cid)) {
-            cidSet.add(cid);
-            uniqueItems.push(item);
+  //重複するrepostを一番古いものを一つだけ残して削除し、その削除したpostが何回被ったかをconsoleで出力する
+    const uniqueItems: Array<{ post: { cid: string }, reply?: any }> = posts.reduceRight((acc, item) => {
+        const isDuplicate = acc.some((i) => i.post.cid === item.post.cid);
+        if (!isDuplicate) {
+            acc.unshift(item);
         }
+        return acc;
+    }, [] as Array<{ post: { cid: string }, reply?: any }>);
+
+  
+    //uniqueItemsをfor文で全て出力
+    const hogehoge = uniqueItems.filter((item) => {
+        if (item.reply === undefined) {
+            const hasDuplicate = uniqueItems.some((item2) => item2.reply !== undefined && item.post.cid === item2.reply.parent.cid);
+            if (hasDuplicate) {
+                console.log(item);
+                return false; // item を削除するために false を返す
+            }
+        }
+        return true; // item を残すために true を返す
     });
 
-    //console.log(uniqueItems)
+
+
+
+
+    /*
+    const deleteDuplicateReply = (replyItems: Array<{ post: { cid: string }, reply?: any }>) => {
+        replyItems.forEach((item, index, self) => {
+            if (item.reply !== undefined) {
+                const isDuplicate = self.some((i) => i.post.cid === item.reply?.parent?.cid);
+                if (isDuplicate) {
+                    self.splice(index, 1)
+                }
+            }
+        })
+    }
+     */
 
   return (
     <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
@@ -105,7 +129,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         >
           {header}
           <>
-              {uniqueItems.map((feed:any, key:any) => {
+              {hogehoge.map((feed:any, key:any) => {
                   //console.log(feed)
                   //console.log(agent)
                   if (muteWords.some(word => (feed.post.record as any)?.text.includes(word))) {
@@ -118,15 +142,6 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
                       }
                       if(muteWords.some(word => (feed?.reply?.parent?.record as any)?.text.includes(word))){
                           return null
-                      }
-                  }
-                  if(feed?.reason){
-                      //console.log(feed)
-                      if(feed?.reason.$type === 'app.bsky.feed.defs#reasonRepost'){
-                          if(rePostedList.includes(feed?.post?.cid as string)){
-                              return null
-                          }
-                          //setRePostedList([...rePostedList, feed?.post?.cid as string])
                       }
                   }
                   return (
