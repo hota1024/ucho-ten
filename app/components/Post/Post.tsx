@@ -186,6 +186,16 @@ const URLCardDesc = styled('div', {
   marginTop: '$1',
 })
 
+const URLCardLink = styled('div', {
+  fontSize: '$xs',
+  color: '$gray700',
+  marginTop: '$1',
+  '& a': {
+    color: '$gray700',
+    textDecoration: 'underline',
+  },
+})
+
 const PostContent = styled('div', {
   display: "-webkit-box",
   WebkitBoxOrient: "vertical",
@@ -535,7 +545,7 @@ export const Post = (props: PostProps) => {
               record={(embed.record as Record).value as Record}
               author={(embed.record as Record).author as ProfileViewBasic}
               isFollowing={
-                !!((embed.record as Record).author as ProfileViewBasic).viewer
+                !!((embed.record as Record).author as ProfileViewBasic)?.viewer
                   ?.following
               }
               postUri={
