@@ -140,28 +140,11 @@ const URLCardTitle = styled('div', {
   whiteSpace: 'nowrap',
   width: '100%',
   marginBottom: '$1',
-  display: '-webkit-box',
-  WebkitLineClamp: '1',
-  WebkitBoxOrient: 'vertical',
 })
 const URLCardDesc = styled('div', {
   fontSize: '$xs',
   color: '$gray700',
   marginTop: '$1',
-  display: '-webkit-box',
-  WebkitLineClamp: '2',
-  WebkitBoxOrient: 'vertical',
-  overflow: 'hidden',
-})
-
-const URLCardLink = styled('div', {
-    fontSize: '$xs',
-    color: '$gray700',
-    marginTop: '$1',
-    '& a': {
-        color: '$gray700',
-        textDecoration: 'underline',
-    },
 })
 
 interface PostProps {
@@ -245,9 +228,9 @@ export const Post = (props: PostProps) => {
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
 
-  if(embed){
-    //console.log(embed)
-  }
+  /*if(embed && embed.$type === "app.bsky.embed.recordWithMedia#view"){
+    console.log(embed)
+  }*/
 
   const updateElapsed = useCallback(() => {
     if (!time) return 0
@@ -276,25 +259,6 @@ export const Post = (props: PostProps) => {
 
   if (!author) {
     return <></>
-  }
-
-  const getOGP = async (url : string) => {
-    fetch(url).then(res => res.text()).then(text => {
-      const el = new DOMParser().parseFromString(text, "text/html")
-      const headEls = (el.head.children)
-
-      return Array.from(headEls).map(v => {
-        const prop = v.getAttribute('property')
-        if (!prop) return;
-        return { prop: prop.replace("og:",""),content: v.getAttribute("content")}
-      })
-    }).then(list=>{
-      return list.filter(v=>v)
-    }).then(result=>{
-      const title = (result.filter(v=>(v as any).prop==="title")[0] as any).content;
-      const url = (result.filter(v=>(v as any).prop==="url")[0] as any).content;
-      console.log(`${title} | ${url}`)
-    })
   }
 
   return (
@@ -426,7 +390,7 @@ export const Post = (props: PostProps) => {
               record={(embed.record as Record).value as Record}
               author={(embed.record as Record).author as ProfileViewBasic}
               isFollowing={
-                !!((embed.record as Record).author as ProfileViewBasic)?.viewer
+                !!((embed.record as Record).author as ProfileViewBasic).viewer
                   ?.following
               }
               postUri={
@@ -459,9 +423,9 @@ export const Post = (props: PostProps) => {
             <URLCard>
               <URLCardThumb>
                 <img
-                    src={(embed as any)?.external?.thumb}
-                    style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                    alt={(embed as any)?.external?.alt}
+                  src={(embed as any)?.external?.thumb}
+                  style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                  alt={(embed as any)?.external?.alt}
                 ></img>
               </URLCardThumb>
               <URLCardDetail>
@@ -472,9 +436,6 @@ export const Post = (props: PostProps) => {
                   <URLCardDesc style={{ fontSize: 'small' }}>
                     {(embed as any)?.external?.description}
                   </URLCardDesc>
-                  <URLCardLink>
-                    {(embed as any)?.external?.uri.match(/^https?:\/{2,}(.*?)(?:\/|\?|#|$)/)[1]}
-                  </URLCardLink>
                 </div>
               </URLCardDetail>
             </URLCard>
@@ -518,41 +479,39 @@ export const Post = (props: PostProps) => {
               </PostAction>
             </Col>
             <Col>
-              <div style={{height:'16px', width:'18px'}}>
-                <Dropdown placement="bottom-left">
-                  <Dropdown.Trigger>
-                    <PostAction>
-                      <FontAwesomeIcon
-                          //onClick={onRepostClick}
-                          icon={faRetweetSolid}
-                          //color="#787F85"
-                          color={isReposted ? '#36BA7A' : '#787F85'}
-                          style={{ cursor: 'pointer' }}
-                      />
-                      {showRepostCount && repostCount}
-                    </PostAction>
-                  </Dropdown.Trigger>
-                  <Dropdown.Menu
-                      onAction={(key) => {
-                        if (key === 'repost') {
-                          onRepostClick()
-                        } else if (key === 'quoteRepost') {
-                          onQuoteRepostClick()
-                        }
-                      }}
-                  >
-                    <Dropdown.Item key="repost">
-                      {isReposted === false && <Text>Repost</Text>}
-                      {isReposted === true && (
-                          <Text color={'error'}>UnRepost</Text>
-                      )}
-                    </Dropdown.Item>
-                    <Dropdown.Item key="quoteRepost">
-                      <Text>Quote Repost</Text>
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
+              <Dropdown placement="bottom-left">
+                <Dropdown.Trigger>
+                  <PostAction>
+                    <FontAwesomeIcon
+                      //onClick={onRepostClick}
+                      icon={faRetweetSolid}
+                      //color="#787F85"
+                      color={isReposted ? '#36BA7A' : '#787F85'}
+                      style={{ cursor: 'pointer' }}
+                    />
+                    {showRepostCount && repostCount}
+                  </PostAction>
+                </Dropdown.Trigger>
+                <Dropdown.Menu
+                  onAction={(key) => {
+                    if (key === 'repost') {
+                      onRepostClick()
+                    } else if (key === 'quoteRepost') {
+                      onQuoteRepostClick()
+                    }
+                  }}
+                >
+                  <Dropdown.Item key="repost">
+                    {isReposted === false && <Text>Repost</Text>}
+                    {isReposted === true && (
+                      <Text color={'error'}>UnRepost</Text>
+                    )}
+                  </Dropdown.Item>
+                  <Dropdown.Item key="quoteRepost">
+                    <Text>Quote Repost</Text>
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             </Col>
             <Col>
               <PostAction>
