@@ -643,39 +643,41 @@ export const Post = (props: PostProps) => {
               </PostAction>
             </Col>
             <Col>
-              <Dropdown placement="bottom-left">
-                <Dropdown.Trigger>
-                  <PostAction>
-                    <FontAwesomeIcon
-                      //onClick={onRepostClick}
-                      icon={faRetweetSolid}
-                      //color="#787F85"
-                      color={isReposted ? '#36BA7A' : '#787F85'}
-                      style={{ cursor: 'pointer' }}
-                    />
-                    {showRepostCount && repostCount}
-                  </PostAction>
-                </Dropdown.Trigger>
-                <Dropdown.Menu
-                  onAction={(key) => {
-                    if (key === 'repost') {
-                      onRepostClick()
-                    } else if (key === 'quoteRepost') {
-                      onQuoteRepostClick()
-                    }
-                  }}
-                >
-                  <Dropdown.Item key="repost">
-                    {isReposted === false && <Text>Repost</Text>}
-                    {isReposted === true && (
-                      <Text color={'error'}>UnRepost</Text>
-                    )}
-                  </Dropdown.Item>
-                  <Dropdown.Item key="quoteRepost">
-                    <Text>Quote Repost</Text>
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+              <div style={{height:'16px', width:'18px'}}>
+                <Dropdown placement="bottom-left">
+                  <Dropdown.Trigger>
+                    <PostAction>
+                      <FontAwesomeIcon
+                          //onClick={onRepostClick}
+                          icon={faRetweetSolid}
+                          //color="#787F85"
+                          color={isReposted ? '#36BA7A' : '#787F85'}
+                          style={{ cursor: 'pointer' }}
+                      />
+                      {showRepostCount && repostCount}
+                    </PostAction>
+                  </Dropdown.Trigger>
+                  <Dropdown.Menu
+                      onAction={(key) => {
+                        if (key === 'repost') {
+                          onRepostClick()
+                        } else if (key === 'quoteRepost') {
+                          onQuoteRepostClick()
+                        }
+                      }}
+                  >
+                    <Dropdown.Item key="repost">
+                      {isReposted === false && <Text>Repost</Text>}
+                      {isReposted === true && (
+                          <Text color={'error'}>UnRepost</Text>
+                      )}
+                    </Dropdown.Item>
+                    <Dropdown.Item key="quoteRepost">
+                      <Text>Quote Repost</Text>
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
             </Col>
             <Col>
               <BlueDot>
