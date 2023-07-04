@@ -52,6 +52,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
   const [agent] = useAgent()
   const onLoadNewTimeline = props.onLoadNewTimeline ?? (() => {})
   const [muteWords, setMuteWords] = useMuteWords()
+
   //重複するrepostを一番古いものを一つだけ残して削除し、その削除したpostが何回被ったかをconsoleで出力する
     const uniqueItems: Array<{ post: { cid: string }, reply?: any }> = posts.reduceRight((acc, item) => {
         const isDuplicate = acc.some((i) => i.post.cid === item.post.cid);
@@ -67,29 +68,53 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         if (item.reply === undefined) {
             const hasDuplicate = uniqueItems.some((item2) => item2.reply !== undefined && item.post.cid === item2.reply.parent.cid);
             if (hasDuplicate) {
-                //console.log(item);
-                return false; // item を削除するために false を返す
+                return false
             }
         }
-        return true; // item を残すために true を返す
+        return true
     });
 
-
-
-
-
-    /*
-    const deleteDuplicateReply = (replyItems: Array<{ post: { cid: string }, reply?: any }>) => {
-        replyItems.forEach((item, index, self) => {
-            if (item.reply !== undefined) {
-                const isDuplicate = self.some((i) => i.post.cid === item.reply?.parent?.cid);
-                if (isDuplicate) {
-                    self.splice(index, 1)
+    //重複したthread postを削除
+    const newHogehoge = [ ...hogehoge ]
+    for (const key in newHogehoge) {
+        if (newHogehoge[key].reply !== undefined) {
+            for (const item in newHogehoge) {
+                if (newHogehoge[item].reply !== undefined) {
+                    if (
+                        (newHogehoge[key].reply.root.cid === newHogehoge[item].reply.parent.cid &&
+                            newHogehoge[key].reply.parent.cid === newHogehoge[item].post.cid) ||
+                        (newHogehoge[key].reply.root.cid === newHogehoge[item].reply.root.cid &&
+                            newHogehoge[key].reply.parent.cid === newHogehoge[item].post.cid)/* ||
+                        (newHogehoge[key].reply.root.cid === newHogehoge[item].reply.root.cid &&
+                            newHogehoge[key].reply.parent?.record?.reply?.parent?.cid === newHogehoge[item].post.cid)*/
+                    ) {
+                        //@ts-ignore
+                        newHogehoge[item].deleteTarget = true
+                        //delete newHogehoge[item];
+                    }
                 }
             }
-        })
+        }
     }
-     */
+    newHogehoge.forEach((item, index) => {
+        //@ts-ignore
+        if (item?.deleteTarget === true) {
+            delete newHogehoge[index];
+        }
+    })
+    //ここまで削除
+
+    //残ったreplyが存在するpostのroot.cidとparent.cidを比較して、一致していなかったら一度中身だけを削除して、getThreadで再取得したものを入れる
+    const newHogehoge2 = [ ...newHogehoge ]
+    for (const key in newHogehoge2) {
+        //console.log(newHogehoge2[key])
+        if (newHogehoge2[key]?.reply !== undefined && newHogehoge2[key].reply.parent?.record?.reply?.parent) {
+            if (newHogehoge2[key].reply.root.cid !== newHogehoge2[key].reply.parent?.record?.reply?.parent?.cid) {
+                console.log(newHogehoge2[key])
+            }
+        }
+    }
+
 
   return (
     <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
@@ -129,7 +154,8 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         >
           {header}
           <>
-              {hogehoge.map((feed:any, key:any) => {
+              {newHogehoge.map((feed:any, key:any) => {
+                  //console.log(feed)
                   //ミュートワードが含まれている場合は表示しない
                   if (muteWords.some(word => (feed.post.record as any)?.text.includes(word))) {
                       return null
