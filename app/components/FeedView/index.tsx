@@ -21,6 +21,7 @@ export const FeedView = (props: FeedViewProps) => {
   const [agent] = useAgent()
   const [feed, setFeed] = useState(props.feed)
   const [replyParent, setReplyParent] = useState(props.feed.reply?.parent)
+  const [replyParentRoot, setReplyParentRoot] = useState(props.feed.reply?.root)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const reasonRepost = useMemo(() => feed.reason as ReasonRepost, [])
@@ -66,43 +67,81 @@ export const FeedView = (props: FeedViewProps) => {
   return (
     <>
       <Card variant="flat" css={{ py: '$8' }}>
-        {replyParent ? (
-          <>
-            <PostContainer>
-              <PostViewCard
-                hasReply
-                // @ts-ignore
-                post={replyParent}
-                reasonRepost={reasonRepost}
-                showLikeCount
-                showReplyCount
-                showRepostCount
-                onFetch={fetchReplyParent}
-              />
-            </PostContainer>
-            <PostContainer>
-              <PostViewCard
-                post={feed.post}
-                reasonRepost={reasonRepost}
-                showLikeCount
-                showReplyCount
-                showRepostCount
-                onFetch={fetchFeed}
-              />
-            </PostContainer>
-          </>
-        ) : (
-          <PostContainer>
-            <PostViewCard
-              post={feed.post}
-              reasonRepost={reasonRepost}
-              showLikeCount
-              showReplyCount
-              showRepostCount
-              onFetch={fetchFeed}
-            />
-          </PostContainer>
-        )}
+        {replyParentRoot && props.feed.reply?.parent.cid !== props.feed.reply?.root.cid ? (
+            <>
+              <PostContainer>
+                <PostViewCard
+                    hasReply
+                    // @ts-ignore
+                    post={replyParentRoot}
+                    //reasonRepost={reasonRepost}
+                    showLikeCount
+                    showReplyCount
+                    showRepostCount
+                    onFetch={fetchReplyParent}
+                />
+              </PostContainer>
+              <PostContainer>
+                <PostViewCard
+                    hasReply
+                    // @ts-ignore
+                    post={replyParent}
+                    //reasonRepost={reasonRepost}
+                    showLikeCount
+                    showReplyCount
+                    showRepostCount
+                    onFetch={fetchReplyParent}
+                />
+              </PostContainer>
+              <PostContainer>
+                <PostViewCard
+                    post={feed.post}
+                    reasonRepost={reasonRepost}
+                    showLikeCount
+                    showReplyCount
+                    showRepostCount
+                    onFetch={fetchFeed}
+                />
+              </PostContainer>
+            </>
+        ):(
+            replyParent? (
+                <>
+                  <PostContainer>
+                    <PostViewCard
+                        hasReply
+                        // @ts-ignore
+                        post={replyParent}
+                        //reasonRepost={reasonRepost}
+                        showLikeCount
+                        showReplyCount
+                        showRepostCount
+                        onFetch={fetchReplyParent}
+                    />
+                  </PostContainer>
+                  <PostContainer>
+                    <PostViewCard
+                        post={feed.post}
+                        reasonRepost={reasonRepost}
+                        showLikeCount
+                        showReplyCount
+                        showRepostCount
+                        onFetch={fetchFeed}
+                    />
+                  </PostContainer>
+                </>
+            ):(
+                <PostContainer>
+                  <PostViewCard
+                      post={feed.post}
+                      reasonRepost={reasonRepost}
+                      showLikeCount
+                      showReplyCount
+                      showRepostCount
+                      onFetch={fetchFeed}
+                  />
+                </PostContainer>
+            ))}
       </Card>
     </>
   )

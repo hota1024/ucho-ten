@@ -67,7 +67,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         if (item.reply === undefined) {
             const hasDuplicate = uniqueItems.some((item2) => item2.reply !== undefined && item.post.cid === item2.reply.parent.cid);
             if (hasDuplicate) {
-                console.log(item);
+                //console.log(item);
                 return false; // item を削除するために false を返す
             }
         }
@@ -130,15 +130,16 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
           {header}
           <>
               {hogehoge.map((feed:any, key:any) => {
-                  //console.log(feed)
-                  //console.log(agent)
+                  //ミュートワードが含まれている場合は表示しない
                   if (muteWords.some(word => (feed.post.record as any)?.text.includes(word))) {
-                      return null; // マッチする要素がある場合は何も返さず、非表示にする
+                      return null
                   }
+                  //リプライの場合はリプライ元の人をフォローしていない、かつ、リプライ元の人が自分ではない場合は表示しない
                   if(feed?.reply){
                       // @ts-ignore
-                      if(!feed?.reply?.parent?.author?.viewer?.following as any && feed?.post.author.did !== agent?.session.did){
-                            return null
+                      //ただし、repostだった場合はリプライ元の人をフォローしていなくても表示する
+                      if(!feed?.reason && !feed?.reply?.parent?.author?.viewer?.following as any && feed?.post.author.did !== agent?.session?.did){
+                          return null
                       }
                       if(muteWords.some(word => (feed?.reply?.parent?.record as any)?.text.includes(word))){
                           return null
