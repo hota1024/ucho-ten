@@ -62,7 +62,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         return acc;
     }, [] as Array<{ post: { cid: string }, reply?: any }>);
 
-  
+
     //uniqueItemsをfor文で全て出力
     const hogehoge = uniqueItems.filter((item) => {
         if (item.reply === undefined) {
@@ -70,50 +70,55 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
             if (hasDuplicate) {
                 return false
             }
+        }if(item.reply !== undefined) {
+            const hasDuplicate = uniqueItems.some((item2) => item2.reply !== undefined && item.reply.parent.cid === item2.reply.root.cid)
+            if (hasDuplicate) {
+                return false
+            }
         }
-        return true
-    });
+        /*if(item.reply !== undefined){
+            const hasDuplicate = uniqueItems.some((item2) => item2.reply !== undefined && item.reply.parent.cid === item2.reply.root.cid || item2.reply !== undefined && item.reply.root.cid === item2.reply.root.cid && item.post.cid === item2.reply.parent.cid );
+            if (hasDuplicate) {
+                return false
+            }
+        }*/
 
-    //重複したthread postを削除
-    const newHogehoge = [ ...hogehoge ]
-    for (const key in newHogehoge) {
-        if (newHogehoge[key].reply !== undefined) {
-            for (const item in newHogehoge) {
-                if (newHogehoge[item].reply !== undefined) {
+        return true
+    })
+
+
+    const newHogehoge = [...hogehoge];
+    const memoryhogehoge = [...hogehoge];
+
+    for (let i = hogehoge.length - 1; i >= 0; i--) {
+        if (hogehoge[i].reply !== undefined) {
+            for (let j = 0; j < newHogehoge.length; j++) {
+                if (newHogehoge[j].reply !== undefined) {
                     if (
-                        (newHogehoge[key].reply.root.cid === newHogehoge[item].reply.parent.cid &&
-                            newHogehoge[key].reply.parent.cid === newHogehoge[item].post.cid) ||
-                        (newHogehoge[key].reply.root.cid === newHogehoge[item].reply.root.cid &&
-                            newHogehoge[key].reply.parent.cid === newHogehoge[item].post.cid)/* ||
-                        (newHogehoge[key].reply.root.cid === newHogehoge[item].reply.root.cid &&
-                            newHogehoge[key].reply.parent?.record?.reply?.parent?.cid === newHogehoge[item].post.cid)*/
+                        newHogehoge[j].reply.root.cid === hogehoge[i].reply.root.cid &&
+                        newHogehoge[j].post.cid === hogehoge[i].reply.parent.cid
                     ) {
+                        memoryhogehoge[i].reply.parent = {
+                            ...memoryhogehoge[i].reply.parent,
+                            reply: newHogehoge[j].reply.parent
+                        };
+                        console.log('結果');
+                        console.log(memoryhogehoge[i])
                         //@ts-ignore
-                        newHogehoge[item].deleteTarget = true
-                        //delete newHogehoge[item];
+                        memoryhogehoge[j].deleteTarget = true;
                     }
                 }
             }
         }
     }
-    newHogehoge.forEach((item, index) => {
+
+    memoryhogehoge.forEach((item, index) => {
         //@ts-ignore
         if (item?.deleteTarget === true) {
-            delete newHogehoge[index];
+            delete memoryhogehoge[index];
         }
     })
-    //ここまで削除
-
-    //残ったreplyが存在するpostのroot.cidとparent.cidを比較して、一致していなかったら一度中身だけを削除して、getThreadで再取得したものを入れる
-    const newHogehoge2 = [ ...newHogehoge ]
-    for (const key in newHogehoge2) {
-        //console.log(newHogehoge2[key])
-        if (newHogehoge2[key]?.reply !== undefined && newHogehoge2[key].reply.parent?.record?.reply?.parent) {
-            if (newHogehoge2[key].reply.root.cid !== newHogehoge2[key].reply.parent?.record?.reply?.parent?.cid) {
-                console.log(newHogehoge2[key])
-            }
-        }
-    }
+    console.log(memoryhogehoge)
 
 
   return (
@@ -154,7 +159,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         >
           {header}
           <>
-              {newHogehoge.map((feed:any, key:any) => {
+              {memoryhogehoge.map((feed:any, key:any) => {
                   //console.log(feed)
                   //ミュートワードが含まれている場合は表示しない
                   if (muteWords.some(word => (feed.post.record as any)?.text.includes(word))) {
