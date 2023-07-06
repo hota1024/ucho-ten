@@ -20,7 +20,11 @@ interface PostViewCardProps {
   showReplyCount?: boolean
   showRepostCount?: boolean
   showLikeCount?: boolean
-
+  parentReply?: any
+  parentIsRoot?: boolean
+  postType?: string
+  isRoot?: boolean
+  nestedReply?: boolean
   onFetch: () => PostView | Promise<PostView>
 }
 
@@ -29,6 +33,11 @@ export const PostViewCard = (props: PostViewCardProps) => {
     post,
     reasonRepost,
     hasReply,
+    parentIsRoot,
+    parentReply,
+    postType,
+    isRoot,
+    nestedReply,
     showReplyCount,
     showRepostCount,
     showLikeCount,
@@ -194,7 +203,6 @@ export const PostViewCard = (props: PostViewCardProps) => {
 
     await agent.post(postRecord)
   }
-
   return (
     <>
       <Post
@@ -205,13 +213,17 @@ export const PostViewCard = (props: PostViewCardProps) => {
         author={post.author}
         createdAt={record.createdAt}
         reasonRepost={reasonRepost}
+        parentIsRoot={parentIsRoot}
         hasReply={hasReply}
+        postType={postType}
+        parentReply={parentReply}
         replyCount={post.replyCount}
         repostCount={repostCount}
         likeCount={likeCount}
         showReplyCount={showPostNumbers}
         showRepostCount={showPostNumbers}
         showLikeCount={showPostNumbers}
+        isRoot={isRoot}
         isMuted={isMuted}
         isLiked={isLiked}
         isReposted={isReposted}

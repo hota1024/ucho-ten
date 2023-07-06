@@ -16,6 +16,7 @@ import {
   faRetweet as faRetweetSolid,
   faCircle as faCircleSolid,
   faSquare as faSquareSolid,
+  faReply as faReplySolid,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -221,6 +222,8 @@ interface PostProps {
   createdAt?: string
 
   hasReply?: boolean
+  parentIsRoot?: boolean
+  postType?: string
 
   hideActions?: boolean
 
@@ -229,11 +232,12 @@ interface PostProps {
   replyCount?: number
   repostCount?: number
   likeCount?: number
-
+  parentReply?: any
+  nestedReply?: boolean
   showReplyCount?: boolean
   showRepostCount?: boolean
   showLikeCount?: boolean
-
+  isRoot?: boolean
   isMuted?: boolean
   isLiked?: boolean
   isReposted?: boolean
@@ -269,7 +273,12 @@ export const Post = (props: PostProps) => {
     disableTooltip,
     showReplyCount,
     showRepostCount,
+    parentReply,
+    parentIsRoot,
     showLikeCount,
+    postType,
+    nestedReply,
+    isRoot,
     isMuted,
     isLiked,
     isReposted,
@@ -299,6 +308,8 @@ export const Post = (props: PostProps) => {
   const [showMenu, setShowMenu] = useState(false);
   const [mouseX, setMouseX] = useState(0);
   const [mouseY, setMouseY] = useState(0);
+  const [saveParentReply, setSaveParentReply] = useState(parentReply)
+  //console.log(saveParentReply)
 
 
   if(embed){
@@ -484,6 +495,14 @@ export const Post = (props: PostProps) => {
               Reposted by {reasonRepost.by.displayName}
             </RepostByLabel>
           </Link>
+        )}
+        {}
+        {parentReply !== undefined && (
+            <div
+                style={{fontSize:'12px',color:'gray'}}
+            >
+              <FontAwesomeIcon icon={faReplySolid}/> Reply to {parentReply.author.displayName}
+            </div>
         )}
         {!isEmbed &&  (
             <PostInfo>
@@ -697,6 +716,9 @@ export const Post = (props: PostProps) => {
             </Col>
 
           </Row>
+        )}
+        {isRoot && (
+            <a><div>read more...</div></a>
         )}
       </Col>
     </Row>

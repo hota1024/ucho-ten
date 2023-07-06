@@ -148,19 +148,19 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         return updatedObj;
     }
 
-    console.log(memoryhogehoge)
+    //console.log(memoryhogehoge)
 
     const kanseihinList = []
 
     for(const item in memoryhogehoge){
-        console.log(memoryhogehoge[item])
+        //console.log(memoryhogehoge[item])
         if(memoryhogehoge[item]?.reply?.parent?.reply !== undefined){
             const returnObj = (getDeepestReply(memoryhogehoge[item]?.reply.parent?.reply))
-            console.log(returnObj)
+            //console.log(returnObj)
             if(returnObj.cid === memoryhogehoge[item]?.reply?.root?.cid){
-                console.log('削除対象')
+                //console.log('削除対象')
                 const kanseihin = removeObject(memoryhogehoge[item], returnObj)
-                console.log(kanseihin)
+                //console.log(kanseihin)
                 kanseihinList.push(kanseihin)
             }else{
                 kanseihinList.push(memoryhogehoge[item])
@@ -168,10 +168,10 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         }else{
             kanseihinList.push(memoryhogehoge[item])
         }
-        console.log('pass')
+        //console.log('pass')
     }
-    console.log('こちらが完成品です')
-    console.log(kanseihinList)
+    //console.log('こちらが完成品です')
+    //console.log(kanseihinList)
 
     return (
     <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
