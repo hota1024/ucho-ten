@@ -497,7 +497,7 @@ export const Post = (props: PostProps) => {
           </Link>
         )}
         {}
-        {parentReply !== undefined && (
+        {parentReply !== undefined && !isRoot && (
             <div
                 style={{fontSize:'12px',color:'gray'}}
             >

@@ -78,7 +78,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         }
         return true
     })
-    
+
     const memoryhogehoge = [...hogehoge];
     for (let i = hogehoge.length - 1; i >= 0; i--) {
         if (hogehoge[i].reply !== undefined) {
@@ -101,13 +101,13 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
             }
         }
     }
-
+    /*
     memoryhogehoge.forEach((item, index) => {
         //@ts-ignore
         if (item?.deleteTarget === true) {
             delete memoryhogehoge[index];
         }
-    })
+    })*/
 
     function getDeepestReply(obj: any): any {
         if (obj.reply && typeof obj.reply === 'object') {
@@ -153,6 +153,73 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         //console.log('pass')
     }
 
+    function findDifference(obj1: Record<string, any>, obj2: Record<string, any>): Record<string, any> {
+        const diff: Record<string, any> = {};
+
+        for (const key in obj1) {
+            if (obj1?.hasOwnProperty(key)) {
+                if (!obj2?.hasOwnProperty(key)) {
+                    diff[key] = obj1[key];
+                } else {
+                    const value1 = obj1[key];
+                    const value2 = obj2[key];
+
+                    if (typeof value1 === 'object' && typeof value2 === 'object') {
+                        const nestedDiff = findDifference(value1, value2);
+                        if (Object.keys(nestedDiff).length > 0) {
+                            diff[key] = nestedDiff;
+                        }
+                    } else if (value1 !== value2) {
+                        diff[key] = value1;
+                    }
+                }
+            }
+        }
+
+        return diff;
+    }
+
+    const memoryhogehoge1 = [...kanseihinList];
+    const sagyouMemory = [...kanseihinList]
+    //下から上に、後から
+    for (let i = kanseihinList.length - 1; i >= 0; i--) {
+        if (kanseihinList[i].reply !== undefined) {
+            //上から下に、先に
+            for (let j = 0; j < kanseihinList.length; j++) {
+                if (kanseihinList[j].reply !== undefined) {
+                    if(kanseihinList[j].reply.root.cid === kanseihinList[i].reply.root.cid){
+                        const result = findDifference(kanseihinList[j],kanseihinList[i])
+                        if(Object.keys(result).length !== 0) {
+                            if(kanseihinList[j].post.did === kanseihinList[i].post.did){
+                                if( kanseihinList[j].reply?.parent?.record?.reply?.parent?.cid === kanseihinList[i].post.cid){
+                                    //console.log('衝突したcid: ' + kanseihinList[i].post.cid)
+                                    //console.log(result)
+                                    //console.log(kanseihinList[j])
+                                    //console.log(kanseihinList[i])
+                                    kanseihinList[j].reply.parent.reply = kanseihinList[i].post
+                                    kanseihinList[j].reply.parent.reply.reply = kanseihinList[i].reply.parent
+                                    //console.log(kanseihinList[j])
+                                    memoryhogehoge1[i].deleteTarget = true;
+
+                                }
+                            }
+                            //bafyreic5d4zs6lcbqjfwfubqgokuyz2x5mlo42szzqdmndqlonn42g3sky
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    memoryhogehoge1.forEach((item, index) => {
+        //@ts-ignore
+        if (item?.deleteTarget === true) {
+            delete memoryhogehoge1[index];
+        }
+    })
+
+    console.log(kanseihinList)
+
     return (
     <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
       <ReloadButtonContainer
@@ -191,7 +258,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         >
           {header}
           <>
-              {kanseihinList.map((feed:any, key:any) => {
+              {memoryhogehoge1.map((feed:any, key:any) => {
                   //console.log(feed)
                   //ミュートワードが含まれている場合は表示しない
                   if (muteWords.some(word => (feed.post.record as any)?.text.includes(word))) {

@@ -116,23 +116,30 @@ export const FeedView = (props: FeedViewProps) => {
                 />
               </PostContainer>
 
-              {nestedReplies.slice(-1).map((item, index) => (
-                  <PostContainer key={index}>
-                    <PostViewCard
-                        hasReply
-                        post={item}
-                        //reasonRepost={reasonRepost}
-                        parentReply={index > 0 ? nestedReplies[nestedReplies.length - 2 + index] : nestedReplies[index]}
-                        parentIsRoot={nestedReplies[item - 1]?.reply.parent.cid === props.feed.reply?.root.cid}
-                        showLikeCount
-                        showReplyCount
-                        showRepostCount
-                        onFetch={fetchReplyParent}
-                        nestedReply={true}
-                        postType={"thread"}
-                    />
-                  </PostContainer>
-              ))}
+              {nestedReplies.map((item, index) => {
+                if (item.cid === props.feed.reply?.root.cid) {
+                  return null; // 同じ場合は出力しない
+                }
+
+                return (
+                    <PostContainer key={index}>
+                      <PostViewCard
+                          hasReply
+                          post={item}
+                          //reasonRepost={reasonRepost}
+                          parentReply={nestedReplies[index - 1]}
+                          parentIsRoot={nestedReplies[index - 1]?.reply?.parent?.cid === props.feed.reply?.root.cid}
+                          showLikeCount
+                          showReplyCount
+                          showRepostCount
+                          onFetch={fetchReplyParent}
+                          nestedReply={true}
+                          postType={"thread"}
+                          isRoot={item.cid === props.feed.reply?.root.cid}
+                      />
+                    </PostContainer>
+                );
+              })}
               <PostContainer>
                 <PostViewCard
                     post={feed.post}
@@ -160,6 +167,7 @@ export const FeedView = (props: FeedViewProps) => {
                           showRepostCount
                           onFetch={fetchReplyParent}
                           postType={"reply"}
+                          isRoot={true}
                       />
                     </PostContainer>
                     <PostContainer>
