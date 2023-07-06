@@ -218,7 +218,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         }
     })
 
-    console.log(kanseihinList)
+    //console.log(kanseihinList)
 
     return (
     <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>

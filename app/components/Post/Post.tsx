@@ -491,7 +491,6 @@ export const Post = (props: PostProps) => {
             </RepostByLabel>
           </Link>
         )}
-        {}
         {parentReply !== undefined && !isRoot && postType !== 'reply' && (
             <div
                 style={{fontSize:'12px',color:'gray'}}
@@ -500,15 +499,17 @@ export const Post = (props: PostProps) => {
             </div>
         )}
         {postType == 'reply' && parentReply != undefined && (
-            <a
-            >
-              <div
-                  style={{fontSize:'12px',color:'gray'}}
-              >
-                <FontAwesomeIcon icon={faReplySolid}/> Reply to {parentReply.author.displayName}
-                <span> {parentReply.record.text} </span>
-              </div>
-            </a>
+            <div style={{width:'500px'}}>
+
+              <a style={{width:"100%"}}>
+                <div
+                    style={{fontSize:'12px',color:'gray',overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}
+                >
+                  <FontAwesomeIcon icon={faReplySolid}/> Reply to {parentReply.author.displayName}
+                  <span> {parentReply.record.text} </span>
+                </div>
+              </a>
+            </div>
         )}
         {!isEmbed &&  (
             <PostInfo>
