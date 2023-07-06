@@ -496,14 +496,7 @@ export const Post = (props: PostProps) => {
             </RepostByLabel>
           </Link>
         )}
-        {parentReply !== undefined && !isRoot && postType !== 'reply' && (
-            <div
-                style={{fontSize:'12px',color:'gray'}}
-            >
-              <FontAwesomeIcon icon={faReplySolid}/> Reply to {parentReply.author.displayName}
-            </div>
-        )}
-        {postType == 'reply' && parentReply != undefined && (
+        {parentReply != undefined && (
             <div style={{width:'500px'}}>
 
               <a style={{width:"100%"}}>

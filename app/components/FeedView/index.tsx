@@ -127,7 +127,7 @@ export const FeedView = (props: FeedViewProps) => {
                           hasReply
                           post={item}
                           //reasonRepost={reasonRepost}
-                          parentReply={nestedReplies[index - 1]}
+                          parentReply={nestedReplies[nestedReplies.length - 2]}
                           parentIsRoot={nestedReplies[index - 1]?.reply?.parent?.cid === props.feed.reply?.root.cid}
                           showLikeCount
                           showReplyCount
