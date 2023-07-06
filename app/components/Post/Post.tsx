@@ -497,12 +497,23 @@ export const Post = (props: PostProps) => {
           </Link>
         )}
         {}
-        {parentReply !== undefined && !isRoot && (
+        {parentReply !== undefined && !isRoot && postType !== 'reply' && (
             <div
                 style={{fontSize:'12px',color:'gray'}}
             >
               <FontAwesomeIcon icon={faReplySolid}/> Reply to {parentReply.author.displayName}
             </div>
+        )}
+        {postType == 'reply' && parentReply != undefined && (
+            <a
+            >
+              <div
+                  style={{fontSize:'12px',color:'gray'}}
+              >
+                <FontAwesomeIcon icon={faReplySolid}/> Reply to {parentReply.author.displayName}
+                <span> {parentReply.record.text} </span>
+              </div>
+            </a>
         )}
         {!isEmbed &&  (
             <PostInfo>
@@ -718,7 +729,7 @@ export const Post = (props: PostProps) => {
           </Row>
         )}
         {isRoot && (
-            <a><div>read more...</div></a>
+            <a><div>read more...(開発中)</div></a>
         )}
       </Col>
     </Row>

@@ -116,7 +116,7 @@ export const FeedView = (props: FeedViewProps) => {
                 />
               </PostContainer>
 
-              {nestedReplies.map((item, index) => {
+              {nestedReplies.slice(-1).map((item, index) => {
                 if (item.cid === props.feed.reply?.root.cid) {
                   return null; // 同じ場合は出力しない
                 }
@@ -160,22 +160,9 @@ export const FeedView = (props: FeedViewProps) => {
                       <PostViewCard
                           hasReply
                           // @ts-ignore
-                          post={replyParentRoot}
-                          //reasonRepost={reasonRepost}
-                          showLikeCount
-                          showReplyCount
-                          showRepostCount
-                          onFetch={fetchReplyParent}
-                          postType={"reply"}
-                          isRoot={true}
-                      />
-                    </PostContainer>
-                    <PostContainer>
-                      <PostViewCard
-                          hasReply
-                          // @ts-ignore
                           post={replyParent}
                           //reasonRepost={reasonRepost}
+                          parentReply={replyParentRoot}
                           showLikeCount
                           showReplyCount
                           showRepostCount
