@@ -496,7 +496,7 @@ export const Post = (props: PostProps) => {
             </RepostByLabel>
           </Link>
         )}
-        {parentReply != undefined && (
+        {!isRoot && parentReply != undefined && (
             <div style={{width:'500px'}}>
 
               <a style={{width:"100%"}}>
