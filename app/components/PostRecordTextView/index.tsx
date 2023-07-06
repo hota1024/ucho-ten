@@ -114,5 +114,5 @@ export const PostRecordTextView = (props: PostRecordTextViewProps) => {
     <React.Fragment key={key}>{el}</React.Fragment>
   ))
 
-  return <div style={{wordBreak: "break-all"}}>{elements}</div>
+  return <div style={{wordBreak: "break-word"}}>{elements}</div>
 }
