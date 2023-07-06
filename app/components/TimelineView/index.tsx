@@ -70,7 +70,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
             if (hasDuplicate) {
                 return false
             }
-        }if(item.reply !== undefined) {
+        }if(item.reply !== undefined && false) {
             const hasDuplicate = uniqueItems.some((item2) => item2.reply !== undefined && item.reply.parent.cid === item2.reply.root.cid)
             if (hasDuplicate) {
                 return false
@@ -102,8 +102,8 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
                             ...memoryhogehoge[i].reply.parent,
                             reply: newHogehoge[j].reply.parent
                         };
-                        console.log('結果');
-                        console.log(memoryhogehoge[i])
+                        //console.log('結果');
+                        //console.log(memoryhogehoge[i])
                         //@ts-ignore
                         memoryhogehoge[j].deleteTarget = true;
                     }
@@ -118,10 +118,62 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
             delete memoryhogehoge[index];
         }
     })
+    //console.log(memoryhogehoge)
+
+    function getDeepestReply(obj: any): any {
+        if (obj.reply && typeof obj.reply === 'object') {
+            return getDeepestReply(obj.reply);
+        }
+        return obj;
+    }
+
+    function removeObject(obj:any, objectToRemove:any):any {
+        if (typeof obj !== 'object' || obj === null) {
+            return obj;
+        }
+
+        if (obj === objectToRemove) {
+            return null;
+        }
+
+        if (Array.isArray(obj)) {
+            return obj.map((item) => removeObject(item, objectToRemove));
+        }
+
+        const updatedObj = { ...obj };
+        for (const key in updatedObj) {
+            updatedObj[key] = removeObject(updatedObj[key], objectToRemove);
+        }
+
+        return updatedObj;
+    }
+
     console.log(memoryhogehoge)
 
+    const kanseihinList = []
 
-  return (
+    for(const item in memoryhogehoge){
+        console.log(memoryhogehoge[item])
+        if(memoryhogehoge[item]?.reply?.parent?.reply !== undefined){
+            const returnObj = (getDeepestReply(memoryhogehoge[item]?.reply.parent?.reply))
+            console.log(returnObj)
+            if(returnObj.cid === memoryhogehoge[item]?.reply?.root?.cid){
+                console.log('削除対象')
+                const kanseihin = removeObject(memoryhogehoge[item], returnObj)
+                console.log(kanseihin)
+                kanseihinList.push(kanseihin)
+            }else{
+                kanseihinList.push(memoryhogehoge[item])
+            }
+        }else{
+            kanseihinList.push(memoryhogehoge[item])
+        }
+        console.log('pass')
+    }
+    console.log('こちらが完成品です')
+    console.log(kanseihinList)
+
+    return (
     <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
       <ReloadButtonContainer
         css={{
@@ -159,7 +211,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         >
           {header}
           <>
-              {memoryhogehoge.map((feed:any, key:any) => {
+              {kanseihinList.map((feed:any, key:any) => {
                   //console.log(feed)
                   //ミュートワードが含まれている場合は表示しない
                   if (muteWords.some(word => (feed.post.record as any)?.text.includes(word))) {
