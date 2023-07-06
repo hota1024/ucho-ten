@@ -76,31 +76,21 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
                 return false
             }
         }
-        /*if(item.reply !== undefined){
-            const hasDuplicate = uniqueItems.some((item2) => item2.reply !== undefined && item.reply.parent.cid === item2.reply.root.cid || item2.reply !== undefined && item.reply.root.cid === item2.reply.root.cid && item.post.cid === item2.reply.parent.cid );
-            if (hasDuplicate) {
-                return false
-            }
-        }*/
-
         return true
     })
-
-
-    const newHogehoge = [...hogehoge];
+    
     const memoryhogehoge = [...hogehoge];
-
     for (let i = hogehoge.length - 1; i >= 0; i--) {
         if (hogehoge[i].reply !== undefined) {
-            for (let j = 0; j < newHogehoge.length; j++) {
-                if (newHogehoge[j].reply !== undefined) {
+            for (let j = 0; j < hogehoge.length; j++) {
+                if (hogehoge[j].reply !== undefined) {
                     if (
-                        newHogehoge[j].reply.root.cid === hogehoge[i].reply.root.cid &&
-                        newHogehoge[j].post.cid === hogehoge[i].reply.parent.cid
+                        hogehoge[j].reply.root.cid === hogehoge[i].reply.root.cid &&
+                        hogehoge[j].post.cid === hogehoge[i].reply.parent.cid
                     ) {
                         memoryhogehoge[i].reply.parent = {
                             ...memoryhogehoge[i].reply.parent,
-                            reply: newHogehoge[j].reply.parent
+                            reply: hogehoge[j].reply.parent
                         };
                         //console.log('結果');
                         //console.log(memoryhogehoge[i])
@@ -118,7 +108,6 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
             delete memoryhogehoge[index];
         }
     })
-    //console.log(memoryhogehoge)
 
     function getDeepestReply(obj: any): any {
         if (obj.reply && typeof obj.reply === 'object') {
@@ -131,27 +120,20 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         if (typeof obj !== 'object' || obj === null) {
             return obj;
         }
-
         if (obj === objectToRemove) {
             return null;
         }
-
         if (Array.isArray(obj)) {
             return obj.map((item) => removeObject(item, objectToRemove));
         }
-
         const updatedObj = { ...obj };
         for (const key in updatedObj) {
             updatedObj[key] = removeObject(updatedObj[key], objectToRemove);
         }
-
         return updatedObj;
     }
 
-    //console.log(memoryhogehoge)
-
     const kanseihinList = []
-
     for(const item in memoryhogehoge){
         //console.log(memoryhogehoge[item])
         if(memoryhogehoge[item]?.reply?.parent?.reply !== undefined){
@@ -170,8 +152,6 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         }
         //console.log('pass')
     }
-    //console.log('こちらが完成品です')
-    //console.log(kanseihinList)
 
     return (
     <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
