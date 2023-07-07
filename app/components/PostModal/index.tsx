@@ -31,7 +31,7 @@ import Picker from '@emoji-mart/react'
 import imageCompression from "browser-image-compression";
 import { useDropzone, FileWithPath } from 'react-dropzone'
 import { useCallback, useMemo } from 'react';
-
+import axios from 'axios'
 
 const URLCard = styled('div', {
   height: '100px',
@@ -293,7 +293,8 @@ export const PostModal = (props: PostModalProps) => {
   }
 
   const getOGP = async (url: string) => {
-    //console.log(url)
+    const result = await axios.get(url)
+    console.log(result)
   }
 
   return (
