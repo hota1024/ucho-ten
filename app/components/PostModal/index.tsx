@@ -359,7 +359,7 @@ export const PostModal = (props: PostModalProps) => {
         </div>
       </Modal.Body>
       <Modal.Footer>
-        {false && isDetectURL && !isSettingURLCard && (
+        {isDetectURL && !isSettingURLCard && (
             <div style={{textAlign:'left'}}>
               {detectURLs.map((url, index) => (
                   <Button onClick={() => {
@@ -373,7 +373,7 @@ export const PostModal = (props: PostModalProps) => {
               ))}
             </div>
          )}
-        {isSettingURLCard && false && (
+        {isSettingURLCard && (
             <div>
               <URLCard>
                 <URLCardThumb>
