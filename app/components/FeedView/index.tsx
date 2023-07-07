@@ -160,9 +160,22 @@ export const FeedView = (props: FeedViewProps) => {
                       <PostViewCard
                           hasReply
                           // @ts-ignore
+                          post={replyParentRoot}
+                          //reasonRepost={reasonRepost}
+                          showLikeCount
+                          showReplyCount
+                          showRepostCount
+                          onFetch={fetchReplyParent}
+                          postType={"thread"}
+                      />
+                    </PostContainer>
+                    <PostContainer>
+                      <PostViewCard
+                          hasReply
+                          // @ts-ignore
                           post={replyParent}
                           //reasonRepost={reasonRepost}
-                          parentReply={replyParentRoot}
+                          //parentReply={replyParentRoot}
                           showLikeCount
                           showReplyCount
                           showRepostCount
