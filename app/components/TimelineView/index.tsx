@@ -259,18 +259,28 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
                       if(muteWords.some(word => (feed.reply.parent.record as any)?.text.includes(word))){
                           return null
                       }
-                      //基本的にフォローしてない人は表示ない
-                      //ただ、それに該当する場合でも、repostされたreplyは表示する
-                      if(feed?.post.author.did !== agent?.session?.did){
-                          if((feed.post.author.viewer.isFollowing != true) && feed.reply.parent.author.viewer.isFollowing != true){
-                              if(feed.post.author.did !== feed.reply.parent.author.did){
-                                  return null
-                              }
+                      if(feed.post.author.viewer.following !== undefined && feed.reply.parent.author.viewer.following === undefined){
+                          //panretをフォローしてなくても、post.author.didが自分だったら、表示する、
+                          if(feed.reply.parent.author.viewer.following === undefined && feed.post.author.did === agent?.session?.did){
+                              return (
+                                  <Row key={`${feed.post.cid}${key}`} css={{ my: '$8' }}>
+                                      <FeedView feed={feed} />
+                                  </Row>
+                              )
                           }
-                      }
-                      if(muteWords.some(word => (feed.reply.root.record as any)?.text.includes(word))){
                           return null
                       }
+                      //同じユーザーのスレッドだった場合は表示する
+                      if(feed.post.author.did === feed.reply.parent.author.did && feed.reply.parent.author.did === feed.reply.root.author.did && feed.reply.root.author.did === feed.post.author.did){
+                          return (
+                              <Row key={`${feed.post.cid}${key}`} css={{ my: '$8' }}>
+                                  <FeedView feed={feed} />
+                              </Row>
+                          )
+                      }else{
+                            return null
+                      }
+
                   }
 
 
