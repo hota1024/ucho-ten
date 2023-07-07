@@ -101,14 +101,6 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
             }
         }
     }
-    /*
-    memoryhogehoge.forEach((item, index) => {
-        //@ts-ignore
-        if (item?.deleteTarget === true) {
-            delete memoryhogehoge[index];
-        }
-    })*/
-
     function getDeepestReply(obj: any): any {
         if (obj.reply && typeof obj.reply === 'object') {
             return getDeepestReply(obj.reply);
@@ -133,7 +125,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         return updatedObj;
     }
 
-    const kanseihinList = []
+    const kanseihinList :any = []
     for(const item in memoryhogehoge){
         //console.log(memoryhogehoge[item])
         if(memoryhogehoge[item]?.reply?.parent?.reply !== undefined){
@@ -179,6 +171,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         return diff;
     }
 
+
     const memoryhogehoge1 = [...kanseihinList];
     const sagyouMemory = [...kanseihinList]
     //下から上に、後から
@@ -211,15 +204,14 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         }
     }
 
-    memoryhogehoge1.forEach((item, index) => {
-        //@ts-ignore
+
+    kanseihinList.forEach((item:any, index:any) => {
         if (item?.deleteTarget === true) {
-            delete memoryhogehoge1[index];
+
+            delete kanseihinList[index];
         }
     })
-
-    //console.log(kanseihinList)
-
+    console.log(kanseihinList)
     return (
     <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
       <ReloadButtonContainer
@@ -258,23 +250,30 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         >
           {header}
           <>
-              {memoryhogehoge1.map((feed:any, key:any) => {
-                  //console.log(feed)
-                  //ミュートワードが含まれている場合は表示しない
+              {kanseihinList.map((feed:any, key:any) => {
+                  //console.log(key)
                   if (muteWords.some(word => (feed.post.record as any)?.text.includes(word))) {
                       return null
                   }
-                  //リプライの場合はリプライ元の人をフォローしていない、かつ、リプライ元の人が自分ではない場合は表示しない
                   if(feed?.reply){
-                      // @ts-ignore
-                      //ただし、repostだった場合はリプライ元の人をフォローしていなくても表示する
-                      if(!feed?.reason && !feed?.reply?.parent?.author?.viewer?.following as any && feed?.post.author.did !== agent?.session?.did){
+                      if(muteWords.some(word => (feed.reply.parent.record as any)?.text.includes(word))){
                           return null
                       }
-                      if(muteWords.some(word => (feed?.reply?.parent?.record as any)?.text.includes(word))){
+                      //基本的にフォローしてない人は表示ない
+                      //ただ、それに該当する場合でも、repostされたreplyは表示する
+                      if(feed?.post.author.did !== agent?.session?.did){
+                          if((feed.post.author.viewer.isFollowing != true) && feed.reply.parent.author.viewer.isFollowing != true){
+                              if(feed.post.author.did !== feed.reply.parent.author.did){
+                                  return null
+                              }
+                          }
+                      }
+                      if(muteWords.some(word => (feed.reply.root.record as any)?.text.includes(word))){
                           return null
                       }
                   }
+
+
                   return (
                       <Row key={`${feed.post.cid}${key}`} css={{ my: '$8' }}>
                           <FeedView feed={feed} />
