@@ -235,8 +235,9 @@ export const NotificationCard: React.FC<NotificationCardProps> = (props) => {
               <Link href={`/profile/${item.author.handle}`}>
                 {item.author.displayName ?? item.author.handle}
               </Link>{' '}
-              {item.reason === 'reply' && 'replied to your post  '}
-              {item.reason === 'mention' && 'mentioned to you  '}
+              {item.reason === 'reply' && 'Replied to your post  '}
+              {item.reason === 'mention' && 'Mentioned to you  '}
+              {item.reason === 'quote' && 'Quoted your post  '}
               <FontAwesomeIcon icon={faArrowsTurnRight} color={'orange'} />
             </Text>
           </Card.Header>
@@ -323,7 +324,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = (props) => {
               <Link href={`/profile/${item.author.handle}`}>
                 {item.author.displayName ?? item.author.handle}
               </Link>{' '}
-              followed you{' '}
+              Followed you{' '}
               <FontAwesomeIcon icon={faUser} color={'green'} size={'lg'} />
             </Text>
           </Card.Header>
