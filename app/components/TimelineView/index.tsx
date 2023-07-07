@@ -211,7 +211,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
             delete kanseihinList[index];
         }
     })
-    //console.log(kanseihinList)
+    console.log(kanseihinList)
     return (
     <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
       <ReloadButtonContainer
