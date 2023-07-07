@@ -277,8 +277,6 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
                                   <FeedView feed={feed} />
                               </Row>
                           )
-                      }else{
-                            return null
                       }
 
                   }
