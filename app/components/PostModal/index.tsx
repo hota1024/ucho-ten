@@ -31,6 +31,8 @@ import Picker from '@emoji-mart/react'
 import imageCompression from "browser-image-compression";
 import { useDropzone, FileWithPath } from 'react-dropzone'
 import { useCallback, useMemo } from 'react';
+import axios from "axios"
+
 
 
 const URLCard = styled('div', {
@@ -124,13 +126,17 @@ export const PostModal = (props: PostModalProps) => {
   const isPostable = contentText.length > 0 && !reg.test(contentText)
   const isContentLimitOver = contentText.length > 300
   const isImageMaxLimited =
-    contentImage.length >= 5 || contentImage.length === 4 // 4枚まで
+      contentImage.length >= 5 || contentImage.length === 4 // 4枚まで
   const isImageMinLimited = contentImage.length === 0 // 4枚まで
   const inputId = Math.random().toString(32).substring(2)
   const [PostContentLanguage, setPostContentLanguage] = useState(new Set([navigator.language]))
   const [isDetectURL, setIsDetectURL] = useState(false)
   const [detectURLs, setDetectURLs] = useState<string[]>([])
   const [isSettingURLCard, setIsSettingURLCard] = useState(false)
+  const [isGettingOGPSuccessful, setIsGettingOGPSuccessful] = useState(false)
+  const [isGettingOGPFailed, setIsGettingOGPFailed] = useState(false)
+  const [isGettingOGPProcessing, setIsGettingOGPProcessing] = useState(false)
+  const [OGPContent, setOGPContent] = useState<OGPContent | null>(null)
 
   const handlePostClick = async () => {
     if (!agent) {
@@ -162,12 +168,12 @@ export const PostModal = (props: PostModalProps) => {
       facets: rt.facets,
       langs: Array.from(PostContentLanguage),
       embed:
-        blobs.length > 0
-          ? {
-              $type: 'app.bsky.embed.images',
-              images,
-            }
-          : undefined,
+          blobs.length > 0
+              ? {
+                $type: 'app.bsky.embed.images',
+                images,
+              }
+              : undefined,
     })
 
     setLoading(false)
@@ -222,7 +228,7 @@ export const PostModal = (props: PostModalProps) => {
       const cursorPosition = target.selectionStart
 
       const content = `${contentText.slice(0, cursorPosition)}${
-        event.native
+          event.native
       }${contentText.slice(cursorPosition, contentText.length)}`
       setContentText(content)
     } else {
@@ -280,7 +286,7 @@ export const PostModal = (props: PostModalProps) => {
 
   const detectURL = (text: string) => {
     // URLを検出する正規表現パターン
-    const urlPattern = /((?:https?|ftp):\/\/)(?:[\w-]+(?:\.[\w-]+)+)(?:\/[\w-]+)*(?:\/|\/[\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/gi
+    const urlPattern = /((?:https?|http):\/\/)(?:[\w-]+(?:\.[\w-]+)+)(?:\/[\w-]+)*(?:\/|\/[\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/gi
     const urls = text.match(urlPattern)
     setDetectURLs([])
 
@@ -292,212 +298,269 @@ export const PostModal = (props: PostModalProps) => {
     }
   }
 
+  const ogpParser = (data: any) => {
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(data, 'text/html');
+    console.log(doc)
+    const ogpData: any = {
+      title: '',
+      description: '',
+      image: '',
+    };
+
+    const metaTags = doc.querySelectorAll('meta[property^="og:"]');
+
+    metaTags.forEach((metaTag) => {
+      const property = metaTag.getAttribute('property');
+      const content = metaTag.getAttribute('content');
+
+      if (property && content) {
+        switch (property) {
+          case 'og:title':
+            ogpData.title = content;
+            break;
+          case 'og:description':
+            ogpData.description = content;
+            break;
+          case 'og:image':
+            ogpData.image = content;
+            break;
+          default:
+            break;
+        }
+      }
+    })
+    setOGPContent(ogpData)
+  }
+
   const getOGP = async (url: string) => {
-    //console.log(url)
+    try{
+      setIsGettingOGPProcessing(true)
+      const response = await axios.get(url)
+      setIsGettingOGPProcessing(false)
+      setIsGettingOGPFailed(false)
+      setIsGettingOGPSuccessful(true)
+      ogpParser(response)
+      console.log(OGPContent)
+    } catch (error) {
+      //失敗した場合
+      console.log(error)
+      setIsGettingOGPProcessing(false)
+      setIsGettingOGPFailed(true)
+      setIsGettingOGPSuccessful(false)
+    }
+
   }
 
   return (
-    <Modal
-      open={open}
-      onClose={loading ? () => {} : onClose}
-      preventClose={loading}
-      className="post-modal"
-      width='600px'
-      css={{left: '2%'}}
-    >
-      <Modal.Header>
-        <Text size="$lg" b>
-          {/* {parentPostView ? '返信する' : '投稿する'} */}
-          {title}
-        </Text>
-      </Modal.Header>
-      {parentPostView && (
+      <Modal
+          open={open}
+          onClose={loading ? () => {} : onClose}
+          preventClose={loading}
+          className="post-modal"
+          width='600px'
+          css={{left: '2%'}}
+      >
+        <Modal.Header>
+          <Text size="$lg" b>
+            {/* {parentPostView ? '返信する' : '投稿する'} */}
+            {title}
+          </Text>
+        </Modal.Header>
+        {parentPostView && (
+            <Modal.Body>
+              <Card variant="bordered">
+                <Post
+                    record={parentPostView.record as Record}
+                    author={parentPostView.author}
+                    hideActions
+                    disableTooltip
+                />
+              </Card>
+            </Modal.Body>
+        )}
         <Modal.Body>
-          <Card variant="bordered">
-            <Post
-              record={parentPostView.record as Record}
-              author={parentPostView.author}
-              hideActions
-              disableTooltip
-            />
-          </Card>
-        </Modal.Body>
-      )}
-      <Modal.Body>
-        <div style={{position: 'absolute', right:'45px', bottom:'0px'}}>
-          {contentText.length > 300 &&(
+          <div style={{position: 'absolute', right:'45px', bottom:'0px'}}>
+            {contentText.length > 300 &&(
                 <Text color="red" size="$sm" b>
                   {300 - contentText.length}
                 </Text>
-          )}
-          {contentText.length <= 300 &&(
-              <Text size="$sm">{300 - contentText.length}</Text>
-          )}
-        </div>
-        <div
-            {...getRootProps({ onDrop: handleDrop, onDragOver: handleDragOver })}
-        >
-          <PostTextarea
-              ref={textareaRef}
-              aria-label="Text"
-              placeholder="Text, Drag & drop images here"
-              rows={8}
-              maxLength={300}
-              value={contentText}
-              autoFocus={true}
-              onChange={(e) => {
-                setContentText(e.target.value)
-                detectURL(e.target.value)
-              }}
-              disabled={loading}
-              onKeyDown={isPostable ? handleKeyDown : undefined}
-              onClick={handleTextareaClick}
-              onFocus={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
-              style={{border: isDragActive ? '2px dashed #000' : 'none', width:'100%', height:'100%'}}
-          />
-        </div>
-      </Modal.Body>
-      <Modal.Footer>
-        {false && isDetectURL && !isSettingURLCard && (
-            <div style={{textAlign:'left'}}>
-              {detectURLs.map((url, index) => (
-                  <Button onClick={() => {
-                        setIsSettingURLCard(true)
-                        getOGP(url)
-                        }
-                      }
-                      key={index}
-                      flat
-                  >Add Linkcard: {url}</Button>
-              ))}
-            </div>
-         )}
-        {isSettingURLCard && false && (
-            <div>
-              <URLCard>
-                <URLCardThumb>
-                  <img
-                      src={undefined}
-                      style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                      alt={undefined}
-                  ></img>
-                </URLCardThumb>
-                <URLCardDetail>
-                  <URLCardDetailContent>
-                    <URLCardTitle style={{ color: 'black' }}>
-                      {undefined}
-                    </URLCardTitle>
-                    <URLCardDesc style={{ fontSize: 'small' }}>
-                      {undefined}
-                    </URLCardDesc>
-                    <URLCardLink>
-                      {undefined}
-                    </URLCardLink>
-                  </URLCardDetailContent>
-                </URLCardDetail>
-              </URLCard>
-            </div>
-        )}
-        {contentImage.length > 0 && (
-          <Text size="$sm" color="error">
-            画像はあと{4 - contentImage.length}枚までです.
-          </Text>
-        )}
-        {compressProcessing && (
-            <Text size="$sm">
-              画像圧縮中...<Loading size="xs"/>
-            </Text>
-        )}
-        {contentImage.length > 0 && (
-          <div style={{ display: 'flex', width: '100%', height: '100px' }}>
-            {contentImage.map((image, index) => (
-              <div
-                key={index}
-                style={{
-                  width: `calc(100% / 4)`,
-                  height: '88px',
-                  overflow: 'hidden',
-                  position: 'relative',
-                }}
-              >
-                <Zoom>
-                  <Image
-                    src={URL.createObjectURL(image)}
-                    alt="preview"
-                    style={{
-                      width: `100%`,
-                      height: '88px',
-                      objectFit: 'cover',
-                    }}
-                  ></Image>
-                </Zoom>
-                <div style={{ position: 'absolute', top: 0, left: 0 }}>
-                  <Button
-                    auto
-                    css={{
-                      height: '15px',
-                      width: '15px',
-                      padding: '0px',
-                      borderRadius: '50%',
-                      backgroundColor: 'rgba(0,0,0,0.3)',
-                    }}
-                    onClick={() => handleOnRemoveImage(index)}
-                  >
-                    <FontAwesomeIcon icon={faXmark} size="sm" />
-                  </Button>
-                </div>
-              </div>
-            ))}
+            )}
+            {contentText.length <= 300 &&(
+                <Text size="$sm">{300 - contentText.length}</Text>
+            )}
           </div>
-        )}
-        <Row justify="space-between">
-          <div>
-            <Popover placement="left">
-              <Popover.Trigger>
-                <Button
+          <div
+              {...getRootProps({ onDrop: handleDrop, onDragOver: handleDragOver })}
+          >
+            <PostTextarea
+                ref={textareaRef}
+                aria-label="Text"
+                placeholder="Text, Drag & drop images here"
+                rows={8}
+                maxLength={300}
+                value={contentText}
+                autoFocus={true}
+                onChange={(e) => {
+                  setContentText(e.target.value)
+                  detectURL(e.target.value)
+                }}
+                disabled={loading}
+                onKeyDown={isPostable ? handleKeyDown : undefined}
+                onClick={handleTextareaClick}
+                onFocus={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
+                style={{border: isDragActive ? '2px dashed #000' : 'none', width:'100%', height:'100%'}}
+            />
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          {isDetectURL && !isSettingURLCard && (
+              <div style={{textAlign:'left'}}>
+                {detectURLs.map((url, index) => (
+                    <Button onClick={() => {
+                      setIsSettingURLCard(true)
+                      getOGP(url)
+                    }
+                    }
+                            key={index}
+                            flat
+                    >Add Linkcard: {url}</Button>
+                ))}
+              </div>
+          )}
+          {isGettingOGPProcessing && (
+              <div style={{textAlign:'left'}}>
+                <Text>Getting OGP...</Text>
+              </div>
+          )}
+          {isSettingURLCard && !isGettingOGPProcessing && (
+              <div style={{display:'flex'}}>
+                <Button shadow color="error" auto style={{height:'100%'}} onClick={() => (setIsSettingURLCard(false))}>X</Button>
+                <URLCard>
+                  <URLCardThumb>
+                    <img
+                        src={undefined}
+                        style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                        alt={undefined}
+                    ></img>
+                  </URLCardThumb>
+                  <URLCardDetail>
+                    <URLCardDetailContent>
+                      <URLCardTitle style={{ color: 'black' }}>
+                        {undefined}
+                      </URLCardTitle>
+                      <URLCardDesc style={{ fontSize: 'small' }}>
+                        {undefined}
+                      </URLCardDesc>
+                      <URLCardLink>
+                        {undefined}
+                      </URLCardLink>
+                    </URLCardDetailContent>
+                  </URLCardDetail>
+                </URLCard>
+              </div>
+          )}
+          {contentImage.length > 0 && (
+              <Text size="$sm" color="error">
+                画像はあと{4 - contentImage.length}枚までです.
+              </Text>
+          )}
+          {compressProcessing && (
+              <Text size="$sm">
+                画像圧縮中...<Loading size="xs"/>
+              </Text>
+          )}
+          {contentImage.length > 0 && (
+              <div style={{ display: 'flex', width: '100%', height: '100px' }}>
+                {contentImage.map((image, index) => (
+                    <div
+                        key={index}
+                        style={{
+                          width: `calc(100% / 4)`,
+                          height: '88px',
+                          overflow: 'hidden',
+                          position: 'relative',
+                        }}
+                    >
+                      <Zoom>
+                        <Image
+                            src={URL.createObjectURL(image)}
+                            alt="preview"
+                            style={{
+                              width: `100%`,
+                              height: '88px',
+                              objectFit: 'cover',
+                            }}
+                        ></Image>
+                      </Zoom>
+                      <div style={{ position: 'absolute', top: 0, left: 0 }}>
+                        <Button
+                            auto
+                            css={{
+                              height: '15px',
+                              width: '15px',
+                              padding: '0px',
+                              borderRadius: '50%',
+                              backgroundColor: 'rgba(0,0,0,0.3)',
+                            }}
+                            onClick={() => handleOnRemoveImage(index)}
+                        >
+                          <FontAwesomeIcon icon={faXmark} size="sm" />
+                        </Button>
+                      </div>
+                    </div>
+                ))}
+              </div>
+          )}
+          <Row justify="space-between">
+            <div>
+              <Popover placement="left">
+                <Popover.Trigger>
+                  <Button
+                      as="span"
+                      auto
+                      light
+                      icon={<FontAwesomeIcon icon={faFaceSurprise} size="lg" />}
+                  />
+                </Popover.Trigger>
+                <Popover.Content>
+                  <Picker
+                      data={data}
+                      onEmojiSelect={onEmojiClick}
+                      style={{ width: '100%' }}
+                      theme="light"
+                      previewPosition="none"
+                  />
+                </Popover.Content>
+              </Popover>
+            </div>
+            <label htmlFor={inputId}>
+              <Button
+                  disabled={loading || compressProcessing || isImageMaxLimited}
                   as="span"
                   auto
                   light
-                  icon={<FontAwesomeIcon icon={faFaceSurprise} size="lg" />}
-                />
-              </Popover.Trigger>
-              <Popover.Content>
-                <Picker
-                  data={data}
-                  onEmojiSelect={onEmojiClick}
-                  style={{ width: '100%' }}
-                  theme="light"
-                  previewPosition="none"
-                />
-              </Popover.Content>
-            </Popover>
-          </div>
-          <label htmlFor={inputId}>
-            <Button
-              disabled={loading || compressProcessing || isImageMaxLimited}
-              as="span"
-              auto
-              light
-              icon={<FontAwesomeIcon icon={faImage} size="lg" />}
-            />
+                  icon={<FontAwesomeIcon icon={faImage} size="lg" />}
+              />
 
-            <input
-              hidden
-              id={inputId}
-              type="file"
-              multiple
-              accept="image/*,.png,.jpg,.jpeg"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                handleOnAddImage(e)
-              }
-              disabled={loading || compressProcessing || isImageMaxLimited}
-            />
-          </label>
-          <div>
-            <Dropdown>
-              <Dropdown.Button light css={{ tt: "capitalize" }}>
-                {PostContentLanguage.size === 1 ? PostContentLanguage : "Langs"}
-              </Dropdown.Button>
+              <input
+                  hidden
+                  id={inputId}
+                  type="file"
+                  multiple
+                  accept="image/*,.png,.jpg,.jpeg"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleOnAddImage(e)
+                  }
+                  disabled={loading || compressProcessing || isImageMaxLimited}
+              />
+            </label>
+            <div>
+              <Dropdown>
+                <Dropdown.Button light css={{ tt: "capitalize" }}>
+                  {PostContentLanguage.size === 1 ? PostContentLanguage : "Langs"}
+                </Dropdown.Button>
                 <Dropdown.Menu
                     aria-label="Multiple selection actions"
                     selectionMode="multiple"
@@ -506,47 +569,47 @@ export const PostModal = (props: PostModalProps) => {
                     //@ts-ignore
                     onSelectionChange={PostContentLanguage.size >= 3 ? null : setPostContentLanguage}
                 >
-                    <Dropdown.Item key='es'>Español</Dropdown.Item>
-                    <Dropdown.Item key='fr'>Français</Dropdown.Item>
-                    <Dropdown.Item key='de'>Deutsch</Dropdown.Item>
-                    <Dropdown.Item key='it'>Italiano</Dropdown.Item>
-                    <Dropdown.Item key='pt'>Português</Dropdown.Item>
-                    <Dropdown.Item key='ru'>Русский</Dropdown.Item>
-                    <Dropdown.Item key='zh'>中文</Dropdown.Item>
-                    <Dropdown.Item key='ko'>한국어</Dropdown.Item>
-                    <Dropdown.Item key='en'>English</Dropdown.Item>
-                    <Dropdown.Item key='ja'>日本語</Dropdown.Item>
+                  <Dropdown.Item key='es'>Español</Dropdown.Item>
+                  <Dropdown.Item key='fr'>Français</Dropdown.Item>
+                  <Dropdown.Item key='de'>Deutsch</Dropdown.Item>
+                  <Dropdown.Item key='it'>Italiano</Dropdown.Item>
+                  <Dropdown.Item key='pt'>Português</Dropdown.Item>
+                  <Dropdown.Item key='ru'>Русский</Dropdown.Item>
+                  <Dropdown.Item key='zh'>中文</Dropdown.Item>
+                  <Dropdown.Item key='ko'>한국어</Dropdown.Item>
+                  <Dropdown.Item key='en'>English</Dropdown.Item>
+                  <Dropdown.Item key='ja'>日本語</Dropdown.Item>
                 </Dropdown.Menu>
-            </Dropdown>
-          </div>
+              </Dropdown>
+            </div>
 
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <Button auto light onPress={onClose} disabled={loading}>
-              Cancel
-            </Button>
-            <Button
-              auto
-              onClick={handlePostClick}
-              disabled={
-                loading ||
-                (!isPostable && isImageMinLimited) ||
-                  compressProcessing || isContentLimitOver ||
-                contentImage.length >= 5
-              }
-            >
-              {loading ? (
-                <>
-                  <Loading size="xs" />
-                  <Spacer x={0.5} />
-                  Submitting...
-                </>
-              ) : (
-                submitText
-              )}
-            </Button>
-          </div>
-        </Row>
-      </Modal.Footer>
-    </Modal>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <Button auto light onPress={onClose} disabled={loading}>
+                Cancel
+              </Button>
+              <Button
+                  auto
+                  onClick={handlePostClick}
+                  disabled={
+                      loading ||
+                      (!isPostable && isImageMinLimited) ||
+                      compressProcessing || isContentLimitOver ||
+                      contentImage.length >= 5
+                  }
+              >
+                {loading ? (
+                    <>
+                      <Loading size="xs" />
+                      <Spacer x={0.5} />
+                      Submitting...
+                    </>
+                ) : (
+                    submitText
+                )}
+              </Button>
+            </div>
+          </Row>
+        </Modal.Footer>
+      </Modal>
   )
 }
