@@ -19,7 +19,7 @@ import {
 } from '@nextui-org/react'
 import { useAgent } from '@/atoms/agent'
 import { BskyAgent } from '@atproto/api'
-import { FeedViewPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
+import { FeedViewPost,NotFoundPost,BlockedPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 import { useEffect, useRef, useState } from 'react'
 import {
     TimelineFetcher,
@@ -41,7 +41,7 @@ export type SetttingsModalProps = {
 export const SetttingsModal = (props: SetttingsModalProps) => {
     const { open, onClose, threadId } = props;
     const [agent] = useAgent();
-    const [threadData, setThreadData] = useState<FeedViewPost | undefined>(undefined)
+    const [threadData, setThreadData] = useState<FeedViewPost | NotFoundPost | BlockedPost | { [k: string]: unknown; $type: string; } | undefined>(undefined);
     const [nestedReplies, setNestedReplies] = useState<any[]>([])
     const [isProssecing, setIsProcessing] = useState(false)
 
@@ -57,18 +57,26 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
             }
 
             try {
-                setIsProcessing(true)
+                setIsProcessing(true);
                 const result = await agent.app.bsky.feed.getPostThread({
                     uri: 'at://did:plc:owybkbkx7ph76awaqlldeccc/app.bsky.feed.post/3jztkpobp222z',
                 });
-                const postThread = result.data.thread;
-                setThreadData(postThread);
-                console.log(postThread);
 
-                const nestedReplies = printNestedReplies(postThread.replies);
-                console.log(nestedReplies);
+                if (result && result.data && result.data.thread) {
+                    const postThread = result.data.thread;
+                    setThreadData(postThread);
+                    console.log(postThread);
+
+                    const nestedReplies = printNestedReplies(postThread?.replies as any);
+                    console.log(nestedReplies);
+                    setNestedReplies(nestedReplies);
+                } else {
+                    throw new Error('Invalid post thread data');
+                }
             } catch (error) {
                 console.error('Error retrieving post thread:', error);
+            } finally {
+                setIsProcessing(false);
             }
         };
 
@@ -86,37 +94,77 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
         }
 
         if (open) {
+            setIsProcessing(true);
             getPostThread()
-            const result = printNestedReplies(threadData?.replies)
-            setNestedReplies(result)
-            console.log(result)
-            setIsProcessing(false)
+                .then((result) => {
+                    const postThread = result.data.thread;
+                    setThreadData(postThread);
+                    console.log(postThread);
+
+                    const nestedReplies = printNestedReplies(postThread.replies);
+                    console.log(nestedReplies);
+                    setNestedReplies(nestedReplies);
+                })
+                .catch((error) => {
+                    console.error('Error retrieving post thread:', error);
+                })
+                .finally(() => {
+                    setIsProcessing(false);
+                });
         }
 
-    }, [agent, open]);
+    }, [agent, open, setThreadData, setIsProcessing, setNestedReplies]);
 
     if (!open) {
         return null;
     }
+    if(isProssecing && ((threadData?.post as any)?.record as any)?.text as string === undefined){
+        return (
+            <Modal
+                open={open}
+                onClose={onClose}
+                width='600px'
+                css={{left: '2%'}}
+            >
+                <Modal.Header>
+                    <Text size="$lg" b>
+                        Threads
+                    </Text>
+                </Modal.Header>
+                <Modal.Body>
+                    <Text>Loading...</Text>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onPress={onClose} flat css={{ width: '100%' }}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        );
+    }
+
+
 
     return (
-        <Modal open={open} onClose={onClose}>
+        <Modal
+            open={open}
+            onClose={onClose}
+            width='600px'
+            css={{left: '2%'}}
+        >
             <Modal.Header>
                 <Text size="$lg" b>
                     Threads
                 </Text>
             </Modal.Header>
             <Modal.Body>
-                <Text>Threads are a way to organize your posts.</Text>
-                {false ? ( // Check loading state before displaying the data
-                    <Text>Loading...</Text>
-                ) : (nestedReplies.map((post) => {
+                <div>{((threadData?.post as any)?.record as any)?.text as string}</div>
+                {nestedReplies.map((post, index) => {
                     console.log(post)
                     return(
-                        <div>{post.record.text}</div>
+                        <div key={index}>{post.record.text}</div>
                     )
-                }))
-                }
+                })}
             </Modal.Body>
             <Modal.Footer>
                 <Button onPress={onClose} flat css={{ width: '100%' }}>
