@@ -45,7 +45,7 @@ import { useAgent } from '@/atoms/agent'
 import { ImagesGrid } from '../ImagesGrid'
 
 const RepostByLabel = styled('div', {
-  fontSize: '$md',
+  fontSize: '$sm',
   fontWeight: 'bold',
   color: '$gray600',
   '& a': {
