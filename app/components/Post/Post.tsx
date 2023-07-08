@@ -47,9 +47,9 @@ import { ImagesGrid } from '../ImagesGrid'
 const RepostByLabel = styled('div', {
   fontSize: '$sm',
   fontWeight: 'bold',
-  color: '$gray700',
+  color: '$gray600',
   '& a': {
-    color: '$gray700',
+    color: '$gray600',
   },
   '&:hover': {
     textDecoration: 'underline',
@@ -396,7 +396,7 @@ export const Post = (props: PostProps) => {
         position: 'relative',
         border: isEmbed ? '2px solid $gray400' : undefined,
         borderRadius: '$md',
-        padding: '$4',
+        padding: '$3',
         backgroundColor: isExpanded ? '$gray400' : 'rgba(0,0,0,0)',
       }}
       onMouseDown={handleMouseDown}
@@ -432,18 +432,12 @@ export const Post = (props: PostProps) => {
             >
               <Row justify="space-between" align="center">
                 <Col span={7}>
-                  <User
-                    squared
-                    src={
-                      author.avatar
-                        ? author.avatar
-                        : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'
-                    }
-                    size="lg"
-                    name={((author.displayName ?? `@${author.handle}`).length >= 25 ? (author.displayName ?? `@${author.handle}`).slice(0, 25) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 25) ? '...' : '')}
-
-                    description={`@${author.handle.length >= 30 ? author.handle.slice(0, 25) + '...' : author.handle}`}
-                  />
+                  <div style={{fontWeight: 'bold'}}>
+                    {((author.displayName ?? `@${author.handle}`).length >= 25 ? (author.displayName ?? `@${author.handle}`).slice(0, 25) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 25) ? '...' : '')}
+                  </div>
+                  <div style={{color:"gray"}}>
+                    {`@${author.handle.length >= 30 ? author.handle.slice(0, 25) + '...' : author.handle}`}
+                  </div>
                 </Col>
                 <Col span={7}>
                   <Button
@@ -487,8 +481,9 @@ export const Post = (props: PostProps) => {
         {reasonRepost && (
           <Link href={`/profile/${reasonRepost.by.handle}`}>
             <RepostByLabel>
-              Reposted by {reasonRepost.by.displayName}
+              Reposted {reasonRepost.by.displayName} <img src={reasonRepost.by.avatar} style={{height:"10px"}}/>
             </RepostByLabel>
+
           </Link>
         )}
         {!isRoot && parentReply != undefined && (
@@ -718,7 +713,18 @@ export const Post = (props: PostProps) => {
           </Row>
         )}
         {isRoot && (
-            <a><div>read more...(開発中)</div></a>
+            <Tooltip
+                content={"見せられないよ！"}
+                trigger="click"
+                color="primary"
+                placement="right"
+            >
+              <a>
+                <Text color="primary">
+                  read more...(開発中)
+                </Text>
+              </a>
+            </Tooltip>
         )}
       </Col>
     </Row>
