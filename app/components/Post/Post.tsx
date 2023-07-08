@@ -43,6 +43,7 @@ import { ProfileViewBasic } from '@atproto/api/dist/client/types/app/bsky/actor/
 import { AppBskyEmbedRecord, AppBskyEmbedImages } from '@atproto/api'
 import { useAgent } from '@/atoms/agent'
 import { ImagesGrid } from '../ImagesGrid'
+import {SetttingsModal} from "@/components/PostThreadModal"
 
 const RepostByLabel = styled('div', {
   fontSize: '$sm',
@@ -309,6 +310,8 @@ export const Post = (props: PostProps) => {
   const [mouseX, setMouseX] = useState(0);
   const [mouseY, setMouseY] = useState(0);
   const [saveParentReply, setSaveParentReply] = useState(parentReply)
+  const [settingsModal, setSettingsModal] = useState(false)
+
   //console.log(saveParentReply)
 
 
@@ -395,343 +398,343 @@ export const Post = (props: PostProps) => {
   };
 
   return (
-    <Row
-      align="stretch"
-      css={{
-        position: 'relative',
-        border: isEmbed ? '2px solid $gray400' : undefined,
-        borderRadius: '$md',
-        padding: '$3',
-        backgroundColor: isExpanded ? '$gray400' : 'rgba(0,0,0,0)',
-      }}
-      onMouseDown={handleMouseDown}
-    >
-      {showMenu && (
-          /*
-          <div
-            style={{
-                position: 'absolute',
-                backgroundColor: 'white',
-                zIndex: 10000,
+      <>
+        <SetttingsModal
+            open={settingsModal}
+            onClose={() => setSettingsModal(false)}
+            threadId={null}
+        />
+        <Row
+            align="stretch"
+            css={{
+              position: 'relative',
+              border: isEmbed ? '2px solid $gray400' : undefined,
+              borderRadius: '$md',
+              padding: '$3',
+              backgroundColor: isExpanded ? '$gray400' : 'rgba(0,0,0,0)',
             }}
-          >
-            {author.did === myDid && (<div>delete post</div>)}
-            {author.did !== myDid && (<div>report</div>)}
-            {author.did !== myDid && (<div>dislike</div>)}
-          </div>*/
-          <></>
-      )}
-      {hasReply && <ReplyLine />}
-      <div onMouseDown={handleChildMouseDown}>
-        <Tooltip
-          placement="right"
-          isDisabled={disableTooltip}
-          content={
-            <Container
-              css={{
-                mw: '400px',
-                width: '100%',
-                borderRadius: '$lg',
-                p: '$sm',
-              }}
-            >
-              <Row justify="space-between" align="center">
-                <Col span={7}>
-                  <div style={{fontWeight: 'bold'}}>
-                    {((author.displayName ?? `@${author.handle}`).length >= 25 ? (author.displayName ?? `@${author.handle}`).slice(0, 25) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 25) ? '...' : '')}
-                  </div>
-                  <div style={{color:"gray"}}>
-                    {`@${author.handle.length >= 30 ? author.handle.slice(0, 25) + '...' : author.handle}`}
-                  </div>
-                </Col>
-                <Col span={7}>
-                  <Button
-                    auto
-                    onClick={onFollowClick}
-                    onMouseOver={() => setFollowHover(true)}
-                    onMouseLeave={() => setFollowHover(false)}
-                    rounded
-                    bordered={isFollowing}
-                    color={isFollowing && followHover ? 'error' : 'primary'}
-                    css={{ ml: '$10', width: `5ch` }}
-                    disabled={myDid === author.did}
-                  >
-                    {isFollowing
-                      ? followHover
-                        ? 'UnFollow'
-                        : 'Following'
-                      : 'Follow'}
-                  </Button>
-                </Col>
-              </Row>
-            </Container>
-          }
+            onMouseDown={handleMouseDown}
         >
-          <Link href={`/profile/${author.handle}`}>
-            <Avatar
-              pointer
-              squared
-              src={
-                author.avatar
-                  ? author.avatar
-                  : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'
-              }
-              size={isEmbed ? 'sm' : 'lg'}
-            />
-          </Link>
-        </Tooltip>
-      </div>
-      <Spacer x={1} />
-      <Col>
-        {reasonRepost && (
-          <Link href={`/profile/${reasonRepost.by.handle}`}>
-            <RepostByLabel>
-              Reposted {reasonRepost.by.displayName} <img src={reasonRepost.by.avatar} style={{height:"10px"}}/>
-            </RepostByLabel>
-
-          </Link>
-        )}
-        {!isRoot && parentReply != undefined && (
-            <div style={{width:'500px'}}>
-
-              <a style={{width:"100%"}}>
-                <div
-                    style={{fontSize:'12px',color:'gray',overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}
-                >
-                  <FontAwesomeIcon icon={faReplySolid}/> Reply to {parentReply.author.displayName}
-                  <span> {parentReply.record.text} </span>
-                </div>
-              </a>
-            </div>
-        )}
-        {!isEmbed &&  (
-            <PostInfo>
-              <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
-                <AuthorDisplayName>
-                  {!isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 25 ? (author.displayName ?? `@${author.handle}`).slice(0, 25) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 25) ? '...' : '')}
-                </AuthorDisplayName>
-              </Link>
-              <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
-                <AuthorHandle>
-                  @{author.handle.length >= 30 ? `${author.handle.slice(0,22)}...`: author.handle}
-                </AuthorHandle>
-              </Link>
-              <PostDate>
-                <Link
-                    style={{ display: 'block' }}
-                    href={`https://staging.bsky.app/profile/${author.handle}/post/${postUri}`}
-                    target={'_blank'}
-                >
-                  {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
-                </Link>
-              </PostDate>
-            </PostInfo>
-        )}
-        {isEmbed && quotedUserDID !== embedUserDID && (
-            <PostInfo>
-              <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
-                <EmbedAuthorDisplayName>
-                  {isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 17 ? (author.displayName ?? `@${author.handle}`).slice(0, 14) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 17) ? '...' : '')}
-                </EmbedAuthorDisplayName>
-              </Link>
-              <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
-                <EmbedAuthorHandle>
-                  @{author.handle.length >= 30 ? `${author.handle.slice(0,22)}...`: author.handle}
-                </EmbedAuthorHandle>
-              </Link>
-              <PostDate>
-                <Link
-                    style={{ display: 'block' }}
-                    href={`https://staging.bsky.app/profile/${author.handle}/post/${postUri}`}
-                    target={'_blank'}
-                >
-                  {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
-                </Link>
-              </PostDate>
-            </PostInfo>
-        )}
-        <PostContent>
-          <PostRecordTextView record={record} />
-        </PostContent>
-        {embed &&
-          isEmbed &&
-          showEmbedImages &&
-          embed.$type === 'app.bsky.embed.images#view' && (
-            <a onClick={() => setShowEmbedImages(false)}>hide images</a>
+          {showMenu && (
+              /*
+              <div
+                style={{
+                    position: 'absolute',
+                    backgroundColor: 'white',
+                    zIndex: 10000,
+                }}
+              >
+                {author.did === myDid && (<div>delete post</div>)}
+                {author.did !== myDid && (<div>report</div>)}
+                {author.did !== myDid && (<div>dislike</div>)}
+              </div>*/
+              <></>
           )}
-        {embed &&
-          isEmbed &&
-          !showEmbedImages &&
-          embed.$type === 'app.bsky.embed.images#view' && (
-            <a onClick={() => setShowEmbedImages(true)}>show images</a>
-          )}
-
-        {embed && !isEmbed && embed.$type === 'app.bsky.embed.record#view' && (
-          <>
-            <Post
-              myDid={myDid}
-              record={(embed.record as Record).value as Record}
-              author={(embed.record as Record).author as ProfileViewBasic}
-              isFollowing={
-                !!((embed.record as Record).author as ProfileViewBasic)?.viewer
-                  ?.following
-              }
-              postUri={
-                (embed.record as { uri: string }).uri.split('/').pop() as string
-              }
-              createdAt={(embed.record as Record).indexedAt as string}
-              embed={
-                (embed?.record as any)?.embeds?.length
-                  ? ((embed.record as any)
-                      .embeds[0] as AppBskyEmbedRecord.ViewRecord as any)
-                  : null
-              }
-              quotedUserDID={author.did as string}
-              embedUserDID={((embed.record as Record)?.author as any)?.did as string}
-              isEmbed
-              hideActions
-            />
-          </>
-        )}
-
-        {images.length > 0 && showEmbedImages && <ImagesGrid images={images} />}
-        {!!embed?.media && (embed?.media as any)?.images?.length > 0 && (
-          <ImagesGrid images={(embed?.media as any)?.images} />
-        )}
-
-        {embed && !isEmbed && embed.$type === 'app.bsky.embed.external#view' && (
-          <a
-            href={(embed as any)?.external?.uri}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <URLCard>
-              <URLCardThumb>
-                <img
-                    src={(embed as any)?.external?.thumb}
-                    style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                    alt={(embed as any)?.external?.alt}
-                ></img>
-              </URLCardThumb>
-              <URLCardDetail>
-                <URLCardDetailContent>
-                  <URLCardTitle style={{ color: 'black' }}>
-                    {(embed as any)?.external?.title}
-                  </URLCardTitle>
-                  <URLCardDesc style={{ fontSize: 'small' }}>
-                    {(embed as any)?.external?.description}
-                  </URLCardDesc>
-                  <URLCardLink>
-                    {(embed as any)?.external?.uri.match(/^https?:\/{2,}(.*?)(?:\/|\?|#|$)/)[1]}
-                  </URLCardLink>
-                </URLCardDetailContent>
-              </URLCardDetail>
-            </URLCard>
-          </a>
-        )}
-
-        {embed &&
-          !isEmbed &&
-          embed.$type === 'app.bsky.embed.recordWithMedia#view' && (
-            <>
-              <Post
-                myDid={myDid}
-                record={(embed.record as any)?.record.value as Record}
-                author={
-                  (embed.record as any)?.record.author as ProfileViewBasic
-                }
-                isFollowing={(embed.record as any).record?.author?.viewer?.following as boolean}
-                postUri={(embed.record as any).record?.uri.split('/').pop() as string}
-                createdAt={(embed.record as any).record?.indexedAt as string}
-                embed={
-                  (embed.record as any)?.record
-                    ?.embeds[0] as AppBskyEmbedRecord.ViewRecord
-                }
-                isEmbed
-                hideActions
-              />
-            </>
-          )}
-
-        {!hideActions && (
-          <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
-            <Col>
-              <PostAction>
-                <FontAwesomeIcon
-                  icon={faComment}
-                  color="#787F85"
-                  style={{ cursor: 'pointer' }}
-                  onClick={onReplyClick}
-                />
-                {showReplyCount && replyCount}
-              </PostAction>
-            </Col>
-            <Col>
-              <div style={{height:'16px', width:'18px'}}>
-                <Dropdown placement="bottom-left">
-                  <Dropdown.Trigger>
-                    <PostAction>
-                      <FontAwesomeIcon
-                          //onClick={onRepostClick}
-                          icon={faRetweetSolid}
-                          //color="#787F85"
-                          color={isReposted ? '#36BA7A' : '#787F85'}
-                          style={{ cursor: 'pointer' }}
-                      />
-                      {showRepostCount && repostCount}
-                    </PostAction>
-                  </Dropdown.Trigger>
-                  <Dropdown.Menu
-                      onAction={(key) => {
-                        if (key === 'repost') {
-                          onRepostClick()
-                        } else if (key === 'quoteRepost') {
-                          onQuoteRepostClick()
-                        }
+          {hasReply && <ReplyLine />}
+          <div onMouseDown={handleChildMouseDown}>
+            <Tooltip
+                placement="right"
+                isDisabled={disableTooltip}
+                content={
+                  <Container
+                      css={{
+                        mw: '400px',
+                        width: '100%',
+                        borderRadius: '$lg',
+                        p: '$sm',
                       }}
                   >
-                    <Dropdown.Item key="repost">
-                      {isReposted === false && <Text>Repost</Text>}
-                      {isReposted === true && (
-                          <Text color={'error'}>UnRepost</Text>
-                      )}
-                    </Dropdown.Item>
-                    <Dropdown.Item key="quoteRepost">
-                      <Text>Quote Repost</Text>
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
-            </Col>
-            <Col>
-              <BlueDot>
-                <FontAwesomeIcon
-                    onClick={!isReactionProcessing ? onLikeClick : undefined}
-                    icon={myDid === author.did ? (likeCount !== 0 ? faSquareRegular : faSquareRegular) : (isLiked && likeCount !== 0 ? faSquareSolid : faSquareRegular)}
-                    color={myDid === author.did ? (likeCount !== 0 ? `rgba(49,171,183,0.2)` : undefined) : ( isLiked && likeCount !== 0 ? `rgba(49,171,183,${likeCount as number * 0.05})` : undefined)}
-                    style={{ display: myDid === author.did &&  (likeCount === 0)  ? 'none' : "block", cursor: 'pointer'}}
-                    size={'sm'}
-                ></FontAwesomeIcon>
-              </BlueDot>
-            </Col>
-
-          </Row>
-        )}
-        {isRoot && (
-            <Tooltip
-                content={"見せられないよ！"}
-                trigger="click"
-                color="primary"
-                placement="right"
+                    <Row justify="space-between" align="center">
+                      <Col span={7}>
+                        <div style={{fontWeight: 'bold'}}>
+                          {((author.displayName ?? `@${author.handle}`).length >= 25 ? (author.displayName ?? `@${author.handle}`).slice(0, 25) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 25) ? '...' : '')}
+                        </div>
+                        <div style={{color:"gray"}}>
+                          {`@${author.handle.length >= 30 ? author.handle.slice(0, 25) + '...' : author.handle}`}
+                        </div>
+                      </Col>
+                      <Col span={7}>
+                        <Button
+                            auto
+                            onClick={onFollowClick}
+                            onMouseOver={() => setFollowHover(true)}
+                            onMouseLeave={() => setFollowHover(false)}
+                            rounded
+                            bordered={isFollowing}
+                            color={isFollowing && followHover ? 'error' : 'primary'}
+                            css={{ ml: '$10', width: `5ch` }}
+                            disabled={myDid === author.did}
+                        >
+                          {isFollowing
+                              ? followHover
+                                  ? 'UnFollow'
+                                  : 'Following'
+                              : 'Follow'}
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Container>
+                }
             >
-              <a>
-                <Text color="primary">
-                  read more...(開発中)
-                </Text>
-              </a>
+              <Link href={`/profile/${author.handle}`}>
+                <Avatar
+                    pointer
+                    squared
+                    src={
+                      author.avatar
+                          ? author.avatar
+                          : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'
+                    }
+                    size={isEmbed ? 'sm' : 'lg'}
+                />
+              </Link>
             </Tooltip>
-        )}
-      </Col>
-    </Row>
+          </div>
+          <Spacer x={1} />
+          <Col>
+            {reasonRepost && (
+                <Link href={`/profile/${reasonRepost.by.handle}`}>
+                  <RepostByLabel>
+                    Reposted {reasonRepost.by.displayName} <img src={reasonRepost.by.avatar} style={{height:"10px"}}/>
+                  </RepostByLabel>
+
+                </Link>
+            )}
+            {!isRoot && parentReply != undefined && (
+                <div style={{width:'500px'}}>
+
+                  <a style={{width:"100%"}}>
+                    <div
+                        style={{fontSize:'12px',color:'gray',overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}
+                    >
+                      <FontAwesomeIcon icon={faReplySolid}/> Reply to {parentReply.author.displayName}
+                      <span> {parentReply.record.text} </span>
+                    </div>
+                  </a>
+                </div>
+            )}
+            {!isEmbed &&  (
+                <PostInfo>
+                  <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
+                    <AuthorDisplayName>
+                      {!isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 25 ? (author.displayName ?? `@${author.handle}`).slice(0, 25) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 25) ? '...' : '')}
+                    </AuthorDisplayName>
+                  </Link>
+                  <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
+                    <AuthorHandle>
+                      @{author.handle.length >= 30 ? `${author.handle.slice(0,22)}...`: author.handle}
+                    </AuthorHandle>
+                  </Link>
+                  <PostDate>
+                    <Link
+                        style={{ display: 'block' }}
+                        href={`https://staging.bsky.app/profile/${author.handle}/post/${postUri}`}
+                        target={'_blank'}
+                    >
+                      {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
+                    </Link>
+                  </PostDate>
+                </PostInfo>
+            )}
+            {isEmbed && quotedUserDID !== embedUserDID && (
+                <PostInfo>
+                  <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
+                    <EmbedAuthorDisplayName>
+                      {isEmbed && ((author.displayName ?? `@${author.handle}`).length >= 17 ? (author.displayName ?? `@${author.handle}`).slice(0, 14) : (author.displayName ?? `@${author.handle}`)) + (((author.displayName ?? `@${author.handle}`).length >= 17) ? '...' : '')}
+                    </EmbedAuthorDisplayName>
+                  </Link>
+                  <Link style={{ display: 'block' }} href={`/profile/${author.handle}`}>
+                    <EmbedAuthorHandle>
+                      @{author.handle.length >= 30 ? `${author.handle.slice(0,22)}...`: author.handle}
+                    </EmbedAuthorHandle>
+                  </Link>
+                  <PostDate>
+                    <Link
+                        style={{ display: 'block' }}
+                        href={`https://staging.bsky.app/profile/${author.handle}/post/${postUri}`}
+                        target={'_blank'}
+                    >
+                      {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
+                    </Link>
+                  </PostDate>
+                </PostInfo>
+            )}
+            <PostContent>
+              <PostRecordTextView record={record} />
+            </PostContent>
+            {embed &&
+                isEmbed &&
+                showEmbedImages &&
+                embed.$type === 'app.bsky.embed.images#view' && (
+                    <a onClick={() => setShowEmbedImages(false)}>hide images</a>
+                )}
+            {embed &&
+                isEmbed &&
+                !showEmbedImages &&
+                embed.$type === 'app.bsky.embed.images#view' && (
+                    <a onClick={() => setShowEmbedImages(true)}>show images</a>
+                )}
+
+            {embed && !isEmbed && embed.$type === 'app.bsky.embed.record#view' && (
+                <>
+                  <Post
+                      myDid={myDid}
+                      record={(embed.record as Record).value as Record}
+                      author={(embed.record as Record).author as ProfileViewBasic}
+                      isFollowing={
+                        !!((embed.record as Record).author as ProfileViewBasic)?.viewer
+                            ?.following
+                      }
+                      postUri={
+                        (embed.record as { uri: string }).uri.split('/').pop() as string
+                      }
+                      createdAt={(embed.record as Record).indexedAt as string}
+                      embed={
+                        (embed?.record as any)?.embeds?.length
+                            ? ((embed.record as any)
+                                .embeds[0] as AppBskyEmbedRecord.ViewRecord as any)
+                            : null
+                      }
+                      quotedUserDID={author.did as string}
+                      embedUserDID={((embed.record as Record)?.author as any)?.did as string}
+                      isEmbed
+                      hideActions
+                  />
+                </>
+            )}
+
+            {images.length > 0 && showEmbedImages && <ImagesGrid images={images} />}
+            {!!embed?.media && (embed?.media as any)?.images?.length > 0 && (
+                <ImagesGrid images={(embed?.media as any)?.images} />
+            )}
+
+            {embed && !isEmbed && embed.$type === 'app.bsky.embed.external#view' && (
+                <a
+                    href={(embed as any)?.external?.uri}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                  <URLCard>
+                    <URLCardThumb>
+                      <img
+                          src={(embed as any)?.external?.thumb}
+                          style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                          alt={(embed as any)?.external?.alt}
+                      ></img>
+                    </URLCardThumb>
+                    <URLCardDetail>
+                      <URLCardDetailContent>
+                        <URLCardTitle style={{ color: 'black' }}>
+                          {(embed as any)?.external?.title}
+                        </URLCardTitle>
+                        <URLCardDesc style={{ fontSize: 'small' }}>
+                          {(embed as any)?.external?.description}
+                        </URLCardDesc>
+                        <URLCardLink>
+                          {(embed as any)?.external?.uri.match(/^https?:\/{2,}(.*?)(?:\/|\?|#|$)/)[1]}
+                        </URLCardLink>
+                      </URLCardDetailContent>
+                    </URLCardDetail>
+                  </URLCard>
+                </a>
+            )}
+
+            {embed &&
+                !isEmbed &&
+                embed.$type === 'app.bsky.embed.recordWithMedia#view' && (
+                    <>
+                      <Post
+                          myDid={myDid}
+                          record={(embed.record as any)?.record.value as Record}
+                          author={
+                            (embed.record as any)?.record.author as ProfileViewBasic
+                          }
+                          isFollowing={(embed.record as any).record?.author?.viewer?.following as boolean}
+                          postUri={(embed.record as any).record?.uri.split('/').pop() as string}
+                          createdAt={(embed.record as any).record?.indexedAt as string}
+                          embed={
+                            (embed.record as any)?.record
+                                ?.embeds[0] as AppBskyEmbedRecord.ViewRecord
+                          }
+                          isEmbed
+                          hideActions
+                      />
+                    </>
+                )}
+
+            {!hideActions && (
+                <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
+                  <Col>
+                    <PostAction>
+                      <FontAwesomeIcon
+                          icon={faComment}
+                          color="#787F85"
+                          style={{ cursor: 'pointer' }}
+                          onClick={onReplyClick}
+                      />
+                      {showReplyCount && replyCount}
+                    </PostAction>
+                  </Col>
+                  <Col>
+                    <div style={{height:'16px', width:'18px'}}>
+                      <Dropdown placement="bottom-left">
+                        <Dropdown.Trigger>
+                          <PostAction>
+                            <FontAwesomeIcon
+                                //onClick={onRepostClick}
+                                icon={faRetweetSolid}
+                                //color="#787F85"
+                                color={isReposted ? '#36BA7A' : '#787F85'}
+                                style={{ cursor: 'pointer' }}
+                            />
+                            {showRepostCount && repostCount}
+                          </PostAction>
+                        </Dropdown.Trigger>
+                        <Dropdown.Menu
+                            onAction={(key) => {
+                              if (key === 'repost') {
+                                onRepostClick()
+                              } else if (key === 'quoteRepost') {
+                                onQuoteRepostClick()
+                              }
+                            }}
+                        >
+                          <Dropdown.Item key="repost">
+                            {isReposted === false && <Text>Repost</Text>}
+                            {isReposted === true && (
+                                <Text color={'error'}>UnRepost</Text>
+                            )}
+                          </Dropdown.Item>
+                          <Dropdown.Item key="quoteRepost">
+                            <Text>Quote Repost</Text>
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </div>
+                  </Col>
+                  <Col>
+                    <BlueDot>
+                      <FontAwesomeIcon
+                          onClick={!isReactionProcessing ? onLikeClick : undefined}
+                          icon={myDid === author.did ? (likeCount !== 0 ? faSquareRegular : faSquareRegular) : (isLiked && likeCount !== 0 ? faSquareSolid : faSquareRegular)}
+                          color={myDid === author.did ? (likeCount !== 0 ? `rgba(49,171,183,0.2)` : undefined) : ( isLiked && likeCount !== 0 ? `rgba(49,171,183,${likeCount as number * 0.05})` : undefined)}
+                          style={{ display: myDid === author.did &&  (likeCount === 0)  ? 'none' : "block", cursor: 'pointer'}}
+                          size={'sm'}
+                      ></FontAwesomeIcon>
+                    </BlueDot>
+                  </Col>
+
+                </Row>
+            )}
+            {isRoot && (
+                <a>
+                  <div onClick={() => setSettingsModal(true)}>
+                    read more
+                  </div>
+                </a>
+            )}
+          </Col>
+        </Row>
+      </>
   )
 }
