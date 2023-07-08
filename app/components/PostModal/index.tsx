@@ -277,7 +277,7 @@ export const PostModal = (props: PostModalProps) => {
     e.preventDefault()
     e.stopPropagation()
   }
-
+  
   const detectURL = (text: string) => {
     // URLを検出する正規表現パターン
     const urlPattern = /((?:https?|ftp):\/\/)(?:[\w-]+(?:\.[\w-]+)+)(?:\/[\w-]+)*(?:\/|\/[\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/gi

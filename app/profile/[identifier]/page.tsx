@@ -285,7 +285,6 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                 <Row align="center" justify="space-between">
                   <Col>
                     <User
-
                       squared
                       size="xl"
                       name={profile.displayName}
