@@ -211,6 +211,7 @@ const PostContent = styled('div', {
 
 interface PostProps {
   myDid?: string
+  rootReply?: any
   postUri?: string
   aturi?: string
   reasonRepost?: ReasonRepost
@@ -260,6 +261,7 @@ interface PostProps {
 export const Post = (props: PostProps) => {
   const {
     myDid,
+    rootReply,
     aturi,
     postUri,
     reasonRepost,
@@ -404,7 +406,7 @@ export const Post = (props: PostProps) => {
         <SetttingsModal
             open={settingsModal}
             onClose={() => setSettingsModal(false)}
-            threadId={aturi as string}
+            threadId={rootReply?.uri as string}
         />
         <Row
             align="stretch"
@@ -503,7 +505,7 @@ export const Post = (props: PostProps) => {
                 </Link>
             )}
             {!isRoot && parentReply != undefined && (
-                <div style={{width:'500px'}}>
+                <div style={{width:'500px'}} onClick={() => setSettingsModal(true)}>
 
                   <a style={{width:"100%"}}>
                     <div
