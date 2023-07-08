@@ -99,8 +99,9 @@ export const FeedView = (props: FeedViewProps) => {
   return (
     <>
       <Card variant="flat" css={{ py: '$8' }}>
-        {hasNested ? (
-            <>
+        {hasNested?
+            //threadの場合
+            (<>
               <PostContainer>
                 <PostViewCard
                     hasReply
@@ -151,95 +152,121 @@ export const FeedView = (props: FeedViewProps) => {
                     postType={"thread"}
                 />
               </PostContainer>
-            </>
-        ) : (
-            <>
-              {replyParentRoot && props.feed.reply?.parent.cid !== props.feed.reply?.root.cid ? (
-                  <>
-                    <PostContainer>
-                      <PostViewCard
-                          hasReply
-                          // @ts-ignore
-                          post={replyParentRoot}
-                          //reasonRepost={reasonRepost}
-                          showLikeCount
-                          showReplyCount
-                          showRepostCount
-                          onFetch={fetchReplyParent}
-                          postType={"thread"}
-                      />
-                    </PostContainer>
-                    <PostContainer>
-                      <PostViewCard
-                          hasReply
-                          // @ts-ignore
-                          post={replyParent}
-                          //reasonRepost={reasonRepost}
-                          //parentReply={replyParentRoot}
-                          showLikeCount
-                          showReplyCount
-                          showRepostCount
-                          onFetch={fetchReplyParent}
-                          postType={"reply"}
-                      />
-                    </PostContainer>
-                    <PostContainer>
-                      <PostViewCard
-                          post={feed.post}
-                          reasonRepost={reasonRepost}
-                          showLikeCount
-                          showReplyCount
-                          showRepostCount
-                          onFetch={fetchFeed}
-                          postType={"reply"}
-                      />
-                    </PostContainer>
-                  </>
-              ) : (
-                  replyParent ? (
-                      <>
-                        <PostContainer>
-                          <PostViewCard
-                              hasReply
-                              // @ts-ignore
-                              post={replyParent}
-                              //reasonRepost={reasonRepost}
-                              showLikeCount
-                              showReplyCount
-                              showRepostCount
-                              onFetch={fetchReplyParent}
-                              postType={"reply"}
-                          />
-                        </PostContainer>
-                        <PostContainer>
-                          <PostViewCard
-                              post={feed.post}
-                              reasonRepost={reasonRepost}
-                              showLikeCount
-                              showReplyCount
-                              showRepostCount
-                              onFetch={fetchFeed}
-                              postType={"reply"}
-                          />
-                        </PostContainer>
-                      </>
-                  ) : (
-                      <PostContainer>
-                        <PostViewCard
-                            post={feed.post}
-                            reasonRepost={reasonRepost}
-                            showLikeCount
-                            showReplyCount
-                            showRepostCount
-                            onFetch={fetchFeed}
-                            postType={"post"}
-                        />
-                      </PostContainer>
-                  )
-              )}
-            </>
-        )}
-
+            </>):
+            //replyParentRootがある場合、かつreplyParentRootとreplyparentが一緒じゃない場合(つまり三つ連なっている)
+            (replyParentRoot && props.feed.reply?.parent.cid !== props.feed.reply?.root.cid ?
+                    //parentとrootのauthorが一緒の場合はreplyParentRootを表示する
+                ((feed?.reply?.parent?.author as any)?.did as string === (feed?.reply?.root?.author as any)?.did as string ?
+                        (<>
+                          <PostContainer>
+                            <PostViewCard
+                                hasReply
+                                // @ts-ignore
+                                post={replyParentRoot}
+                                //reasonRepost={reasonRepost}
+                                showLikeCount
+                                showReplyCount
+                                showRepostCount
+                                onFetch={fetchReplyParent}
+                                postType={"thread"}
+                            />
+                          </PostContainer>
+                          <PostContainer>
+                            <PostViewCard
+                                hasReply
+                                // @ts-ignore
+                                post={replyParent}
+                                //reasonRepost={reasonRepost}
+                                //parentReply={replyParentRoot}
+                                showLikeCount
+                                showReplyCount
+                                showRepostCount
+                                onFetch={fetchReplyParent}
+                                postType={"reply"}
+                            />
+                          </PostContainer>
+                          <PostContainer>
+                            <PostViewCard
+                                post={feed.post}
+                                reasonRepost={reasonRepost}
+                                showLikeCount
+                                showReplyCount
+                                showRepostCount
+                                onFetch={fetchFeed}
+                                postType={"reply"}
+                            />
+                          </PostContainer>
+                        </>):
+                            (<>
+                              <PostContainer>
+                                <PostViewCard
+                                    hasReply
+                                    // @ts-ignore
+                                    post={replyParent}
+                                    //reasonRepost={reasonRepost}
+                                    parentReply={replyParentRoot}
+                                    showLikeCount
+                                    showReplyCount
+                                    showRepostCount
+                                    onFetch={fetchReplyParent}
+                                    postType={"reply"}
+                                />
+                              </PostContainer>
+                              <PostContainer>
+                                <PostViewCard
+                                    post={feed.post}
+                                    reasonRepost={reasonRepost}
+                                    showLikeCount
+                                    showReplyCount
+                                    showRepostCount
+                                    onFetch={fetchFeed}
+                                    postType={"reply"}
+                                />
+                              </PostContainer>
+                            </>)
+                ):
+                    //replyParentが存在する場合
+                    (replyParent?
+                        (<>
+                          <PostContainer>
+                            <PostViewCard
+                                hasReply
+                                // @ts-ignore
+                                post={replyParent}
+                                //reasonRepost={reasonRepost}
+                                showLikeCount
+                                showReplyCount
+                                showRepostCount
+                                onFetch={fetchReplyParent}
+                                postType={"reply"}
+                            />
+                          </PostContainer>
+                          <PostContainer>
+                            <PostViewCard
+                                post={feed.post}
+                                reasonRepost={reasonRepost}
+                                showLikeCount
+                                showReplyCount
+                                showRepostCount
+                                onFetch={fetchFeed}
+                                postType={"reply"}
+                            />
+                          </PostContainer>
+                        </>):
+                            (<PostContainer>
+                              <PostViewCard
+                                  post={feed.post}
+                                  reasonRepost={reasonRepost}
+                                  showLikeCount
+                                  showReplyCount
+                                  showRepostCount
+                                  onFetch={fetchFeed}
+                                  postType={"post"}
+                              />
+                            </PostContainer>)
+                    )
+            )
+        }
 
       </Card>
     </>
