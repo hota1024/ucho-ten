@@ -211,7 +211,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
             delete kanseihinList[index];
         }
     })
-    console.log(kanseihinList)
+    //console.log(kanseihinList)
     return (
     <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
       <ReloadButtonContainer
@@ -256,28 +256,23 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
                       return null
                   }
                   if(feed?.reply){
-                      if(muteWords.some(word => (feed.reply.parent.record as any)?.text.includes(word))){
+                      if (muteWords.some(word => (feed.reply.record as any)?.text.includes(word))) {
                           return null
                       }
-                      if(feed.post.author.viewer.following !== undefined && feed.reply.parent.author.viewer.following === undefined){
-                          //panretをフォローしてなくても、post.author.didが自分だったら、表示する、
-                          if(feed.reply.parent.author.viewer.following === undefined && feed.post.author.did === agent?.session?.did){
-                              return (
-                                  <Row key={`${feed.post.cid}${key}`} css={{ my: '$8' }}>
-                                      <FeedView feed={feed} />
-                                  </Row>
-                              )
-                          }
-                          return null
-                      }
-                      //同じユーザーのスレッドだった場合は表示する
-                      if(feed.post.author.did === feed.reply.parent.author.did && feed.reply.parent.author.did === feed.reply.root.author.did && feed.reply.root.author.did === feed.post.author.did){
+                      //リポストだったら誰でも問答無用で表示させる
+                      if(feed?.reason){
                           return (
                               <Row key={`${feed.post.cid}${key}`} css={{ my: '$8' }}>
                                   <FeedView feed={feed} />
                               </Row>
                           )
                       }
+                      //フォロワーが、自分がフォローしてない人へのpostへreplyしてたらそれを非表示にする
+                      if(feed.post.author.viewer.following !== undefined && feed.reply.parent.author.viewer.following === undefined){
+                          return null
+                      }
+
+
 
                   }
 
