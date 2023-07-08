@@ -208,6 +208,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
       <Post
         myDid={myDid}
         postUri={post.uri.split('/').pop()}
+        aturi={post.uri}
         record={record}
         embed={embed}
         author={post.author}

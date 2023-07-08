@@ -59,7 +59,7 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
             try {
                 setIsProcessing(true);
                 const result = await agent.app.bsky.feed.getPostThread({
-                    uri: 'at://did:plc:owybkbkx7ph76awaqlldeccc/app.bsky.feed.post/3jztkpobp222z',
+                    uri: threadId,
                 });
 
                 if (result && result.data && result.data.thread) {
@@ -97,6 +97,7 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
             setIsProcessing(true);
             getPostThread()
                 .then((result) => {
+                    //@ts-ignore
                     const postThread = result.data.thread;
                     setThreadData(postThread);
                     console.log(postThread);
@@ -158,11 +159,31 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
                 </Text>
             </Modal.Header>
             <Modal.Body>
-                <div>{((threadData?.post as any)?.record as any)?.text as string}</div>
+                <div style={{width: '100%'}}>
+
+                    <div>
+                        <span style={{overflow:"hidden"}}><img src={((threadData?.post as any)?.author as any)?.avatar as string} style={{height:"30px", borderRadius:"30px", position:"relative", top:"10px"}}></img></span>
+
+                        {((threadData?.post as any)?.author as any)?.displayName as string}
+                        {" "}
+                        {" @"}{((threadData?.post as any)?.author as any)?.handle as string}
+                    </div>
+                    <div style={{width:`calc(100% - 30px)`, marginLeft:'30px'}}>
+                        {((threadData?.post as any)?.record as any)?.text as string}
+                    </div>
+                </div>
                 {nestedReplies.map((post, index) => {
                     console.log(post)
                     return(
-                        <div key={index}>{post.record.text}</div>
+                        <div key={index} style={{width: '100%'}}>
+                            <div>
+                                <span style={{overflow:"hidden"}}><img src={post.author.avatar} style={{height:"30px", borderRadius:"30px", position:"relative", top:"10px"}}></img></span>
+                                {post.author.displayName} {"@"}{post.author.handle}
+                            </div>
+                            <div style={{width:`calc(100% - 30px)`, marginLeft:'30px'}}>
+                                {post.record.text}
+                            </div>
+                        </div>
                     )
                 })}
             </Modal.Body>

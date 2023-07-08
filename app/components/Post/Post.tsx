@@ -212,6 +212,7 @@ const PostContent = styled('div', {
 interface PostProps {
   myDid?: string
   postUri?: string
+  aturi?: string
   reasonRepost?: ReasonRepost
 
   author: ProfileViewBasic
@@ -259,6 +260,7 @@ interface PostProps {
 export const Post = (props: PostProps) => {
   const {
     myDid,
+    aturi,
     postUri,
     reasonRepost,
     author,
@@ -402,7 +404,7 @@ export const Post = (props: PostProps) => {
         <SetttingsModal
             open={settingsModal}
             onClose={() => setSettingsModal(false)}
-            threadId={null}
+            threadId={aturi as string}
         />
         <Row
             align="stretch"
@@ -729,7 +731,7 @@ export const Post = (props: PostProps) => {
             {isRoot && (
                 <a>
                   <div onClick={() => setSettingsModal(true)}>
-                    read more
+                    read more... (簡易版)
                   </div>
                 </a>
             )}
