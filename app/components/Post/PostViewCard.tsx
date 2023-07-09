@@ -14,6 +14,7 @@ import { useShowPostNumbers } from '@/atoms/settings'
 interface PostViewCardProps {
   post: PostView
   reasonRepost?: ReasonRepost
+  rootReply?: any
 
   hasReply?: boolean
 
@@ -33,6 +34,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
     post,
     reasonRepost,
     hasReply,
+    rootReply,
     parentIsRoot,
     parentReply,
     postType,
@@ -208,6 +210,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
       <Post
         myDid={myDid}
         postUri={post.uri.split('/').pop()}
+        aturi={post.uri}
         record={record}
         embed={embed}
         author={post.author}
@@ -215,6 +218,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
         reasonRepost={reasonRepost}
         parentIsRoot={parentIsRoot}
         hasReply={hasReply}
+        rootReply={rootReply}
         postType={postType}
         parentReply={parentReply}
         replyCount={post.replyCount}

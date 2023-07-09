@@ -198,6 +198,10 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
                             }
                             //bafyreic5d4zs6lcbqjfwfubqgokuyz2x5mlo42szzqdmndqlonn42g3sky
                         }
+                    }else if(kanseihinList[i].reply.parent.cid === kanseihinList[j].post.cid){
+                        kanseihinList[i].reply.parent.reply = kanseihinList[j].reply.parent
+                        memoryhogehoge1[j].deleteTarget = true
+                        //console.log(kanseihinList[i])
                     }
                 }
             }

@@ -106,6 +106,7 @@ export const FeedView = (props: FeedViewProps) => {
                   post={feed.post}
                   reasonRepost={reasonRepost}
                   parentReply={replyParentRoot}
+                  rootReply={replyParentRoot}
                   showLikeCount
                   showReplyCount
                   showRepostCount
@@ -115,58 +116,121 @@ export const FeedView = (props: FeedViewProps) => {
             </PostContainer>):
                 (hasNested?
                       //threadの場合
-                      (<>
-                        <PostContainer>
-                          <PostViewCard
-                              hasReply
-                              // @ts-ignore
-                              post={replyParentRoot}
-                              //reasonRepost={reasonRepost}
-                              showLikeCount
-                              showReplyCount
-                              showRepostCount
-                              onFetch={fetchReplyParent}
-                              isRoot={true}
-                              postType={"thread"}
-                          />
-                        </PostContainer>
+                      (nestedReplies[0].cid === nestedReplies[1].reply.cid) ?
+                        (<>
+                          {console.log(nestedReplies.length)}
+                          {nestedReplies.slice(0).map((item, index) => {
+                            if (index === 0) {
+                              console.log(item) // 同じ場合は出力しない
+                              return(
+                                  <PostContainer key={index}>
+                                    <PostViewCard
+                                        hasReply
+                                        post={item}
+                                        //reasonRepost={reasonRepost}
+                                        parentReply={nestedReplies[nestedReplies.length - 2]}
+                                        parentIsRoot={false}
+                                        rootReply={item}
+                                        showLikeCount
+                                        showReplyCount
+                                        showRepostCount
+                                        onFetch={fetchReplyParent}
+                                        nestedReply={true}
+                                        postType={"thread"}
+                                        isRoot={true}
+                                    />
+                                  </PostContainer>
+                              )
+                            }
+                            if(index === nestedReplies.length - 1){
+                              return (
+                                  <PostContainer key={index}>
+                                    <PostViewCard
+                                        hasReply
+                                        post={item}
+                                        //reasonRepost={reasonRepost}
+                                        parentReply={nestedReplies[nestedReplies.length - 2]}
+                                        parentIsRoot={nestedReplies[index - 1]?.reply?.parent?.cid === props.feed.reply?.root.cid}
+                                        rootReply={replyParentRoot}
+                                        showLikeCount
+                                        showReplyCount
+                                        showRepostCount
+                                        onFetch={fetchReplyParent}
+                                        nestedReply={true}
+                                        postType={"thread"}
+                                        //isRoot={item.cid === props.feed.reply?.root.cid}
+                                    />
+                                  </PostContainer>
+                              )
+                            }
+                          })}
+                          <PostContainer>
+                            <PostViewCard
+                                post={feed.post}
+                                reasonRepost={reasonRepost}
+                                rootReply={replyParentRoot}
+                                showLikeCount
+                                showReplyCount
+                                showRepostCount
+                                onFetch={fetchFeed}
+                                postType={"thread"}
+                            />
+                          </PostContainer>
+                        </>):
+                          (<>
+                            <PostContainer>
+                              <PostViewCard
+                                  hasReply
+                                  // @ts-ignore
+                                  post={replyParentRoot}
+                                  //reasonRepost={reasonRepost}
+                                  rootReply={replyParentRoot}
+                                  showLikeCount
+                                  showReplyCount
+                                  showRepostCount
+                                  onFetch={fetchReplyParent}
+                                  isRoot={true}
+                                  postType={"thread"}
+                              />
+                            </PostContainer>
+                            {nestedReplies.slice(-1).map((item, index) => {
+                              if (item.cid === props.feed.reply?.root.cid) {
+                                return null; // 同じ場合は出力しない
+                              }
 
-                        {nestedReplies.slice(-1).map((item, index) => {
-                          if (item.cid === props.feed.reply?.root.cid) {
-                            return null; // 同じ場合は出力しない
-                          }
-
-                          return (
-                              <PostContainer key={index}>
-                                <PostViewCard
-                                    hasReply
-                                    post={item}
-                                    //reasonRepost={reasonRepost}
-                                    parentReply={nestedReplies[nestedReplies.length - 2]}
-                                    parentIsRoot={nestedReplies[index - 1]?.reply?.parent?.cid === props.feed.reply?.root.cid}
-                                    showLikeCount
-                                    showReplyCount
-                                    showRepostCount
-                                    onFetch={fetchReplyParent}
-                                    nestedReply={true}
-                                    postType={"thread"}
-                                    isRoot={item.cid === props.feed.reply?.root.cid}
-                                />
-                              </PostContainer>
-                          );
-                        })}
-                        <PostContainer>
-                          <PostViewCard
-                              post={feed.post}
-                              reasonRepost={reasonRepost}
-                              showLikeCount
-                              showReplyCount
-                              showRepostCount
-                              onFetch={fetchFeed}
-                              postType={"thread"}
-                          />
-                        </PostContainer>
-                      </>):
+                              return (
+                                  <PostContainer key={index}>
+                                    <PostViewCard
+                                        hasReply
+                                        post={item}
+                                        //reasonRepost={reasonRepost}
+                                        parentReply={nestedReplies[nestedReplies.length - 2]}
+                                        parentIsRoot={nestedReplies[index - 1]?.reply?.parent?.cid === props.feed.reply?.root.cid}
+                                        rootReply={replyParentRoot}
+                                        showLikeCount
+                                        showReplyCount
+                                        showRepostCount
+                                        onFetch={fetchReplyParent}
+                                        nestedReply={true}
+                                        postType={"thread"}
+                                        isRoot={item.cid === props.feed.reply?.root.cid}
+                                    />
+                                  </PostContainer>
+                              );
+                            })}
+                            <PostContainer>
+                              <PostViewCard
+                                  post={feed.post}
+                                  reasonRepost={reasonRepost}
+                                  rootReply={replyParentRoot}
+                                  showLikeCount
+                                  showReplyCount
+                                  showRepostCount
+                                  onFetch={fetchFeed}
+                                  postType={"thread"}
+                              />
+                            </PostContainer>
+                          </>):
                       //replyParentRootがある場合、かつreplyParentRootとreplyparentが一緒じゃない場合(つまり三つ連なっている)
                       (replyParentRoot && props.feed.reply?.parent.cid !== props.feed.reply?.root.cid ?
                               //parentとrootのauthorが一緒の場合はreplyParentRootを表示する
@@ -178,6 +242,7 @@ export const FeedView = (props: FeedViewProps) => {
                                               // @ts-ignore
                                               post={replyParentRoot}
                                               //reasonRepost={reasonRepost}
+                                              rootReply={replyParentRoot}
                                               showLikeCount
                                               showReplyCount
                                               showRepostCount
@@ -192,6 +257,7 @@ export const FeedView = (props: FeedViewProps) => {
                                               post={replyParent}
                                               //reasonRepost={reasonRepost}
                                               //parentReply={replyParentRoot}
+                                              rootReply={replyParentRoot}
                                               showLikeCount
                                               showReplyCount
                                               showRepostCount
@@ -203,6 +269,7 @@ export const FeedView = (props: FeedViewProps) => {
                                           <PostViewCard
                                               post={feed.post}
                                               reasonRepost={reasonRepost}
+                                              rootReply={replyParentRoot}
                                               showLikeCount
                                               showReplyCount
                                               showRepostCount
@@ -219,6 +286,7 @@ export const FeedView = (props: FeedViewProps) => {
                                               post={replyParent}
                                               //reasonRepost={reasonRepost}
                                               parentReply={replyParentRoot}
+                                              rootReply={replyParentRoot}
                                               showLikeCount
                                               showReplyCount
                                               showRepostCount
@@ -230,6 +298,7 @@ export const FeedView = (props: FeedViewProps) => {
                                           <PostViewCard
                                               post={feed.post}
                                               reasonRepost={reasonRepost}
+                                              rootReply={replyParentRoot}
                                               showLikeCount
                                               showReplyCount
                                               showRepostCount
@@ -247,6 +316,7 @@ export const FeedView = (props: FeedViewProps) => {
                                               hasReply
                                               // @ts-ignore
                                               post={replyParent}
+                                              rootReply={replyParentRoot}
                                               //reasonRepost={reasonRepost}
                                               showLikeCount
                                               showReplyCount
@@ -259,6 +329,7 @@ export const FeedView = (props: FeedViewProps) => {
                                           <PostViewCard
                                               post={feed.post}
                                               reasonRepost={reasonRepost}
+                                              rootReply={replyParentRoot}
                                               showLikeCount
                                               showReplyCount
                                               showRepostCount
