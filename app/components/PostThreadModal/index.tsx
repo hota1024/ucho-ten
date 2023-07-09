@@ -82,6 +82,7 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
 
         function printNestedReplies(posts: any[], result: any[] = []): any[] {
             if(posts !== undefined){
+                console.log(posts)
                 for (const post of posts) {
                     result.push(post.post);
 
@@ -162,11 +163,15 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
                 <div style={{width: '100%'}}>
 
                     <div>
-                        <span style={{overflow:"hidden"}}><img src={((threadData?.post as any)?.author as any)?.avatar as string ? ((threadData?.post as any)?.author as any)?.avatar as string : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'} style={{height:"30px", borderRadius:"30px", position:"relative", top:"10px"}}></img></span>
-
-                        {((threadData?.post as any)?.author as any)?.displayName as string}
-                        {" "}
-                        {" @"}{((threadData?.post as any)?.author as any)?.handle as string}
+                        <span style={{overflow:"hidden"}}>
+                            <img src={((threadData?.post as any)?.author as any)?.avatar as string ? ((threadData?.post as any)?.author as any)?.avatar as string : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'} style={{height:"30px", borderRadius:"30px", position:"relative", top:"10px"}}></img>
+                        </span>
+                        <span style={{fontWeight: 'bold'}}>
+                            {((threadData?.post as any)?.author as any)?.displayName as string}
+                        </span>
+                        <span style={{color:'gray'}}>
+                            {" @"}{((threadData?.post as any)?.author as any)?.handle as string}
+                        </span>
                     </div>
                     <div style={{width:`calc(100% - 30px)`, marginLeft:'30px'}}>
                         {((threadData?.post as any)?.record as any)?.text as string}
@@ -177,8 +182,15 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
                     return(
                         <div key={index} style={{width: '100%'}}>
                             <div>
-                                <span style={{overflow:"hidden"}}><img src={post.author.avatar ? post.author.avatar : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'} style={{height:"30px", borderRadius:"30px", position:"relative", top:"10px"}}></img></span>
-                                {post.author.displayName} {"@"}{post.author.handle}
+                                <span style={{overflow:"hidden"}}>
+                                    <img src={post.author.avatar ? post.author.avatar : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'} style={{height:"30px", borderRadius:"30px", position:"relative", top:"10px"}}></img>
+                                </span>
+                                <span style={{fontWeight: 'bold'}}>
+                                {post.author.displayName}
+                                </span>
+                                <span style={{color:'gray'}}>
+                                    {" @"}{post.author.handle}
+                                </span>
                             </div>
                             <div style={{width:`calc(100% - 30px)`, marginLeft:'30px'}}>
                                 {post.record.text}
