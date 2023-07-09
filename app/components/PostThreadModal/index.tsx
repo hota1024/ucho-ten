@@ -162,7 +162,7 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
                 <div style={{width: '100%'}}>
 
                     <div>
-                        <span style={{overflow:"hidden"}}><img src={((threadData?.post as any)?.author as any)?.avatar as string} style={{height:"30px", borderRadius:"30px", position:"relative", top:"10px"}}></img></span>
+                        <span style={{overflow:"hidden"}}><img src={((threadData?.post as any)?.author as any)?.avatar as string ? ((threadData?.post as any)?.author as any)?.avatar as string : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'} style={{height:"30px", borderRadius:"30px", position:"relative", top:"10px"}}></img></span>
 
                         {((threadData?.post as any)?.author as any)?.displayName as string}
                         {" "}
@@ -177,7 +177,7 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
                     return(
                         <div key={index} style={{width: '100%'}}>
                             <div>
-                                <span style={{overflow:"hidden"}}><img src={post.author.avatar} style={{height:"30px", borderRadius:"30px", position:"relative", top:"10px"}}></img></span>
+                                <span style={{overflow:"hidden"}}><img src={post.author.avatar ? post.author.avatar : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'} style={{height:"30px", borderRadius:"30px", position:"relative", top:"10px"}}></img></span>
                                 {post.author.displayName} {"@"}{post.author.handle}
                             </div>
                             <div style={{width:`calc(100% - 30px)`, marginLeft:'30px'}}>

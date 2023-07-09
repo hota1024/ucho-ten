@@ -106,6 +106,7 @@ export const FeedView = (props: FeedViewProps) => {
                   post={feed.post}
                   reasonRepost={reasonRepost}
                   parentReply={replyParentRoot}
+                  rootReply={replyParentRoot}
                   showLikeCount
                   showReplyCount
                   showRepostCount
@@ -122,6 +123,7 @@ export const FeedView = (props: FeedViewProps) => {
                               // @ts-ignore
                               post={replyParentRoot}
                               //reasonRepost={reasonRepost}
+                              rootReply={replyParentRoot}
                               showLikeCount
                               showReplyCount
                               showRepostCount
@@ -144,6 +146,7 @@ export const FeedView = (props: FeedViewProps) => {
                                     //reasonRepost={reasonRepost}
                                     parentReply={nestedReplies[nestedReplies.length - 2]}
                                     parentIsRoot={nestedReplies[index - 1]?.reply?.parent?.cid === props.feed.reply?.root.cid}
+                                    rootReply={replyParentRoot}
                                     showLikeCount
                                     showReplyCount
                                     showRepostCount
@@ -159,6 +162,7 @@ export const FeedView = (props: FeedViewProps) => {
                           <PostViewCard
                               post={feed.post}
                               reasonRepost={reasonRepost}
+                              rootReply={replyParentRoot}
                               showLikeCount
                               showReplyCount
                               showRepostCount
@@ -178,6 +182,7 @@ export const FeedView = (props: FeedViewProps) => {
                                               // @ts-ignore
                                               post={replyParentRoot}
                                               //reasonRepost={reasonRepost}
+                                              rootReply={replyParentRoot}
                                               showLikeCount
                                               showReplyCount
                                               showRepostCount
@@ -192,6 +197,7 @@ export const FeedView = (props: FeedViewProps) => {
                                               post={replyParent}
                                               //reasonRepost={reasonRepost}
                                               //parentReply={replyParentRoot}
+                                              rootReply={replyParentRoot}
                                               showLikeCount
                                               showReplyCount
                                               showRepostCount
@@ -203,6 +209,7 @@ export const FeedView = (props: FeedViewProps) => {
                                           <PostViewCard
                                               post={feed.post}
                                               reasonRepost={reasonRepost}
+                                              rootReply={replyParentRoot}
                                               showLikeCount
                                               showReplyCount
                                               showRepostCount
@@ -219,6 +226,7 @@ export const FeedView = (props: FeedViewProps) => {
                                               post={replyParent}
                                               //reasonRepost={reasonRepost}
                                               parentReply={replyParentRoot}
+                                              rootReply={replyParentRoot}
                                               showLikeCount
                                               showReplyCount
                                               showRepostCount
@@ -230,6 +238,7 @@ export const FeedView = (props: FeedViewProps) => {
                                           <PostViewCard
                                               post={feed.post}
                                               reasonRepost={reasonRepost}
+                                              rootReply={replyParentRoot}
                                               showLikeCount
                                               showReplyCount
                                               showRepostCount
@@ -247,6 +256,7 @@ export const FeedView = (props: FeedViewProps) => {
                                               hasReply
                                               // @ts-ignore
                                               post={replyParent}
+                                              rootReply={replyParentRoot}
                                               //reasonRepost={reasonRepost}
                                               showLikeCount
                                               showReplyCount
@@ -259,6 +269,7 @@ export const FeedView = (props: FeedViewProps) => {
                                           <PostViewCard
                                               post={feed.post}
                                               reasonRepost={reasonRepost}
+                                              rootReply={replyParentRoot}
                                               showLikeCount
                                               showReplyCount
                                               showRepostCount
