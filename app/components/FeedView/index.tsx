@@ -118,10 +118,9 @@ export const FeedView = (props: FeedViewProps) => {
                       //threadの場合
                       (nestedReplies[0].cid === nestedReplies[1].reply.cid) ?
                         (<>
-                          {console.log(nestedReplies.length)}
                           {nestedReplies.slice(0).map((item, index) => {
                             if (index === 0) {
-                              console.log(item) // 同じ場合は出力しない
+                              //console.log(item) // 同じ場合は出力しない
                               return(
                                   <PostContainer key={index}>
                                     <PostViewCard

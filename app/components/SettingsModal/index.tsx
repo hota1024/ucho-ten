@@ -2,6 +2,7 @@ import {
   useMuteWords,
   useShowMuteUserInNotifications,
   useShowMuteUserInSearch,
+  useDisableScrollOnLoadButtonPress,
 } from '@/atoms/settings'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -47,6 +48,8 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
   const [muteWord, setMuteWord] = useState('')
   const muteWordInputRef = useRef<HTMLInputElement>(null)
 
+  const [disableScrollOnLoadButtonPress, setDisableScrollOnLoadButtonPress] = useDisableScrollOnLoadButtonPress()
+
   const isPostable = muteWord.length > 0
   
   const handleMuteWordAddClick = () => {
@@ -83,25 +86,15 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
       </Modal.Header>
       <Modal.Body>
         <Text size={20} b>
-          Mute users
+          auto scroll
         </Text>
         <Row align="center">
           <Col>
-            <Text>Show mute users in notification</Text>
+            <Text>when push load button disable scroll</Text>
           </Col>
           <Switch
-            initialChecked={showMuteUserInNotifications}
-            onChange={(e) => setShowUserInNotifications(e.target.checked)}
-            disabled
-          />
-        </Row>
-        <Row align="center">
-          <Col>
-            <Text>Show mute users in search</Text>
-          </Col>
-          <Switch
-            initialChecked={showMuteUserInSearch}
-            onChange={(e) => setShowMuteUserInSearch(e.target.checked)}
+            initialChecked={disableScrollOnLoadButtonPress}
+            onChange={(e) => setDisableScrollOnLoadButtonPress(e.target.checked)}
             disabled
           />
         </Row>

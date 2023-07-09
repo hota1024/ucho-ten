@@ -275,12 +275,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
                       if(feed.post.author.viewer.following !== undefined && feed.reply.parent.author.viewer.following === undefined){
                           return null
                       }
-
-
-
                   }
-
-
                   return (
                       <Row key={`${feed.post.cid}${key}`} css={{ my: '$8' }}>
                           <FeedView feed={feed} />
