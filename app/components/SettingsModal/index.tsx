@@ -2,7 +2,7 @@ import {
   useMuteWords,
   useShowMuteUserInNotifications,
   useShowMuteUserInSearch,
-  useDisableScrollOnLoadButtonPress,
+  useDisableScrollOnLoadButtonPress, useAppearanceColorMode,
 } from '@/atoms/settings'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -50,6 +50,8 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
 
   const [disableScrollOnLoadButtonPress, setDisableScrollOnLoadButtonPress] = useDisableScrollOnLoadButtonPress()
 
+  const [appearanceColorMode, setAppearanceColorMode] = useAppearanceColorMode()
+
   const isPostable = muteWord.length > 0
   
   const handleMuteWordAddClick = () => {
@@ -93,10 +95,20 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
             <Text>when push load button disable scroll</Text>
           </Col>
           <Switch
-            initialChecked={disableScrollOnLoadButtonPress}
-            onChange={(e) => setDisableScrollOnLoadButtonPress(e.target.checked)}
-            disabled
+              initialChecked={disableScrollOnLoadButtonPress}
+              onChange={(e) => setDisableScrollOnLoadButtonPress(e.target.checked)}
+              disabled
           />
+        </Row>
+        <Text size={20} b>
+          Appearance color Mode: {appearanceColorMode}
+        </Text>
+        <Row align="center">
+          <Button.Group color='primary' ghost>
+            <Button onPress={() => setAppearanceColorMode('system')}>System</Button>
+            <Button onPress={() => setAppearanceColorMode('light')}>Light</Button>
+            <Button onPress={() => setAppearanceColorMode('dark')}>Dark</Button>
+          </Button.Group>
         </Row>
         <Text size={20} b>
           Mute words
