@@ -1,6 +1,9 @@
 'use client'
-
 import { useServerInsertedHTML } from 'next/navigation'
+import "tailwindcss/tailwind.css"
+import { CookiesProvider } from "react-cookie";
+
+
 
 import {
   CssBaseline,
@@ -19,7 +22,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return isBrowser ? (
     <JotaiProvider>
-      <NextUIProvider>{children}</NextUIProvider>
+      <CookiesProvider>
+        <NextUIProvider>{children}</NextUIProvider>
+      </CookiesProvider>
     </JotaiProvider>
   ) : (
     <></>

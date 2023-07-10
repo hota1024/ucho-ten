@@ -1,11 +1,30 @@
+'use client'
 import { Providers } from './providers'
+import { useState } from "react"
+import { useCookies } from "react-cookie";
 import 'react-medium-image-zoom/dist/styles.css'
+import "tailwindcss/tailwind.css"
+const LIGHT_THEME = "light"
+const DARK_THEME = "dark"
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+    const [cookies, setCookie, removeCookie] = useCookies()
+    console.log(cookies)
+    const [theme, setTheme] = useState(cookies.appearanceColorMode)
+    console.log(theme)
+    const switchTheme = () => {
+        if (theme === DARK_THEME) {
+            document.documentElement.classList.add(DARK_THEME)
+            setTheme(DARK_THEME)
+        } else {
+            document.documentElement.classList.remove(DARK_THEME)
+            setTheme(LIGHT_THEME)
+        }
+    }
   return (
     <html lang="ja">
       <head>
@@ -26,11 +45,12 @@ export default function RootLayout({
       </head>
       <body
         style={{
-          backgroundImage: 'url(/images/backgroundimg/sky_00421.jpg)',
+
           backgroundSize: 'cover',
           backgroundColor: 'rgba(255,255,255,0.1)',
           backgroundBlendMode: 'lighten',
         }}
+        className="bg-dark-sky dark:bg-light-sky "
       >
         <Providers>
             {children}
