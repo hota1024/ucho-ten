@@ -31,6 +31,9 @@ import Picker from '@emoji-mart/react'
 import imageCompression from "browser-image-compression";
 import { useDropzone, FileWithPath } from 'react-dropzone'
 import { useCallback, useMemo } from 'react';
+import useDarkMode from 'use-dark-mode';
+
+
 
 
 const URLCard = styled('div', {
@@ -95,7 +98,7 @@ const URLCardLink = styled('div', {
 
 
 const PostTextarea = styled('textarea', {
-  background: '#efefef',
+  //background: '#efefef',
   border: '1px solid #eaeaea',
   borderRadius: '$sm',
   resize: 'none',
@@ -131,6 +134,9 @@ export const PostModal = (props: PostModalProps) => {
   const [isDetectURL, setIsDetectURL] = useState(false)
   const [detectURLs, setDetectURLs] = useState<string[]>([])
   const [isSettingURLCard, setIsSettingURLCard] = useState(false)
+  const [appearanceColorMode, setAppearanceColorMode] = useState<string>(
+      window.localStorage.getItem('appearanceColorMode') || 'system')
+  const darkMode = useDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches)
 
   const handlePostClick = async () => {
     if (!agent) {
@@ -353,7 +359,7 @@ export const PostModal = (props: PostModalProps) => {
               onKeyDown={isPostable ? handleKeyDown : undefined}
               onClick={handleTextareaClick}
               onFocus={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
-              style={{border: isDragActive ? '2px dashed #000' : 'none', width:'100%', height:'100%'}}
+              style={{border: isDragActive ? '2px dashed #000' : 'none', width:'100%', height:'100%', backgroundColor: (appearanceColorMode === '"dark"' || (darkMode.value && appearanceColorMode === '"system"')) ? '#1d1d1d' : '#fff'}}
           />
         </div>
       </Modal.Body>

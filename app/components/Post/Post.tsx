@@ -44,6 +44,7 @@ import { AppBskyEmbedRecord, AppBskyEmbedImages } from '@atproto/api'
 import { useAgent } from '@/atoms/agent'
 import { ImagesGrid } from '../ImagesGrid'
 import {SetttingsModal} from "@/components/PostThreadModal"
+import useDarkMode from 'use-dark-mode';
 
 const RepostByLabel = styled('div', {
   fontSize: '$sm',
@@ -315,6 +316,9 @@ export const Post = (props: PostProps) => {
   const [mouseY, setMouseY] = useState(0);
   const [saveParentReply, setSaveParentReply] = useState(parentReply)
   const [settingsModal, setSettingsModal] = useState(false)
+  const [appearanceColorMode, setAppearanceColorMode] = useState<string>(
+      window.localStorage.getItem('appearanceColorMode') || 'system')
+  const darkMode = useDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches)
 
   //console.log(saveParentReply)
 
@@ -628,7 +632,7 @@ export const Post = (props: PostProps) => {
                     </URLCardThumb>
                     <URLCardDetail>
                       <URLCardDetailContent>
-                        <URLCardTitle style={{ color: 'black' }}>
+                        <URLCardTitle style={{ color: (appearanceColorMode === '"dark"' || (darkMode.value && appearanceColorMode === '"system"')) ? 'white' : 'black' }}>
                           {(embed as any)?.external?.title}
                         </URLCardTitle>
                         <URLCardDesc style={{ fontSize: 'small' }}>

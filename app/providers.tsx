@@ -40,18 +40,17 @@ export function Providers({ children }: { children: React.ReactNode }) {
   useServerInsertedHTML(() => {
     return <>{CssBaseline.flush()}</>
   })
+  console.log(appearanceColorMode)
+  console.log(darkMode.value)
 
   return isBrowser ? (
     <JotaiProvider>
       <NextThemesProvider
-          //defaultTheme={appearanceColorMode === '"dark"' ? darkTheme : (appearanceColorMode === '"light"' ? lightTheme : 'system')}
-          defaultTheme={darkMode.value ? darkTheme : lightTheme}
-          //themes={darkMode.value ? [darkTheme] : [lightTheme]}
+          defaultTheme={appearanceColorMode === '"dark"' ? darkTheme : (appearanceColorMode === '"light"' ? lightTheme : (darkMode.value ? darkTheme : lightTheme))}
+          //defaultTheme={'system'}
+          //themes={appearanceColorMode === '"dark"' ? [darkTheme] : [lightTheme]}
+          //forcedTheme={appearanceColorMode === '"dark"' ? 'darkTheme' : (appearanceColorMode === '"light"' ? lightTheme : (appearanceColorMode === '"system"' && darkMode.value ? darkTheme : lightTheme))}
           attribute="class"
-          value={{
-            light: lightTheme.className,
-            dark: darkTheme.className
-          }}
       >
         <NextUIProvider>
           {children}
