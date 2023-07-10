@@ -11,8 +11,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-    const [appearanceColorMode, setAppearanceColorMode] = useState<string>(
-        window.localStorage.getItem('appearanceColorMode') || 'system')
+    let appearanceColorMode
+    if(typeof window !== 'undefined'){
+        appearanceColorMode = window.localStorage.getItem('appearanceColorMode')
+    }
     const darkMode = useDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches)
     console.log(appearanceColorMode)
 
