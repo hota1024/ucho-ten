@@ -1,7 +1,7 @@
 'use client'
 import { Providers } from './providers'
 import 'react-medium-image-zoom/dist/styles.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import useDarkMode from 'use-dark-mode';
 import { useAppearanceColorMode } from '@/atoms/settings'
 
@@ -11,12 +11,21 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-    let appearanceColorMode
-    if(typeof window !== 'undefined'){
-        appearanceColorMode = window.localStorage.getItem('appearanceColorMode')
-    }
-    const darkMode = useDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches)
+    const [appearanceColorMode, setAppearanceColorMode] = useState<string>('')
+    const [isBrowserDarkMode, setIsBrowserDarkMode] = useState<boolean>(false)
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            try {
+                setAppearanceColorMode(localStorage.getItem('appearanceColorMode') || 'system')
+                setIsBrowserDarkMode(matchMedia('(prefers-color-scheme: dark)').matches)
+            } catch (error) {
+                // エラーハンドリング
+            }
+        }
+    }, [])
+
     console.log(appearanceColorMode)
+    console.log(isBrowserDarkMode)
 
   return (
     <html lang="ja">
@@ -40,7 +49,7 @@ export default function RootLayout({
         style={{
           //backgroundImage: 'url(/images/backgroundimg/sky_00421.jpg)',
           backgroundImage: appearanceColorMode === '"dark"' ? 'url(https://raw.githubusercontent.com/kawaikute-gomen/ucho-ten-images-repo/main/images/backgroundImages/dark/starry-sky-gf5ade6b4f_1920.jpg)' :
-              (appearanceColorMode === '"light"' ? 'url(/images/backgroundimg/sky_00421.jpg)' : (darkMode.value ? 'url(https://raw.githubusercontent.com/kawaikute-gomen/ucho-ten-images-repo/main/images/backgroundImages/dark/starry-sky-gf5ade6b4f_1920.jpg)' : 'url(/images/backgroundimg/sky_00421.jpg)')),
+              (appearanceColorMode === '"light"' ? 'url(/images/backgroundimg/sky_00421.jpg)' : (isBrowserDarkMode ? 'url(https://raw.githubusercontent.com/kawaikute-gomen/ucho-ten-images-repo/main/images/backgroundImages/dark/starry-sky-gf5ade6b4f_1920.jpg)' : 'url(/images/backgroundimg/sky_00421.jpg)')),
           backgroundSize: 'cover',
           backgroundColor: 'rgba(255,255,255,0.1)',
           backgroundBlendMode: 'lighten',
