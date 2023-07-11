@@ -30,8 +30,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
       }
     }
   }, [])
-  console.log(appearanceColorMode)
-  console.log(isBrowserDarkMode)
+
+  let cookieMemory
+  let localMemory
+  let modeMemory
+  if(process.browser){
+    cookieMemory = document.cookie
+    localMemory = localStorage.getItem('appearanceColorMode') || 'system'
+    modeMemory = matchMedia('(prefers-color-scheme: dark)').matches
+  }
+
+  console.log(cookieMemory)
+  console.log(localMemory)
+  console.log(modeMemory)
 
   const lightTheme = createTheme({
     type: 'light',
@@ -53,7 +64,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return isBrowser ? (
       <JotaiProvider>
         <NextThemesProvider
-            defaultTheme={appearanceColorMode === '"dark"' ? darkTheme : (appearanceColorMode === '"light"' ? lightTheme : 'system')}
+            defaultTheme={localMemory === '"dark"' ? darkTheme : (localMemory === '"light"' ? lightTheme : 'system')}
             //defaultTheme={'system'}
             //themes={appearanceColorMode === '"dark"' ? [darkTheme] : [lightTheme]}
             //forcedTheme={appearanceColorMode === '"dark"' ? 'darkTheme' : (appearanceColorMode === '"light"' ? lightTheme : (appearanceColorMode === '"system"' && darkMode.value ? darkTheme : lightTheme))}

@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react'
 import useDarkMode from 'use-dark-mode';
 import { useAppearanceColorMode } from '@/atoms/settings'
 
-
 export default function RootLayout({
                                        children,
                                    }: {
@@ -13,19 +12,33 @@ export default function RootLayout({
 }) {
     const [appearanceColorMode, setAppearanceColorMode] = useState<string>('')
     const [isBrowserDarkMode, setIsBrowserDarkMode] = useState<boolean>(false)
+    //console.log(document.cookie)
     useEffect(() => {
         if (typeof window !== 'undefined') {
             try {
-                setAppearanceColorMode(localStorage.getItem('appearanceColorMode') || 'system')
-                setIsBrowserDarkMode(matchMedia('(prefers-color-scheme: dark)').matches)
+                const memory1 = localStorage.getItem('appearanceColorMode') || 'system'
+                document.cookie = 'appearanceColorMode=' + memory1
+                //setAppearanceColorMode(localStorage.getItem('appearanceColorMode') || 'system')
+                //setIsBrowserDarkMode(matchMedia('(prefers-color-scheme: dark)').matches)
+                let memory2 = matchMedia('(prefers-color-scheme: dark)').matches
+                document.cookie = 'isBrowserDarkMode=' + memory2
             } catch (error) {
                 // エラーハンドリング
             }
         }
     }, [])
+    let cookieMemory
+    let localMemory
+    let modeMemory
+    if(process.browser){
+        cookieMemory = document.cookie
+        localMemory = localStorage.getItem('appearanceColorMode')
+        modeMemory = matchMedia('(prefers-color-scheme: dark)').matches
+    }
 
-    console.log(appearanceColorMode)
-    console.log(isBrowserDarkMode)
+    console.log(cookieMemory)
+    console.log(localMemory)
+    console.log(modeMemory)
 
     return (
         <html lang="ja">
@@ -49,7 +62,7 @@ export default function RootLayout({
             style={{
                 //backgroundImage: 'url(/images/backgroundimg/sky_00421.jpg)',
                 backgroundImage: appearanceColorMode === '"dark"' ? 'url(https://raw.githubusercontent.com/kawaikute-gomen/ucho-ten-images-repo/main/images/backgroundImages/dark/starry-sky-gf5ade6b4f_1920.jpg)' :
-                    (appearanceColorMode === '"light"' ? 'url(/images/backgroundimg/sky_00421.jpg)' : (isBrowserDarkMode ? 'url(https://raw.githubusercontent.com/kawaikute-gomen/ucho-ten-images-repo/main/images/backgroundImages/dark/starry-sky-gf5ade6b4f_1920.jpg)' : 'url(/images/backgroundimg/sky_00421.jpg)')),
+                    (appearanceColorMode === '"light"' ? 'url(/images/backgroundimg/sky_00421.jpg)' : (modeMemory ? 'url(https://raw.githubusercontent.com/kawaikute-gomen/ucho-ten-images-repo/main/images/backgroundImages/dark/starry-sky-gf5ade6b4f_1920.jpg)' : 'url(/images/backgroundimg/sky_00421.jpg)')),
                 backgroundSize: 'cover',
                 backgroundColor: 'rgba(255,255,255,0.1)',
                 backgroundBlendMode: 'lighten',
