@@ -31,7 +31,6 @@
     "MyProfile": "プロフィール",
     "Settings": "設定",
     "SignOut": "ログアウト",
-    "EditProfile": "プロフィールを編集",
     "LoadNewPosts": "新しい投稿を見る",
     "Follow": "フォロー",
     "Following": "フォロー中",
@@ -52,7 +51,11 @@
         "Title": "投稿",
         "Post": "投稿",
         "Close": "閉じる",
-        "PostContent": "ここに画像をドラッグ&ドロップ"
+        "PlaceHolder": "画像をドラッグ&ドロップ",
+      "Button": {
+        "Post": "投稿",
+        "Cancel": "キャンセル"
+      }
     },
     "Profile": {
         "EditProfile": "プロフィールを編集",
@@ -64,16 +67,16 @@
         "Save": "保存",
         "UnsavedAlert": "変更内容は保存されていません。"
     }
-
   },
-  "SettingModal": {
-    "Settings": "設定",
-    "Language": "言語",
-    "SelectUsingLanguage": "使用言語",
-    "MuteWords": "ミュートワード",
-    "AddMuteword": "ミュートワードを追加",
-    "InputHere": "入力",
-    "AddButton": "追加",
-    "CloseButton": "閉じる"
+  "ProfilePage": {
+    "UserNotFound": "User not found.",
+    "ReturnToHome": "Back to Timeline",
+    "Button": {
+      "HideUser": "ユーザーを非表示にする",
+      "ShowUser": "投稿を表示する",
+      "Block": "ブロックする",
+      "UnBlock": "ブロック解除",
+      "EditProfile": "プロフィールを編集"
+    }
   }
 }

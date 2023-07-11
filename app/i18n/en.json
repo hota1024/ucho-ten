@@ -31,7 +31,6 @@
     "MyProfile": "My Profile",
     "Settings": "Settings",
     "SignOut": "Sign Out",
-    "EditProfile": "Edit Profile",
     "LoadNewPosts": "Load New Posts",
     "Follow": "Follow",
     "Following": "Following",
@@ -46,13 +45,17 @@
       "AddMuteword": "Add Mute word",
       "InputHere": "Input mute word here",
       "AddButton": "Add",
-      "CloseButton": "Close"
+      "CloseButton": "Close",
+      "Button": {
+        "Post": "Post",
+        "Cancel": "Cancel"
+      }
     },
     "Post": {
       "Title": "Post",
       "Post": "Post",
       "Close": "Close",
-      "PostContent": "Text, Drag & Drop images here"
+      "PlaceHolder": "Text, Drag & Drop images here"
     },
     "Profile": {
       "EditProfile": "Edit Profile",
@@ -63,6 +66,17 @@
       "Cancel": "Cancel",
       "Save": "Save",
       "UnsavedAlert": "You have unsaved changes"
+    }
+  },
+  "ProfilePage": {
+    "UserNotFound": "User not found.",
+    "ReturnToHome": "Back to Timeline",
+    "Button": {
+      "HideUser": "Hide User",
+      "ShowUser": "Show User",
+      "Block": "Block",
+      "UnBlock": "UnBlock",
+      "EditProfile": "Edit Profile"
     }
   }
 }

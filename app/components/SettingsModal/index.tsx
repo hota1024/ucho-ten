@@ -94,19 +94,6 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
       </Modal.Header>
       <Modal.Body>
         <Text size={20} b>
-          auto scroll
-        </Text>
-        <Row align="center">
-          <Col>
-            <Text>when push load button disable scroll</Text>
-          </Col>
-          <Switch
-              initialChecked={disableScrollOnLoadButtonPress}
-              onChange={(e) => setDisableScrollOnLoadButtonPress(e.target.checked)}
-              disabled
-          />
-        </Row>
-        <Text size={20} b>
           {t("Modal.Settings.Language")}
         </Text>
         <Row align="center">
