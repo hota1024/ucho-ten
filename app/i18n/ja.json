@@ -1,0 +1,79 @@
+{
+  "Main": {
+    "LoggingOut": "ログアウト中..."
+  },
+  "LoginPage" : {
+    "Button": {
+      "SignIn": "ログイン",
+      "SignUp": "新規登録"
+    },
+    "SignInToBluesky": "bsky.social へログイン",
+    "HandleOrYourDomain": "ハンドルまたはドメイン",
+    "Password": "パスワード",
+    "WeRecommendUsingTheAppPasswords": "アプリパスワードを使用することを推奨します。",
+    "ReadMore": "詳細"
+  },
+  "Timeline": {
+    "EndOfFeed": "古い投稿はありません",
+    "Post": {
+      "Reposted": "Reposted",
+      "ReplyTo": "Reply to",
+      "Repost" : "Repost",
+      "UnRepost" : "Un repost",
+      "QuoteRepost": "Quote Repost",
+      "ReadMore": "もっと読む"
+    }
+  },
+  "Button": {
+    "Home": "ホーム",
+    "Inbox": "受信箱",
+    "Post": "投稿",
+    "MyProfile": "プロフィール",
+    "Settings": "設定",
+    "SignOut": "ログアウト",
+    "EditProfile": "プロフィールを編集",
+    "LoadNewPosts": "新しい投稿を見る",
+    "Follow": "フォロー",
+    "Following": "フォロー中",
+    "UnFollow": "フォロー解除"
+  },
+  "Modal": {
+    "Settings": {
+      "Title": "設定",
+      "Language": "言語",
+      "SelectUsingLanguage": "使用言語",
+      "MuteWords": "ミュートワード",
+      "AddMuteword": "ミュートワードを追加",
+      "InputHere": "入力",
+      "AddButton": "追加",
+      "CloseButton": "閉じる"
+    },
+    "Post": {
+        "Title": "投稿",
+        "Post": "投稿",
+        "Close": "閉じる",
+        "PostContent": "ここに画像をドラッグ&ドロップ"
+    },
+    "Profile": {
+        "EditProfile": "プロフィールを編集",
+        "Title": "プロフィール",
+        "DisplayName": "表示名",
+        "Description": "紹介文",
+        "Close": "閉じる",
+        "Cancel": "キャンセル",
+        "Save": "保存",
+        "UnsavedAlert": "変更内容は保存されていません。"
+    }
+
+  },
+  "SettingModal": {
+    "Settings": "設定",
+    "Language": "言語",
+    "SelectUsingLanguage": "使用言語",
+    "MuteWords": "ミュートワード",
+    "AddMuteword": "ミュートワードを追加",
+    "InputHere": "入力",
+    "AddButton": "追加",
+    "CloseButton": "閉じる"
+  }
+}

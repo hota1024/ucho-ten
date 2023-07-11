@@ -44,6 +44,8 @@ import { AppBskyEmbedRecord, AppBskyEmbedImages } from '@atproto/api'
 import { useAgent } from '@/atoms/agent'
 import { ImagesGrid } from '../ImagesGrid'
 import {SetttingsModal} from "@/components/PostThreadModal"
+import { useTranslation } from "react-i18next";
+
 
 const RepostByLabel = styled('div', {
   fontSize: '$sm',
@@ -315,6 +317,8 @@ export const Post = (props: PostProps) => {
   const [mouseY, setMouseY] = useState(0);
   const [saveParentReply, setSaveParentReply] = useState(parentReply)
   const [settingsModal, setSettingsModal] = useState(false)
+  const { t } = useTranslation()
+
 
   //console.log(saveParentReply)
 
@@ -471,9 +475,9 @@ export const Post = (props: PostProps) => {
                         >
                           {isFollowing
                               ? followHover
-                                  ? 'UnFollow'
-                                  : 'Following'
-                              : 'Follow'}
+                                  ? <>{t('Button.UnFollow')}</>
+                                  : <>{t('Button.Following')}</>
+                              : <>{t('Button.Follow')}</>}
                         </Button>
                       </Col>
                     </Row>
@@ -499,7 +503,7 @@ export const Post = (props: PostProps) => {
             {reasonRepost && (
                 <Link href={`/profile/${reasonRepost.by.handle}`}>
                   <RepostByLabel>
-                    Reposted {reasonRepost.by.displayName} <img src={reasonRepost.by.avatar} style={{height:"10px"}}/>
+                    {t("Timeline.Post.Reposted")} {reasonRepost.by.displayName} <img src={reasonRepost.by.avatar} style={{height:"10px"}}/>
                   </RepostByLabel>
 
                 </Link>
@@ -511,7 +515,7 @@ export const Post = (props: PostProps) => {
                     <div
                         style={{fontSize:'12px',color:'gray',overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}
                     >
-                      <FontAwesomeIcon icon={faReplySolid}/> Reply to {parentReply.author.displayName}
+                      <FontAwesomeIcon icon={faReplySolid}/> {t("Timeline.Post.ReplyTo")} {parentReply.author.displayName}
                       <span> {parentReply.record.text} </span>
                     </div>
                   </a>
@@ -704,13 +708,13 @@ export const Post = (props: PostProps) => {
                             }}
                         >
                           <Dropdown.Item key="repost">
-                            {isReposted === false && <Text>Repost</Text>}
+                            {isReposted === false && <Text>{t("Timeline.Post.Repost")}</Text>}
                             {isReposted === true && (
-                                <Text color={'error'}>UnRepost</Text>
+                                <Text color={'error'}>{t("Timeline.Post.UnRepost")}</Text>
                             )}
                           </Dropdown.Item>
                           <Dropdown.Item key="quoteRepost">
-                            <Text>Quote Repost</Text>
+                            <Text>{t("Timeline.Post.QuoteRepost")}</Text>
                           </Dropdown.Item>
                         </Dropdown.Menu>
                       </Dropdown>
@@ -733,7 +737,7 @@ export const Post = (props: PostProps) => {
             {isRoot && (
                 <a>
                   <div onClick={() => setSettingsModal(true)}>
-                    read more... (簡易版)
+                    {t("Timeline.Post.ReadMore")}
                   </div>
                 </a>
             )}

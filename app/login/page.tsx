@@ -7,6 +7,8 @@ import {Container, Card, Image, Spacer, Text} from '@nextui-org/react'
 
 import { LoginForm } from '@/components/LoginForm'
 import { BskyAgent } from '@atproto/api'
+import { useTranslation } from "react-i18next";
+
 
 /**
  * Login page.
@@ -14,6 +16,7 @@ import { BskyAgent } from '@atproto/api'
 const LoginPage = () => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { t } = useTranslation()
 
   const handleSubmit = async ({
     identifier,
@@ -69,7 +72,8 @@ const LoginPage = () => {
         <Card css={{ mt: '$10' , width: '420px'}}>
           <Card.Body>
             <Text css={{textAlign:'center'}}>
-              We recommend using the App Passwords. <a href="https://github.com/bluesky-social/atproto-ecosystem/blob/main/app-passwords.md" target="_blank" rel="noopener noreferrer">Read More</a>.
+              {t("LoginPage.WeRecommendUsingTheAppPasswords")}
+              <a href="https://github.com/bluesky-social/atproto-ecosystem/blob/main/app-passwords.md" target="_blank" rel="noopener noreferrer">{t("LoginPage.ReadMore")}</a>
             </Text>
           </Card.Body>
         </Card>

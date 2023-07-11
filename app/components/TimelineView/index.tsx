@@ -6,6 +6,8 @@ import { FeedView } from '../FeedView'
 import {useMuteWords} from "@/atoms/settings";
 import { useState } from 'react'
 import { useAgent } from '@/atoms/agent'
+import { useTranslation } from "react-i18next";
+
 
 
 const TimelineContainer = styled('div', {
@@ -52,8 +54,10 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
   const [agent] = useAgent()
   const onLoadNewTimeline = props.onLoadNewTimeline ?? (() => {})
   const [muteWords, setMuteWords] = useMuteWords()
+  const { t, i18n } = useTranslation();
 
-  //重複するrepostを一番古いものを一つだけ残して削除し、その削除したpostが何回被ったかをconsoleで出力する
+
+    //重複するrepostを一番古いものを一つだけ残して削除し、その削除したpostが何回被ったかをconsoleで出力する
     const uniqueItems: Array<{ post: { cid: string }, reply?: any }> = posts.reduceRight((acc, item) => {
         const isDuplicate = acc.some((i) => i.post.cid === item.post.cid);
         if (!isDuplicate) {
@@ -224,7 +228,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
         }}
       >
         <Button shadow color="primary" auto onPress={onLoadNewTimeline}>
-          Load New posts
+            {t("Button.LoadNewPosts")}
         </Button>
       </ReloadButtonContainer>
       <TimelineContainer
@@ -286,7 +290,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
 
           <Row css={{ my: 64 }} justify="center">
             <Text color="rgba(0, 0, 0, 0.5)" b>
-              end of feed
+                {t("Timeline.EndOfFeed")}
             </Text>
           </Row>
         </InfiniteScroll>

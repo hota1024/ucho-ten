@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   Button,
   Card,
-  Col,
+  Col, Dropdown,
   Input,
   Modal,
   Row,
@@ -19,6 +19,8 @@ import {
   Textarea,
 } from '@nextui-org/react'
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from "react-i18next";
+
 
 /**
  * SetttingsModal props.
@@ -44,13 +46,19 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
 
   // muteWords - ミュートワードの配列
   const [muteWords, setMuteWords] = useMuteWords()
-
   const [muteWord, setMuteWord] = useState('')
   const muteWordInputRef = useRef<HTMLInputElement>(null)
-
   const [disableScrollOnLoadButtonPress, setDisableScrollOnLoadButtonPress] = useDisableScrollOnLoadButtonPress()
-
   const isPostable = muteWord.length > 0
+  const { t, i18n } = useTranslation();
+  const lngs = {
+    ja: "日本語",
+    en: "English",
+  }
+  const lngChange = (lng:any) => {
+    i18n.changeLanguage(lng);
+    console.log(i18n.resolvedLanguage)
+  }
   
   const handleMuteWordAddClick = () => {
     if (muteWord.length === 0) {
@@ -81,7 +89,7 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
     <Modal open={open} onClose={onClose}>
       <Modal.Header>
         <Text size="$lg" b>
-          Settings
+          {t("Modal.Settings.Title")}
         </Text>
       </Modal.Header>
       <Modal.Body>
@@ -93,13 +101,39 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
             <Text>when push load button disable scroll</Text>
           </Col>
           <Switch
-            initialChecked={disableScrollOnLoadButtonPress}
-            onChange={(e) => setDisableScrollOnLoadButtonPress(e.target.checked)}
-            disabled
+              initialChecked={disableScrollOnLoadButtonPress}
+              onChange={(e) => setDisableScrollOnLoadButtonPress(e.target.checked)}
+              disabled
           />
         </Row>
         <Text size={20} b>
-          Mute words
+          {t("Modal.Settings.Language")}
+        </Text>
+        <Row align="center">
+          <Col>
+            <Text>{t("Modal.Settings.SelectUsingLanguage")}</Text>
+          </Col>
+          <div>
+            <Dropdown>
+              <Dropdown.Button light css={{ tt: "capitalize" }}>
+                {i18n.resolvedLanguage}
+              </Dropdown.Button>
+              <Dropdown.Menu
+                  aria-label="Multiple selection actions"
+                  selectionMode="single"
+                  disallowEmptySelection
+                  selectedKeys={i18n.resolvedLanguage}
+                  //@ts-ignore
+                  onSelectionChange={lngChange}
+              >
+                <Dropdown.Item key='en'>English</Dropdown.Item>
+                <Dropdown.Item key='ja'>日本語</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        </Row>
+        <Text size={20} b>
+          {t("Modal.Settings.MuteWords")}
         </Text>
         <Row>
           <Col
@@ -135,8 +169,8 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
           <Col>
             <Input
               fullWidth
-              label="Add mute word"
-              placeholder="Mute word to add"
+              //label={t("Modal.Settings.AddMuteword")}
+              placeholder={t("Modal.Settings.InputHere")}
               ref={muteWordInputRef}
               onChange={(e) => setMuteWord(e.target.value)}
               onKeyDown={isPostable ? handleKeyDown : undefined}
@@ -144,13 +178,13 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
           </Col>
           <Spacer x={0.5} />
           <Button auto onPress={handleMuteWordAddClick}>
-            Add
+            {t("Modal.Settings.AddButton")}
           </Button>
         </Row>
       </Modal.Body>
       <Modal.Footer>
         <Button onPress={onClose} flat css={{ width: '100%' }}>
-          Close
+          {t("Modal.Settings.CloseButton")}
         </Button>
       </Modal.Footer>
     </Modal>
