@@ -404,12 +404,12 @@ export const PostModal = (props: PostModalProps) => {
         )}
         {contentImage.length > 0 && (
           <Text size="$sm" color="error">
-            画像はあと{4 - contentImage.length}枚までです.
+            {t("Modal.Post.CanUploadUpToNImagesFirstHalf")}{4 - contentImage.length}{t("Modal.Post.CanUploadUpToNImagesSecondHalf")}
           </Text>
         )}
         {compressProcessing && (
             <Text size="$sm">
-              画像圧縮中...<Loading size="xs"/>
+              {t("Modal.Post.CompressingImage")}<Loading size="xs"/>
             </Text>
         )}
         {contentImage.length > 0 && (

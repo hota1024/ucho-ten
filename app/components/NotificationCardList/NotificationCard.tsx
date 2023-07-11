@@ -37,6 +37,8 @@ import { faArrowsTurnRight } from '@fortawesome/free-solid-svg-icons'
 import { faComment, faUser } from '@fortawesome/free-regular-svg-icons'
 import { faRetweet as faRetweetSolid } from '@fortawesome/free-solid-svg-icons'
 import { PostModal } from '../PostModal'
+import { useTranslation } from "react-i18next";
+
 
 /**
  * NotificationCard props.
@@ -74,6 +76,8 @@ export const NotificationCard: React.FC<NotificationCardProps> = (props) => {
   const [isReactionProcessing, setIsReactionProcessing] = useState(false)
   const [replyDialog, setReplyDialog] = useState(false)
   const [repostDialog, setRepostDialog] = useState(false)
+  const { t, i18n } = useTranslation()
+
   //console.log(post)
   //console.log(isLiked)
 
@@ -235,9 +239,9 @@ export const NotificationCard: React.FC<NotificationCardProps> = (props) => {
               <Link href={`/profile/${item.author.handle}`}>
                 {item.author.displayName ?? item.author.handle}
               </Link>{' '}
-              {item.reason === 'reply' && 'Replied to your post  '}
-              {item.reason === 'mention' && 'Mentioned to you  '}
-              {item.reason === 'quote' && 'Quoted your post  '}
+              {item.reason === 'reply' && <>{t("Modal.NotificationList.RepliedToYourPost")}</>}
+              {item.reason === 'mention' && <>{t("Modal.NotificationList.MentionToYou")}</>}
+              {item.reason === 'quote' && <>{t("Modal.NotificationList.QuotedYourPost")}</>}
               <FontAwesomeIcon icon={faArrowsTurnRight} color={'orange'} />
             </Text>
           </Card.Header>
@@ -248,7 +252,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = (props) => {
                 <Text>
                   {AppBskyFeedPost.isRecord(post.post.record)
                     ? post.post.record.text
-                    : '投稿が取得できません。'}
+                    : <>{t("Modal.NotificationList.UnableToRetrievePostings")}</>}
                 </Text>
                 <Row>
                   <Row css={{ mt: '$3' }} align="center">
@@ -285,13 +289,13 @@ export const NotificationCard: React.FC<NotificationCardProps> = (props) => {
                           }}
                         >
                           <Dropdown.Item key="repost">
-                            {!isReposted && <Text>Repost</Text>}
+                            {!isReposted && <Text>{t("Timeline.Post.Repost")}</Text>}
                             {isReposted  && (
-                              <Text color={'error'}>UnRepost</Text>
+                              <Text color={'error'}>{t("Timeline.Post.UnRepost")}</Text>
                             )}
                           </Dropdown.Item>
                           <Dropdown.Item key="quoteRepost">
-                            <Text>Quote Repost</Text>
+                            <Text>{t("Timeline.Post.QuoteRepost")}</Text>
                           </Dropdown.Item>
                         </Dropdown.Menu>
                       </Dropdown>
@@ -324,7 +328,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = (props) => {
               <Link href={`/profile/${item.author.handle}`}>
                 {item.author.displayName ?? item.author.handle}
               </Link>{' '}
-              Followed you{' '}
+              {t("Modal.NotificationList.FollowedYou")}{' '}
               <FontAwesomeIcon icon={faUser} color={'green'} size={'lg'} />
             </Text>
           </Card.Header>

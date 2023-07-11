@@ -52,10 +52,13 @@
         "Post": "投稿",
         "Close": "閉じる",
         "PlaceHolder": "画像をドラッグ&ドロップ",
-      "Button": {
-        "Post": "投稿",
-        "Cancel": "キャンセル"
-      }
+        "CanUploadUpToNImagesFirstHalf": "画像はあと",
+        "CanUploadUpToNImagesSecondHalf": "枚までアップロードできます。",
+        "CompressingImage": "画像を圧縮中...",
+        "Button": {
+          "Post": "投稿",
+          "Cancel": "キャンセル"
+        }
     },
     "Profile": {
         "EditProfile": "プロフィールを編集",
@@ -66,6 +69,13 @@
         "Cancel": "キャンセル",
         "Save": "保存",
         "UnsavedAlert": "変更内容は保存されていません。"
+    },
+    "NotificationList": {
+      "RepliedToYourPost": "が返信 ",
+      "MentionedToYou": "がメンション ",
+      "QuotedYourPost": "が引用 ",
+      "UnableToRetrievePostings": "投稿を取得できませんでした",
+      "FollowedYou": "にフォローされました "
     }
   },
   "ProfilePage": {

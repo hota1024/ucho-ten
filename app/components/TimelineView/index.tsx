@@ -289,7 +289,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
           </>
 
           <Row css={{ my: 64 }} justify="center">
-            <Text color="rgba(0, 0, 0, 0.5)" b>
+            <Text color="rgba(255, 255, 255, 0.5)" b>
                 {t("Timeline.EndOfFeed")}
             </Text>
           </Row>

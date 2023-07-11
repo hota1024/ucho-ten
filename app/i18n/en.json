@@ -55,7 +55,14 @@
       "Title": "Post",
       "Post": "Post",
       "Close": "Close",
-      "PlaceHolder": "Text, Drag & Drop images here"
+      "PlaceHolder": "Text, Drag&Drop images here",
+      "CanUploadUpToNImagesFirstHalf": "Can upload up to ",
+      "CanUploadUpToNImagesSecondHalf": " more images.",
+      "CompressingImage": "Compressing image...",
+      "Button": {
+        "Post": "Post",
+        "Cancel": "Cancel"
+      }
     },
     "Profile": {
       "EditProfile": "Edit Profile",
@@ -66,6 +73,13 @@
       "Cancel": "Cancel",
       "Save": "Save",
       "UnsavedAlert": "You have unsaved changes"
+    },
+    "NotificationList": {
+      "RepliedToYourPost": "Replied to your post ",
+      "MentionedToYou": "Mentioned to you ",
+      "QuotedYourPost": "Quoted your post ",
+      "UnableToRetrievePostings": "Unable to retrieve postings.",
+      "FollowedYou": "Followed you "
     }
   },
   "ProfilePage": {
