@@ -11,23 +11,32 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-    const [appearanceColorMode, setAppearanceColorMode] = useState<string>('')
-    const [isBrowserDarkMode, setIsBrowserDarkMode] = useState<boolean>(false)
+    const [appearanceColorMode, setAppearanceColorMode] = useState<string>(typeof window !== "undefined" ? JSON.parse(localStorage.appearanceColorMode) || 'system' : 'system')
+    const [isBrowserDarkMode, setIsBrowserDarkMode] = useState<boolean>(typeof window !== "undefined" ? matchMedia('(prefers-color-scheme: dark)').matches : false)
     useEffect(() => {
         if (typeof window !== 'undefined') {
             try {
-                setAppearanceColorMode(localStorage.getItem('appearanceColorMode') || 'system')
-                setIsBrowserDarkMode(matchMedia('(prefers-color-scheme: dark)').matches)
+                setAppearanceColorMode(JSON.parse(localStorage.appearanceColorMode) || 'system');
+                setIsBrowserDarkMode(matchMedia('(prefers-color-scheme: dark)').matches);
             } catch (error) {
                 // エラーハンドリング
             }
         }
     }, [])
 
-    console.log(appearanceColorMode)
-    console.log(isBrowserDarkMode)
+    console.log("Ucho-ten Setting is: " + appearanceColorMode)
+    console.log("Browser setting is: "+isBrowserDarkMode)
 
-  return (
+    const bodyStyle = {
+        backgroundImage: appearanceColorMode === 'dark' ? 'url(https://raw.githubusercontent.com/kawaikute-gomen/ucho-ten-images-repo/main/images/backgroundImages/dark/starry-sky-gf5ade6b4f_1920.jpg)' :
+            (appearanceColorMode === 'light' ? 'url(/images/backgroundimg/sky_00421.jpg)' : (isBrowserDarkMode ? 'url(https://raw.githubusercontent.com/kawaikute-gomen/ucho-ten-images-repo/main/images/backgroundImages/dark/starry-sky-gf5ade6b4f_1920.jpg)' : 'url(/images/backgroundimg/sky_00421.jpg)')),
+        backgroundSize: 'cover',
+        backgroundColor: 'rgba(255,255,255,0.1)',
+        backgroundBlendMode: 'lighten',
+    };
+
+
+    return (
     <html lang="ja">
       <head>
         <title>Home | Ucho-ten</title>
@@ -45,16 +54,7 @@ export default function RootLayout({
         ></meta>
           <meta name="twitter:card" content="summarylargeimage"></meta>
       </head>
-      <body
-        style={{
-          //backgroundImage: 'url(/images/backgroundimg/sky_00421.jpg)',
-          backgroundImage: appearanceColorMode === '"dark"' ? 'url(https://raw.githubusercontent.com/kawaikute-gomen/ucho-ten-images-repo/main/images/backgroundImages/dark/starry-sky-gf5ade6b4f_1920.jpg)' :
-              (appearanceColorMode === '"light"' ? 'url(/images/backgroundimg/sky_00421.jpg)' : (isBrowserDarkMode ? 'url(https://raw.githubusercontent.com/kawaikute-gomen/ucho-ten-images-repo/main/images/backgroundImages/dark/starry-sky-gf5ade6b4f_1920.jpg)' : 'url(/images/backgroundimg/sky_00421.jpg)')),
-          backgroundSize: 'cover',
-          backgroundColor: 'rgba(255,255,255,0.1)',
-          backgroundBlendMode: 'lighten',
-        }}
-      >
+      <body style={bodyStyle}>
         <Providers>
             {children}
             <div style={{position:"absolute", right:10, bottom:10}}>

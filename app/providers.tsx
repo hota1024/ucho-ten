@@ -16,15 +16,15 @@ import useDarkMode from 'use-dark-mode';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const { isBrowser } = useSSR()
-  const [appearanceColorMode, setAppearanceColorMode] = useState<string>('')
-  const [isBrowserDarkMode, setIsBrowserDarkMode] = useState<boolean>(false)
+  const [appearanceColorMode, setAppearanceColorMode] = useState<string>(typeof window !== "undefined" ? JSON.parse(localStorage.appearanceColorMode) || 'system' : 'system')
+  const [isBrowserDarkMode, setIsBrowserDarkMode] = useState<boolean>(typeof window !== "undefined" ? matchMedia('(prefers-color-scheme: dark)').matches : false)
 
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
-        setAppearanceColorMode(localStorage.getItem('appearanceColorMode') || 'system')
-        setIsBrowserDarkMode(matchMedia('(prefers-color-scheme: dark)').matches)
+        console.log(JSON.parse(localStorage.appearanceColorMode))
+        //setIsBrowserDarkMode(matchMedia('(prefers-color-scheme: dark)').matches)
       } catch (error) {
         // エラーハンドリング
       }
@@ -49,11 +49,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
   useServerInsertedHTML(() => {
     return <>{CssBaseline.flush()}</>
   })
+  console.log(appearanceColorMode === '"dark"')
 
   return isBrowser ? (
     <JotaiProvider>
       <NextThemesProvider
-          defaultTheme={appearanceColorMode === '"dark"' ? darkTheme : (appearanceColorMode === '"light"' ? lightTheme : (isBrowserDarkMode ? darkTheme : lightTheme))}
+          defaultTheme={appearanceColorMode === 'dark' ? darkTheme : (appearanceColorMode === 'light' ? lightTheme : (isBrowserDarkMode ? darkTheme : lightTheme))}
           //defaultTheme={'system'}
           //themes={appearanceColorMode === '"dark"' ? [darkTheme] : [lightTheme]}
           //forcedTheme={appearanceColorMode === '"dark"' ? 'darkTheme' : (appearanceColorMode === '"light"' ? lightTheme : (appearanceColorMode === '"system"' && darkMode.value ? darkTheme : lightTheme))}
