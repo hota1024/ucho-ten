@@ -53,11 +53,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return isBrowser ? (
       <JotaiProvider>
         <NextThemesProvider
-            defaultTheme={appearanceColorMode === '"dark"' ? darkTheme : (appearanceColorMode === '"light"' ? lightTheme : (isBrowserDarkMode ? darkTheme : lightTheme))}
+            defaultTheme={appearanceColorMode === '"dark"' ? darkTheme : (appearanceColorMode === '"light"' ? lightTheme : 'system')}
             //defaultTheme={'system'}
             //themes={appearanceColorMode === '"dark"' ? [darkTheme] : [lightTheme]}
             //forcedTheme={appearanceColorMode === '"dark"' ? 'darkTheme' : (appearanceColorMode === '"light"' ? lightTheme : (appearanceColorMode === '"system"' && darkMode.value ? darkTheme : lightTheme))}
             attribute="class"
+            value={{
+              light: lightTheme.className,
+              dark: darkTheme.className
+            }}
         >
           <NextUIProvider>
             {children}
