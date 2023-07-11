@@ -45,6 +45,7 @@ import { useAgent } from '@/atoms/agent'
 import { ImagesGrid } from '../ImagesGrid'
 import {SetttingsModal} from "@/components/PostThreadModal"
 import { useTranslation } from "react-i18next";
+import {DetectPlayContentURL} from "@/components/DetectPlayContentURL";
 
 
 const RepostByLabel = styled('div', {
@@ -509,7 +510,7 @@ export const Post = (props: PostProps) => {
                 </Link>
             )}
             {!isRoot && parentReply != undefined && (
-                <div style={{width:'500px'}} onClick={() => setSettingsModal(true)}>
+                <div style={{width:'485px'}} onClick={() => setSettingsModal(true)}>
 
                   <a style={{width:"100%"}}>
                     <div
@@ -669,7 +670,10 @@ export const Post = (props: PostProps) => {
                       />
                     </>
                 )}
-
+            {!embed && !isEmbed && (
+                //<DetectPlayContentURL record={record}/>
+                <></>
+            )}
             {!hideActions && (
                 <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
                   <Col>
