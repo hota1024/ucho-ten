@@ -12,19 +12,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-    const [cookies, setCookie, removeCookie] = useCookies()
-    console.log(cookies)
-    const [theme, setTheme] = useState(cookies.appearanceColorMode)
-    console.log(theme)
-    const switchTheme = () => {
-        if (theme === DARK_THEME) {
-            document.documentElement.classList.add(DARK_THEME)
-            setTheme(DARK_THEME)
-        } else {
-            document.documentElement.classList.remove(DARK_THEME)
-            setTheme(LIGHT_THEME)
-        }
-    }
   return (
     <html lang="ja">
       <head>
@@ -42,6 +29,25 @@ export default function RootLayout({
           content="https://ucho-ten.net/images/Logo/ucho-ten-ogp.png"
         ></meta>
           <meta name="twitter:card" content="summarylargeimage"></meta>
+          <script>
+              {`
+            if (!('theme' in localStorage) || localStorage.theme === 'system') {
+              // OS の設定を読み取る
+              if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                // OS の設定がダークモードの場合、html に dark クラスを付与する
+                document.documentElement.classList.add('dark')
+              }
+              // LocalStorage に設定を保存する
+              localStorage.setItem('theme', 'system')
+            } else if (localStorage.theme === 'dark') {
+              // LocalStorage に theme が保存されていて、theme が dark の場合
+              document.documentElement.classList.add('dark')
+            } else {
+              // それ以外の場合
+              document.documentElement.classList.remove('dark')
+            }
+          `}
+          </script>
       </head>
       <body
         style={{
