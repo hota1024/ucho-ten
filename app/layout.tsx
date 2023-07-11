@@ -11,7 +11,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-    const [appearanceColorMode, setAppearanceColorMode] = useState<string>(typeof window !== "undefined" ? JSON.parse(localStorage.appearanceColorMode) || 'system' : 'system')
+    const [appearanceColorMode, setAppearanceColorMode] = useState<string>(typeof window !== "undefined" ? localStorage.getItem("appearanceColorMode") === null ? localStorage.setItem("appearanceColorMode", 'system') : localStorage.appearanceColorMode || 'system' : 'system')
     const [isBrowserDarkMode, setIsBrowserDarkMode] = useState<boolean>(typeof window !== "undefined" ? matchMedia('(prefers-color-scheme: dark)').matches : false)
     useEffect(() => {
         if (typeof window !== 'undefined') {

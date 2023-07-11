@@ -16,7 +16,7 @@ import useDarkMode from 'use-dark-mode';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const { isBrowser } = useSSR()
-  const [appearanceColorMode, setAppearanceColorMode] = useState<string>(typeof window !== "undefined" ? JSON.parse(localStorage.appearanceColorMode) || 'system' : 'system')
+  const [appearanceColorMode, setAppearanceColorMode] = useState<string>(typeof window !== "undefined" ? localStorage.getItem("appearanceColorMode") === null ? localStorage.setItem("appearanceColorMode", 'system') : localStorage.appearanceColorMode || 'system' : 'system')
   const [isBrowserDarkMode, setIsBrowserDarkMode] = useState<boolean>(typeof window !== "undefined" ? matchMedia('(prefers-color-scheme: dark)').matches : false)
 
 
