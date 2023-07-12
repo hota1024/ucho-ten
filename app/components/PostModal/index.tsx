@@ -31,6 +31,8 @@ import Picker from '@emoji-mart/react'
 import imageCompression from "browser-image-compression";
 import { useDropzone, FileWithPath } from 'react-dropzone'
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from "react-i18next";
+
 
 
 const URLCard = styled('div', {
@@ -131,6 +133,8 @@ export const PostModal = (props: PostModalProps) => {
   const [isDetectURL, setIsDetectURL] = useState(false)
   const [detectURLs, setDetectURLs] = useState<string[]>([])
   const [isSettingURLCard, setIsSettingURLCard] = useState(false)
+  const { t, i18n } = useTranslation()
+
 
   const handlePostClick = async () => {
     if (!agent) {
@@ -340,7 +344,7 @@ export const PostModal = (props: PostModalProps) => {
           <PostTextarea
               ref={textareaRef}
               aria-label="Text"
-              placeholder="Text, Drag & drop images here"
+              placeholder={t("Modal.Post.PlaceHolder")}
               rows={8}
               maxLength={300}
               value={contentText}
@@ -400,12 +404,12 @@ export const PostModal = (props: PostModalProps) => {
         )}
         {contentImage.length > 0 && (
           <Text size="$sm" color="error">
-            画像はあと{4 - contentImage.length}枚までです.
+            {t("Modal.Post.CanUploadUpToNImagesFirstHalf")}{4 - contentImage.length}{t("Modal.Post.CanUploadUpToNImagesSecondHalf")}
           </Text>
         )}
         {compressProcessing && (
             <Text size="$sm">
-              画像圧縮中...<Loading size="xs"/>
+              {t("Modal.Post.CompressingImage")}<Loading size="xs"/>
             </Text>
         )}
         {contentImage.length > 0 && (
@@ -522,7 +526,7 @@ export const PostModal = (props: PostModalProps) => {
 
           <div style={{ display: 'flex', gap: '8px' }}>
             <Button auto light onPress={onClose} disabled={loading}>
-              Cancel
+              {t("Modal.Post.Button.Cancel")}
             </Button>
             <Button
               auto

@@ -1,0 +1,101 @@
+{
+  "Main": {
+    "LoggingOut": "Logging Out..."
+  },
+  "LoginPage" : {
+    "Button": {
+      "SignIn": "SignIn",
+      "SignUp": "SingUp"
+    },
+    "SignInToBluesky": "Sign In to bsky.social",
+    "HandleOrYourDomain": "handle or domain",
+    "Password": "Password",
+    "WeRecommendUsingTheAppPasswords": "We Recommend Using The App Passwords.",
+    "ReadMore": "Read More."
+  },
+  "Timeline": {
+    "EndOfFeed": "End of feed",
+    "Post": {
+      "Reposted": "Reposted",
+      "ReplyTo": "Reply to",
+      "Repost" : "Repost",
+      "UnRepost" : "Un repost",
+      "QuoteRepost": "Quote Repost",
+      "ReadMore": "Read more..."
+    }
+  },
+  "Button": {
+    "Home": "Home",
+    "Inbox": "Inbox",
+    "Post": "Post",
+    "MyProfile": "My Profile",
+    "Settings": "Settings",
+    "SignOut": "Sign Out",
+    "LoadNewPosts": "Load New Posts",
+    "Follow": "Follow",
+    "Following": "Following",
+    "UnFollow": "UnFollow",
+    "About": "About"
+  },
+  "Modal": {
+    "About": {
+      "Title": "About",
+      "DeisnConcept": "Design Concept"
+    },
+    "Settings": {
+      "Title": "Setting",
+      "Language": "Language",
+      "SelectUsingLanguage": "Select Language",
+      "MuteWords": "Mute word",
+      "AddMuteword": "Add Mute word",
+      "InputHere": "Input mute word here",
+      "AddButton": "Add",
+      "CloseButton": "Close",
+      "Button": {
+        "Post": "Post",
+        "Cancel": "Cancel"
+      }
+    },
+    "Post": {
+      "Title": "Post",
+      "Post": "Post",
+      "Close": "Close",
+      "PlaceHolder": "Text, Drag&Drop images here",
+      "CanUploadUpToNImagesFirstHalf": "Can upload up to ",
+      "CanUploadUpToNImagesSecondHalf": " more images.",
+      "CompressingImage": "Compressing image...",
+      "Button": {
+        "Post": "Post",
+        "Cancel": "Cancel"
+      }
+    },
+    "Profile": {
+      "EditProfile": "Edit Profile",
+      "Title": "Profile",
+      "DisplayName": "Display name",
+      "Description": "Description",
+      "Close": "Close",
+      "Cancel": "Cancel",
+      "Save": "Save",
+      "UnsavedAlert": "You have unsaved changes"
+    },
+    "NotificationList": {
+      "RepliedToYourPost": "Replied to your post ",
+      "MentionedToYou": "Mentioned to you ",
+      "QuotedYourPost": "Quoted your post ",
+      "UnableToRetrievePostings": "Unable to retrieve postings.",
+      "FollowedYou": "Followed you "
+    }
+  },
+  "ProfilePage": {
+    "UserNotFound": "User not found.",
+    "ReturnToHome": "Back to Timeline",
+    "Button": {
+      "HideUser": "Hide User",
+      "ShowUser": "Show User",
+      "Block": "Block",
+      "UnBlock": "UnBlock",
+      "EditProfile": "Edit Profile"
+    }
+  }
+}

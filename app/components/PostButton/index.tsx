@@ -5,12 +5,15 @@ import { Button } from '@nextui-org/react'
 import { useState } from 'react'
 import { PostModal } from '../PostModal'
 import { PostRecordPost } from '@/types/posts'
+import { useTranslation } from "react-i18next";
+
 
 export interface PostButtonProps {}
 
 export const PostButton = (props: PostButtonProps) => {
   const [agent] = useAgent()
   const [dialog, setDialog] = useState(false)
+  const { t, i18n } = useTranslation()
 
   const post = async (record: PostRecordPost) => {
     if (!agent) {
@@ -39,13 +42,13 @@ export const PostButton = (props: PostButtonProps) => {
         onPress={() => setDialog(true)}
         icon={<FontAwesomeIcon icon={faPenToSquare} size="lg" />}
       >
-        Post
+        {t("Button.Post")}
       </Button>
       <PostModal
         open={dialog}
         onClose={() => setDialog(false)}
         onSubmit={post}
-        title="Post"
+        title={t("Modal.Post.Title")}
         submitText="Post"
       />
     </>

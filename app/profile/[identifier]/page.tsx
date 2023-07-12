@@ -26,6 +26,7 @@ import Zoom from 'react-medium-image-zoom'
 import { ProfileEditModal } from '@/components/ProfileEditModal'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import {useTranslation} from "react-i18next";
 
 /**
  * Home page.
@@ -47,6 +48,8 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
   const [isMe, setIsMe] = useState(false)
   const [show, setShow] = useState(true)
   const [profileEditModal, setProfileEditModal] = useState(false)
+  const { t, i18n } = useTranslation()
+
 
   const fetchTimeline: TimelineFetcher = ({ agent, cursor }) => {
     if (!agent) {
@@ -247,10 +250,10 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
             <Card.Image
               src={'/images/profileDefaultImage/defaultHeaderImage.png'}
             ></Card.Image>
-            <Card.Header>User not found</Card.Header>
+            <Card.Header>{t("ProfilePage.UserNotFound")}</Card.Header>
             <Card.Body>
               <Link href="/">
-                <Button>Return to Home</Button>
+                <Button>{t("ProfilePage.ReturnToHome")}</Button>
               </Link>
             </Card.Body>
           </Card>
@@ -318,9 +321,9 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                               }}
                           >
                             <Dropdown.Item key="mute">
-                              {!isMuted && <Text>Hide post from this user</Text>}
+                              {!isMuted && <Text color={'error'}>{t('ProfilePage.Button.HideUser')}</Text>}
                               {isMuted && (
-                                  <Text color={'error'}>UnMute</Text>
+                                  <Text>{t('ProfilePage.Button.ShowUser')}</Text>
                               )}
                             </Dropdown.Item>
                           </Dropdown.Menu>
@@ -346,10 +349,10 @@ const ProfilePage = ({ params }: { params: { identifier: string } }) => {
                     {!isMe
                       ? isFollowing
                         ? followHover
-                          ? 'UnFollow'
-                          : 'Following'
-                        : 'Follow'
-                      : 'Edit Profile'}
+                          ? <>{t('Button.UnFollow')}</>
+                          : <>{t('Button.Following')}</>
+                        : <>{t('Button.Follow')}</>
+                      : <>{t('ProfilePage.Button.EditProfile')}</>}
                   </Button>
                 </Row>
               </Card.Header>

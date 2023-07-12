@@ -9,6 +9,7 @@ import {
   useSSR,
 } from '@nextui-org/react'
 import { Provider as JotaiProvider } from 'jotai'
+import "./i18n/config"; //i18
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const { isBrowser } = useSSR()
