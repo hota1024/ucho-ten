@@ -18,6 +18,8 @@ import {
   Textarea,
 } from '@nextui-org/react'
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from "react-i18next";
+
 
 const DummyBanner = styled('div', {
   background: '$gray100',
@@ -62,6 +64,8 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
   const [description, setDescription] = useState('')
   const [bannerFile, setBannerFile] = useState<File | undefined>()
   const [avatarFile, setAvatarFile] = useState<File | undefined>()
+  const { t } = useTranslation()
+
 
   const hasChange =
     !!bannerFile ||
@@ -157,7 +161,7 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
     <Modal open={open} onClose={onClose}>
       <Modal.Header>
         <Text size={20} b>
-          Edit my profile
+          {t('Modal.Profile.EditProfile')}
         </Text>
       </Modal.Header>
       {profile ? (
@@ -235,7 +239,7 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
               <Spacer x={1} />
               <Col>
                 <Input
-                  label="Display name"
+                  label={t("Modal.Profile.DisplayName")}
                   initialValue={profile.displayName ?? ''}
                   fullWidth
                   onChange={(e) => setDisplayName(e.target.value)}
@@ -244,7 +248,7 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
             </Row>
             <Row>
               <Textarea
-                label="Description"
+                label={t("Modal.Profile.Description")}
                 initialValue={profile.description ?? ''}
                 fullWidth
                 rows={5}
@@ -254,9 +258,13 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
             </Row>
           </Modal.Body>
           <Modal.Footer>
-            {hasChange && <Text color="error">You have unsaved changes</Text>}
+            {hasChange &&
+                <Text color="error">
+                  {t('Modal.Profile.UnsavedAlert')}
+                </Text>
+            }
             <Button light auto onPress={() => onClose()} disabled={saving}>
-              Cancel
+              {t('Modal.Profile.Cancel')}
             </Button>
             <Button
               color="success"
@@ -264,7 +272,8 @@ export const ProfileEditModal = (props: ProfileEditModalProps) => {
               onPress={handleSaveClick}
               disabled={saving || !hasChange}
             >
-              {saving ? <Loading /> : 'Save'}
+              {saving ? <Loading /> : <>{t('Modal.Profile.Save')}</>
+              }
             </Button>
           </Modal.Footer>
         </>

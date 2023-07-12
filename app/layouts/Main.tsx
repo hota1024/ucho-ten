@@ -20,7 +20,7 @@ import {
 } from '@nextui-org/react'
 import { PostButton } from '@/components/PostButton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGear, faHome, faSignOut, faInbox } from '@fortawesome/free-solid-svg-icons'
+import { faGear, faHome, faSignOut, faInbox, faCircleInfo } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link'
 import { useAgent } from '@/atoms/agent'
 import { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
@@ -29,10 +29,13 @@ import { Notification } from '@atproto/api/dist/client/types/app/bsky/notificati
 import { NotificationCardList } from '@/components/NotificationCardList'
 import { useShowPostNumbers } from '@/atoms/settings'
 import { SetttingsModal } from '@/components/SettingsModal'
+import { AboutModal } from '@/components/AboutModal'
 import { PostView } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 import { PostModal } from '@/components/PostModal'
 import { PostRecordPost } from '@/types/posts'
 import { AppBskyEmbedRecord, ComAtprotoRepoStrongRef } from '@atproto/api'
+import { useTranslation } from "react-i18next";
+
 
 const Container = styled('div', {
   maxWidth: '1200px',
@@ -74,12 +77,14 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
   const [profile, setProfile] = useState<ProfileViewDetailed | null>(null)
   const [logoutLoading, setLogoutLoading] = useState(false)
   const [settingsModal, setSettingsModal] = useState(false)
+  const [aboutModal, setAboutModal] = useState(false)
   const [notificationCount, setNotificationCount] = useState(0)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loadingNotifications, setLoadingNotifications] = useState(false)
   const [showPostNumbers, setShowPostNumbers] = useShowPostNumbers()
   const [replyTo, setReplyTo] = useState<PostView | null>(null)
   const [quoteRepostTo, setQuoteRepostTo] = useState<PostView | null>(null)
+  const { t } = useTranslation()
 
   const logout = () => {
     setLogoutLoading(true)
@@ -193,7 +198,7 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
         <Modal.Header>
           <Loading size="sm" />
           <Spacer y={1} />
-          <Text>ログアウト中...</Text>
+          <Text>{t("Main.LoggingOut")}</Text>
         </Modal.Header>
       </Modal>
 
@@ -219,6 +224,10 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
         open={settingsModal}
         onClose={() => setSettingsModal(false)}
       />
+      <AboutModal
+          open={aboutModal}
+          onClose={() => setAboutModal(false)}
+      />
 
       <LeftActionsContainer>
         <div style={{ display: 'none' }}>
@@ -237,7 +246,7 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
           href="/"
           icon={<FontAwesomeIcon icon={faHome} size="lg" />}
         >
-          Home
+          {t("Button.Home")}
         </Button>
 
         <Popover onOpenChange={handleNotificationOpen}>
@@ -253,7 +262,7 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
                 )
               }
             >
-              Inbox
+              {t("Button.Inbox")}
             </Button>
           </Popover.Trigger>
           <Popover.Content
@@ -318,6 +327,8 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
                   ? logout()
                   : key === 'settings'
                   ? setSettingsModal(true)
+                  : key === 'about'
+                  ? setAboutModal(true)
                   : null
               }
             >
@@ -326,14 +337,20 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
                 icon={<FontAwesomeIcon icon={faUser} />}
               >
                 <Link href={`/profile/${profile.handle}`}>
-                  <Text>My profile</Text>
+                  <Text>{t("Button.MyProfile")}</Text>
                 </Link>
               </Dropdown.Item>
               <Dropdown.Item
-                key="settings"
-                icon={<FontAwesomeIcon icon={faGear} />}
+                  key="settings"
+                  icon={<FontAwesomeIcon icon={faGear} />}
               >
-                <Text>Settings</Text>
+                <Text>{t("Button.Settings")}</Text>
+              </Dropdown.Item>
+              <Dropdown.Item
+                  key="about"
+                  icon={<FontAwesomeIcon icon={faCircleInfo} />}
+              >
+                <Text>{t("Button.About")}</Text>
               </Dropdown.Item>
               <Dropdown.Item
                 key="logout"
@@ -341,7 +358,7 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
                 color="error"
                 icon={<FontAwesomeIcon icon={faSignOut} />}
               >
-                <Text color="inherit">Log out</Text>
+                <Text color="inherit">{t("Button.SignOut")}</Text>
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>

@@ -12,6 +12,8 @@ import {
   useInput,
 } from '@nextui-org/react'
 import { FormEvent, ReactEventHandler } from 'react'
+import { useTranslation } from "react-i18next";
+
 
 export interface LoginFormProps {
   errorMessage?: string | null
@@ -25,6 +27,8 @@ export const LoginForm = (props: LoginFormProps) => {
 
   const { value: identifier, bindings: bindIdentifier } = useInput('')
   const { value: password, bindings: bindPassword } = useInput('')
+  const { t } = useTranslation()
+
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -38,7 +42,7 @@ export const LoginForm = (props: LoginFormProps) => {
   return (
     <Card as="form" onSubmit={handleSubmit} css={{ mw: '420px', p: '$8' }}>
       <Card.Header>
-        <Text b>Sign in to Bluesky</Text>
+        <Text b>{t("LoginPage.SignInToBluesky")}</Text>
       </Card.Header>
 
       <Card.Body>
@@ -51,7 +55,7 @@ export const LoginForm = (props: LoginFormProps) => {
         <Input
           {...bindIdentifier}
           name="handle"
-          placeholder="Handle or your domain"
+          placeholder={t("LoginPage.HandleOrYourDomain")}
           aria-label="handle"
           contentLeft={<FontAwesomeIcon icon={faAt} />}
           required
@@ -61,7 +65,7 @@ export const LoginForm = (props: LoginFormProps) => {
         <Input.Password
           {...bindPassword}
           name="password"
-          placeholder="Password"
+          placeholder={t("LoginPage.Password")}
           aria-label="password"
           contentLeft={<FontAwesomeIcon icon={faLock} />}
           required
@@ -71,7 +75,7 @@ export const LoginForm = (props: LoginFormProps) => {
 
       <Card.Footer>
         <Button type="submit" disabled={loading} css={{ width: '100%' }}>
-          {loading ? <Loading size="xs" /> : 'Sign in'}
+          {loading ? <Loading size="xs" /> : <>{t("LoginPage.Button.SignIn")}</>}
         </Button>
       </Card.Footer>
     </Card>

@@ -3,6 +3,7 @@ import { BskyAgent } from '@atproto/api'
 import { FeedViewPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { TimelineViewProps } from '.'
+import { useDisableScrollOnLoadButtonPress } from "@/atoms/settings";
 
 export type TimelineFetcher = (args: {
   agent: BskyAgent
@@ -25,6 +26,8 @@ export const useTimelineView = (
   const [hasMore, setHasMore] = useState(true)
   const [hasNewTimeline, setHasNewTimeline] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const prevScrollTop = useRef(0);
+  const [disableScrollOnLoadButtonPress, setDisableScrollOnLoadButtonPress] = useDisableScrollOnLoadButtonPress()
 
   const updateFeed = useCallback(
     async (turn: number, loadTop = false) => {
@@ -70,7 +73,7 @@ export const useTimelineView = (
     await updateFeed(0, true)
     setHasNewTimeline(false)
 
-    if (containerRef.current) {
+    if (containerRef.current && disableScrollOnLoadButtonPress != true) {
       containerRef.current.scrollTo(0, 0)
     }
   }, [updateFeed])

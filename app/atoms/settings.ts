@@ -17,3 +17,7 @@ export const useShowMuteUserInSearch = () => useAtom(showMuteUserInSearch)
 
 const muteWords = atomWithStorage<string[]>('muteWords', [])
 export const useMuteWords = () => useAtom(muteWords)
+
+const disableScrollOnLoadButtonPress = atomWithStorage('disableScrollOnLoadButtonPress', false)
+
+export const useDisableScrollOnLoadButtonPress = () => useAtom(disableScrollOnLoadButtonPress)
