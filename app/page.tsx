@@ -147,7 +147,6 @@ const HomePage = () => {
         >
           <div
             style={{
-              zIndex: 1,
               flex: 1,
               height: '100%',
               width: '100%',
@@ -184,7 +183,6 @@ const HomePage = () => {
           </div>
           <div
             style={{
-              zIndex: 1,
               flex: 1,
               height: '100%',
               width: '100%',
@@ -225,7 +223,6 @@ const HomePage = () => {
           </div>
           <div
             style={{
-              zIndex: 1,
               flex: 1,
               height: '100%',
               width: '100%',

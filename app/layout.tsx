@@ -1,7 +1,5 @@
 import { Providers } from './providers'
 import 'react-medium-image-zoom/dist/styles.css'
-import { InsertBackgroundImage } from "./InsertBackgroundImage";
-
 
 export default function RootLayout({
   children,
@@ -26,8 +24,14 @@ export default function RootLayout({
         ></meta>
           <meta name="twitter:card" content="summarylargeimage"></meta>
       </head>
-      <body>
-        <InsertBackgroundImage />
+      <body
+        style={{
+          backgroundImage: 'url(/images/backgroundimg/sky_00421.jpg)',
+          backgroundSize: 'cover',
+          backgroundColor: 'rgba(255,255,255,0.1)',
+          backgroundBlendMode: 'lighten',
+        }}
+      >
         <Providers>
             {children}
             <div style={{position:"absolute", right:10, bottom:10}}>
