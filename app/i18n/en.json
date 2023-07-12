@@ -34,9 +34,14 @@
     "LoadNewPosts": "Load New Posts",
     "Follow": "Follow",
     "Following": "Following",
-    "UnFollow": "UnFollow"
+    "UnFollow": "UnFollow",
+    "About": "About"
   },
   "Modal": {
+    "About": {
+      "Title": "About",
+      "DeisnConcept": "Design Concept"
+    },
     "Settings": {
       "Title": "Setting",
       "Language": "Language",

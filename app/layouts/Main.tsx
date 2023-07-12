@@ -20,7 +20,7 @@ import {
 } from '@nextui-org/react'
 import { PostButton } from '@/components/PostButton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGear, faHome, faSignOut, faInbox } from '@fortawesome/free-solid-svg-icons'
+import { faGear, faHome, faSignOut, faInbox, faCircleInfo } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link'
 import { useAgent } from '@/atoms/agent'
 import { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
@@ -29,6 +29,7 @@ import { Notification } from '@atproto/api/dist/client/types/app/bsky/notificati
 import { NotificationCardList } from '@/components/NotificationCardList'
 import { useShowPostNumbers } from '@/atoms/settings'
 import { SetttingsModal } from '@/components/SettingsModal'
+import { AboutModal } from '@/components/AboutModal'
 import { PostView } from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 import { PostModal } from '@/components/PostModal'
 import { PostRecordPost } from '@/types/posts'
@@ -76,6 +77,7 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
   const [profile, setProfile] = useState<ProfileViewDetailed | null>(null)
   const [logoutLoading, setLogoutLoading] = useState(false)
   const [settingsModal, setSettingsModal] = useState(false)
+  const [aboutModal, setAboutModal] = useState(false)
   const [notificationCount, setNotificationCount] = useState(0)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loadingNotifications, setLoadingNotifications] = useState(false)
@@ -222,6 +224,10 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
         open={settingsModal}
         onClose={() => setSettingsModal(false)}
       />
+      <AboutModal
+          open={aboutModal}
+          onClose={() => setAboutModal(false)}
+      />
 
       <LeftActionsContainer>
         <div style={{ display: 'none' }}>
@@ -321,6 +327,8 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
                   ? logout()
                   : key === 'settings'
                   ? setSettingsModal(true)
+                  : key === 'about'
+                  ? setAboutModal(true)
                   : null
               }
             >
@@ -333,10 +341,16 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
                 </Link>
               </Dropdown.Item>
               <Dropdown.Item
-                key="settings"
-                icon={<FontAwesomeIcon icon={faGear} />}
+                  key="settings"
+                  icon={<FontAwesomeIcon icon={faGear} />}
               >
                 <Text>{t("Button.Settings")}</Text>
+              </Dropdown.Item>
+              <Dropdown.Item
+                  key="about"
+                  icon={<FontAwesomeIcon icon={faCircleInfo} />}
+              >
+                <Text>{t("Button.About")}</Text>
               </Dropdown.Item>
               <Dropdown.Item
                 key="logout"

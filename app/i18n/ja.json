@@ -34,9 +34,13 @@
     "LoadNewPosts": "新しい投稿を見る",
     "Follow": "フォロー",
     "Following": "フォロー中",
-    "UnFollow": "フォロー解除"
+    "UnFollow": "フォロー解除",
+    "About": "Ucho-ten について"
   },
   "Modal": {
+    "About": {
+      "Title": "Ucho-ten について"
+    },
     "Settings": {
       "Title": "設定",
       "Language": "言語",
