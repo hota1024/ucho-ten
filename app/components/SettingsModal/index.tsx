@@ -3,6 +3,7 @@ import {
   useShowMuteUserInNotifications,
   useShowMuteUserInSearch,
   useDisableScrollOnLoadButtonPress,
+  useAppearanceColorMode
 } from '@/atoms/settings'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -49,6 +50,7 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
   const [muteWord, setMuteWord] = useState('')
   const muteWordInputRef = useRef<HTMLInputElement>(null)
   const [disableScrollOnLoadButtonPress, setDisableScrollOnLoadButtonPress] = useDisableScrollOnLoadButtonPress()
+  const [appearanceColorMode, setAppearanceColorMode] = useAppearanceColorMode()
   const isPostable = muteWord.length > 0
   const { t, i18n } = useTranslation();
   const lngs = {
@@ -115,6 +117,33 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
               >
                 <Dropdown.Item key='en'>English</Dropdown.Item>
                 <Dropdown.Item key='ja'>日本語</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        </Row>
+        <Row align="center">
+          <Col>
+            <Text size={20} b>
+              Appearance color
+            </Text>
+          </Col>
+          <div>
+            <Dropdown>
+              <Dropdown.Button light css={{ tt: "capitalize" }}>
+                {appearanceColorMode}
+              </Dropdown.Button>
+              <Dropdown.Menu
+                  aria-label="Multiple selection actions"
+                  selectionMode="single"
+                  disallowEmptySelection
+                  selectedKeys={'light'}
+                  onSelectionChange={e => {
+                    //@ts-ignore
+                    setAppearanceColorMode(e.anchorKey)
+                  }}
+              >
+                <Dropdown.Item key='light'>Light</Dropdown.Item>
+                <Dropdown.Item key='dark'>Dark</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </div>

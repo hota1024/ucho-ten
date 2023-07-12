@@ -10,6 +10,8 @@ import {
 } from '@nextui-org/react'
 import { Provider as JotaiProvider } from 'jotai'
 import "./i18n/config"; //i18
+import ChangeAppearanceColor from "./ChangeAppearanceColor";
+
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const { isBrowser } = useSSR()
@@ -20,7 +22,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return isBrowser ? (
     <JotaiProvider>
-      <NextUIProvider>{children}</NextUIProvider>
+      <ChangeAppearanceColor>
+        <NextUIProvider>
+          {children}
+        </NextUIProvider>
+      </ChangeAppearanceColor>
     </JotaiProvider>
   ) : (
     <></>

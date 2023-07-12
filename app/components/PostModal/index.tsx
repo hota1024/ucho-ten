@@ -32,6 +32,7 @@ import imageCompression from "browser-image-compression";
 import { useDropzone, FileWithPath } from 'react-dropzone'
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from "react-i18next";
+import {useAppearanceColorMode} from "@/atoms/settings";
 
 
 
@@ -97,7 +98,7 @@ const URLCardLink = styled('div', {
 
 
 const PostTextarea = styled('textarea', {
-  background: '#efefef',
+  //background: '#efefef',
   border: '1px solid #eaeaea',
   borderRadius: '$sm',
   resize: 'none',
@@ -134,6 +135,7 @@ export const PostModal = (props: PostModalProps) => {
   const [detectURLs, setDetectURLs] = useState<string[]>([])
   const [isSettingURLCard, setIsSettingURLCard] = useState(false)
   const { t, i18n } = useTranslation()
+  const [appearanceColorMode, setAppearanceColorMode] = useAppearanceColorMode();
 
 
   const handlePostClick = async () => {
@@ -357,7 +359,7 @@ export const PostModal = (props: PostModalProps) => {
               onKeyDown={isPostable ? handleKeyDown : undefined}
               onClick={handleTextareaClick}
               onFocus={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
-              style={{border: isDragActive ? '2px dashed #000' : 'none', width:'100%', height:'100%'}}
+              style={{border: isDragActive ? '2px dashed #000' : 'none', width:'100%', height:'100%', backgroundColor: appearanceColorMode === 'dark' ? '#3b3b3b' : '#fff'}}
           />
         </div>
       </Modal.Body>

@@ -283,6 +283,7 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
             <Dropdown.Trigger>
               <div
                 style={{
+                  zIndex: 1,
                   display: 'flex',
                   alignItems: 'center',
                   background: 'rgba(255, 255, 255, 0.2)',
