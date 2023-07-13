@@ -65,7 +65,7 @@ export const FeedView = (props: FeedViewProps) => {
     const thread = await agent.getPostThread({
       uri: feed.post.uri,
     })
-
+    //console.log(thread)
     const post = thread.data.thread
 
     if (AppBskyFeedDefs.isThreadViewPost(post)) {
@@ -87,11 +87,37 @@ export const FeedView = (props: FeedViewProps) => {
     })
 
     const post = thread.data.thread
-
+    //console.log(thread)
     setReplyParent(post.post as PostView)
 
     return post.post as ReturnType<
       ComponentProps<typeof PostViewCard>['onFetch']
+    >
+  }
+
+  const fetchReplyRoot = async () => {
+    if (!agent) {
+      throw new Error('agent is not ready')
+    }
+
+    const thread = await agent.getPostThread({
+      uri: replyParent?.uri! as string,
+    })
+
+    const post = thread.data.thread
+
+    function getDeepestParent(obj: any): any {
+      if (!obj.parent) {
+        return obj;
+      }
+      return getDeepestParent(obj.parent);
+    }
+    const deepestParent = getDeepestParent(post);
+    //console.log(deepestParent);
+    setReplyParentRoot(deepestParent.post as PostView)
+
+    return deepestParent.post as ReturnType<
+        ComponentProps<typeof PostViewCard>['onFetch']
     >
   }
 
@@ -127,13 +153,13 @@ export const FeedView = (props: FeedViewProps) => {
                                         hasReply
                                         post={item}
                                         //reasonRepost={reasonRepost}
-                                        parentReply={nestedReplies[nestedReplies.length - 2]}
+                                        parentReply={undefined}
                                         parentIsRoot={false}
                                         rootReply={item}
                                         showLikeCount
                                         showReplyCount
                                         showRepostCount
-                                        onFetch={fetchReplyParent}
+                                        onFetch={fetchReplyRoot}
                                         nestedReply={true}
                                         postType={"thread"}
                                         isRoot={true}
@@ -187,7 +213,7 @@ export const FeedView = (props: FeedViewProps) => {
                                   showLikeCount
                                   showReplyCount
                                   showRepostCount
-                                  onFetch={fetchReplyParent}
+                                  onFetch={fetchReplyRoot}
                                   isRoot={true}
                                   postType={"thread"}
                               />
@@ -209,7 +235,7 @@ export const FeedView = (props: FeedViewProps) => {
                                         showLikeCount
                                         showReplyCount
                                         showRepostCount
-                                        onFetch={fetchReplyParent}
+                                        onFetch={fetchFeed}
                                         nestedReply={true}
                                         postType={"thread"}
                                         isRoot={item.cid === props.feed.reply?.root.cid}
@@ -245,7 +271,7 @@ export const FeedView = (props: FeedViewProps) => {
                                               showLikeCount
                                               showReplyCount
                                               showRepostCount
-                                              onFetch={fetchReplyParent}
+                                              onFetch={fetchReplyRoot}
                                               postType={"thread"}
                                           />
                                         </PostContainer>
