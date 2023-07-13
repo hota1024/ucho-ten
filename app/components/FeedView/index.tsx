@@ -337,7 +337,7 @@ export const FeedView = (props: FeedViewProps) => {
                                           />
                                         </PostContainer>
                                       </>):
-                                      (<PostContainer>
+                                      (feed.post ?(<PostContainer>
                                         <PostViewCard
                                             post={feed.post}
                                             reasonRepost={reasonRepost}
@@ -347,7 +347,19 @@ export const FeedView = (props: FeedViewProps) => {
                                             onFetch={fetchFeed}
                                             postType={"post"}
                                         />
-                                      </PostContainer>)
+                                      </PostContainer>) :
+                                          (<PostContainer>
+                                            <PostViewCard
+                                                // @ts-ignore
+                                                post={feed}
+                                                reasonRepost={undefined}
+                                                showLikeCount
+                                                showReplyCount
+                                                showRepostCount
+                                                onFetch={fetchFeed}
+                                                postType={"post"}
+                                            />
+                                          </PostContainer>))
                               )
                       )
                 )
