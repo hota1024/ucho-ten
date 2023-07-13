@@ -25,6 +25,7 @@ import {
     TimelineFetcher,
     useTimelineView,
 } from '@/components/TimelineView/useTimelineView'
+import {FeedView} from "@/components/ThreadFeedView";
 
 /**
  * SetttingsModal props.
@@ -44,6 +45,7 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
     const [threadData, setThreadData] = useState<FeedViewPost | NotFoundPost | BlockedPost | { [k: string]: unknown; $type: string; } | undefined>(undefined);
     const [nestedReplies, setNestedReplies] = useState<any[]>([])
     const [isProssecing, setIsProcessing] = useState(false)
+    const [returnThreadData, setReturnThreadData] = useState<any[]>([])
 
     useEffect(() => {
         if (!open) {
@@ -58,17 +60,17 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
 
             try {
                 setIsProcessing(true);
+                console.log(threadId)
                 const result = await agent.app.bsky.feed.getPostThread({
                     uri: threadId,
                 });
 
                 if (result && result.data && result.data.thread) {
                     const postThread = result.data.thread;
+                    setReturnThreadData([result.data])
                     setThreadData(postThread);
-                    console.log(postThread);
 
                     const nestedReplies = printNestedReplies(postThread?.replies as any);
-                    console.log(nestedReplies);
                     setNestedReplies(nestedReplies);
                 } else {
                     throw new Error('Invalid post thread data');
@@ -82,7 +84,6 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
 
         function printNestedReplies(posts: any[], result: any[] = []): any[] {
             if(posts !== undefined){
-                console.log(posts)
                 for (const post of posts) {
                     result.push(post.post);
 
@@ -97,22 +98,6 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
         if (open) {
             setIsProcessing(true);
             getPostThread()
-                .then((result) => {
-                    //@ts-ignore
-                    const postThread = result.data.thread;
-                    setThreadData(postThread);
-                    console.log(postThread);
-
-                    const nestedReplies = printNestedReplies(postThread.replies);
-                    console.log(nestedReplies);
-                    setNestedReplies(nestedReplies);
-                })
-                .catch((error) => {
-                    console.error('Error retrieving post thread:', error);
-                })
-                .finally(() => {
-                    setIsProcessing(false);
-                });
         }
 
     }, [agent, open, setThreadData, setIsProcessing, setNestedReplies]);
@@ -160,44 +145,9 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
                 </Text>
             </Modal.Header>
             <Modal.Body>
-                <div style={{width: '100%'}}>
-
-                    <div>
-                        <span style={{overflow:"hidden"}}>
-                            <img src={((threadData?.post as any)?.author as any)?.avatar as string ? ((threadData?.post as any)?.author as any)?.avatar as string : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'} style={{height:"30px", borderRadius:"30px", position:"relative", top:"10px"}}></img>
-                        </span>
-                        <span style={{fontWeight: 'bold'}}>
-                            {((threadData?.post as any)?.author as any)?.displayName as string}
-                        </span>
-                        <span style={{color:'gray'}}>
-                            {" @"}{((threadData?.post as any)?.author as any)?.handle as string}
-                        </span>
-                    </div>
-                    <div style={{width:`calc(100% - 30px)`, marginLeft:'30px'}}>
-                        {((threadData?.post as any)?.record as any)?.text as string}
-                    </div>
-                </div>
-                {nestedReplies.map((post, index) => {
-                    console.log(post)
-                    return(
-                        <div key={index} style={{width: '100%'}}>
-                            <div>
-                                <span style={{overflow:"hidden"}}>
-                                    <img src={post.author.avatar ? post.author.avatar : '/images/profileDefaultIcon/kkrn_icon_user_6.svg'} style={{height:"30px", borderRadius:"30px", position:"relative", top:"10px"}}></img>
-                                </span>
-                                <span style={{fontWeight: 'bold'}}>
-                                {post.author.displayName}
-                                </span>
-                                <span style={{color:'gray'}}>
-                                    {" @"}{post.author.handle}
-                                </span>
-                            </div>
-                            <div style={{width:`calc(100% - 30px)`, marginLeft:'30px'}}>
-                                {post.record.text}
-                            </div>
-                        </div>
-                    )
-                })}
+                <Row css={{ my: '$8' , overflow:'hidden'}}>
+                    <FeedView feed={returnThreadData} />
+                </Row>
             </Modal.Body>
             <Modal.Footer>
                 <Button onPress={onClose} flat css={{ width: '100%' }}>
