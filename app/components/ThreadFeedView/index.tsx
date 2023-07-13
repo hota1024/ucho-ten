@@ -37,31 +37,11 @@ export const FeedView = (props: FeedViewProps) => {
     const [agent] = useAgent()
     const [feed, setFeed] = useState(props.feed)
     const [replyParent, setReplyParent] = useState(props.feed.reply?.parent)
-    const [replyParentRoot, setReplyParentRoot] = useState(props.feed.reply?.root)
-    const [hasNested, setHasNested] = useState(hasNestedReply(props))
-    const printReplies = (reply = feed?.reply?.parent, level = 0): any[] => {
-        const indent = "  ".repeat(level);
-        const replies: any[] = [];
-
-        if (reply) {
-            replies.unshift(reply);
-            if (reply.reply) {
-                //@ts-ignore
-                const nestedReplies = printReplies(reply.reply, level + 1);
-                replies.unshift(...nestedReplies);
-            }
-        }
-
-        return replies
-    }
-
-    const [nestedReplies, setNestedReplies] = useState(printReplies)
-
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const reasonRepost = useMemo(() => feed.reason as ReasonRepost, [])
 
-    const fetchFeed = async () => {
+    const fetchFeed = async (feed: any): Promise<PostView> => {
         if (!agent) {
             throw new Error('agent is not ready')
         }
@@ -81,13 +61,13 @@ export const FeedView = (props: FeedViewProps) => {
         >
     }
 
-    const fetchReplyParent = async () => {
+    const fetchReplyParent = async (feed: any) : Promise<PostView> => {
         if (!agent) {
             throw new Error('agent is not ready')
         }
 
         const thread = await agent.getPostThread({
-            uri: replyParent?.uri! as string,
+            uri: feed.uri! as string,
         })
 
         const post = thread.data.thread
@@ -98,9 +78,9 @@ export const FeedView = (props: FeedViewProps) => {
             ComponentProps<typeof PostViewCard>['onFetch']
         >
     }
-    const rootPost = props.feed[0].thread.post
-    console.log(rootPost)
-    console.log(props.feed[0])
+    //const rootPost = props.feed[0].thread.post
+    //console.log(rootPost)
+    //console.log(props.feed[0])
 
     const renderPost = (post: any): JSX.Element => {
         console.log(post)
@@ -115,7 +95,7 @@ export const FeedView = (props: FeedViewProps) => {
                     showLikeCount
                     showReplyCount
                     showRepostCount
-                    onFetch={fetchFeed}
+                    onFetch={() => fetchReplyParent(post.post)}
                     postType={"post"}
                 />
                 {post.replies && post.replies.length > 0 && (
@@ -131,7 +111,7 @@ export const FeedView = (props: FeedViewProps) => {
                                     showLikeCount
                                     showReplyCount
                                     showRepostCount
-                                    onFetch={fetchFeed}
+                                    onFetch={() => fetchFeed(post.replies[0])}
                                     postType={"post"}
                                 />
                                 {post.replies[0].replies && [...post.replies[0].replies].reverse().map((reply: any) => renderPost(reply))}
@@ -139,7 +119,7 @@ export const FeedView = (props: FeedViewProps) => {
                         ) : (
                             <PostContainer>
                                 {[...post.replies].reverse().map((reply: any) => {
-                                    console.log(reply)
+                                    //console.log(reply)
                                     return renderPost(reply);
                                 })}
                             </PostContainer>

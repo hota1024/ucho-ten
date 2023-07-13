@@ -94,9 +94,8 @@ export const PostViewCard = (props: PostViewCardProps) => {
         })
         let fetchedPost = await onFetch()
 
-
+        console.log(fetchedPost)
         if (fetchedPost.viewer?.like) {
-
             await agent.deleteLike(fetchedPost.viewer?.like)
             setIsReactionProcessing(false)
         } else {
