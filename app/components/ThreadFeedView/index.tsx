@@ -36,7 +36,7 @@ function hasNestedReply(post: any) {
 export const FeedView = (props: FeedViewProps) => {
     const [agent] = useAgent()
     const [feed, setFeed] = useState(props.feed)
-    const [replyParent, setReplyParent] = useState(props.feed.reply?.parent)
+    const [replyParent, setReplyParent] = useState(props.feed?.reply?.parent)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const reasonRepost = useMemo(() => feed.reason as ReasonRepost, [])
@@ -83,7 +83,7 @@ export const FeedView = (props: FeedViewProps) => {
     //console.log(props.feed[0])
 
     const renderPost = (post: any): JSX.Element => {
-        console.log(post)
+
         return (
             <>
                 <PostViewCard
@@ -117,12 +117,16 @@ export const FeedView = (props: FeedViewProps) => {
                                 {post.replies[0].replies && [...post.replies[0].replies].reverse().map((reply: any) => renderPost(reply))}
                             </>
                         ) : (
-                            <PostContainer>
-                                {[...post.replies].reverse().map((reply: any) => {
-                                    //console.log(reply)
-                                    return renderPost(reply);
-                                })}
-                            </PostContainer>
+                            <>
+                                {[...post.replies]
+                                    .reverse()
+                                    .map((reply: any) => (
+                                        // eslint-disable-next-line react/jsx-key
+                                        <div key={reply.post.cid} style={{ margin: "0 0 0 auto", width: '94%' }}>
+                                            {renderPost(reply)}
+                                        </div>
+                                    ))}
+                            </>
                         )}
                     </>
                 )}
@@ -131,7 +135,8 @@ export const FeedView = (props: FeedViewProps) => {
     };
 
 
-    return (<div style={{height:'100%', width:'100%', position:'relative', left:'-10px'}}>
+
+    return (<div style={{height:'100%', width:'100%', position:'relative'}}>
                 {renderPost(props.feed[0].thread)}
             </div>
             )

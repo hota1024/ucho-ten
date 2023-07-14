@@ -43,7 +43,7 @@ import { ProfileViewBasic } from '@atproto/api/dist/client/types/app/bsky/actor/
 import { AppBskyEmbedRecord, AppBskyEmbedImages } from '@atproto/api'
 import { useAgent } from '@/atoms/agent'
 import { ImagesGrid } from '../ImagesGrid'
-import {SetttingsModal} from "@/components/PostThreadModal"
+import {PostThreadModal} from "@/components/PostThreadModal"
 import { useTranslation } from "react-i18next";
 import {DetectPlayContentURL} from "@/components/DetectPlayContentURL";
 
@@ -156,7 +156,7 @@ const URLCard = styled('div', {
   alignItems: 'center',
   color: '$gray800',
   '&:hover': {
-    backgroundColor: '$gray200',
+    backgroundColor: '$gray400',
   }
 })
 
@@ -304,29 +304,15 @@ export const Post = (props: PostProps) => {
   const [agent] = useAgent()
   const [followHover, setFollowHover] = useState(false)
   const [showEmbedImages, setShowEmbedImages] = useState(!isEmbed)
-
   const images = AppBskyEmbedImages.isView(embed) ? embed.images ?? [] : []
-
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
-
   const [isExpanded, setIsExpanded] = useState(false)
   const [isLongPress, setIsLongPress] = useState(false)
-
-  const [showMenu, setShowMenu] = useState(false);
-  const [mouseX, setMouseX] = useState(0);
-  const [mouseY, setMouseY] = useState(0);
   const [saveParentReply, setSaveParentReply] = useState(parentReply)
-  const [settingsModal, setSettingsModal] = useState(false)
+  const [postThreadModal, setPostThreadModal] = useState(false)
   const { t } = useTranslation()
 
-
-  //console.log(saveParentReply)
-
-
-  if(embed){
-    //console.log(embed)
-  }
 
   const updateElapsed = useCallback(() => {
     if (!time) return 0
@@ -353,9 +339,6 @@ export const Post = (props: PostProps) => {
     }
   }, [time, updateElapsed])
 
-  if (!author) {
-    return <></>
-  }
 
   const getOGP = async (url : string) => {
     fetch(url).then(res => res.text()).then(text => {
@@ -379,39 +362,43 @@ export const Post = (props: PostProps) => {
   const handleLongPress = () => {
     console.log(props);
     setIsExpanded(true);
+    setPostThreadModal(true)
   };
+  const handleMouseDown = useCallback(
+      (e: React.MouseEvent<HTMLDivElement>) => {
+        setIsLongPress(true);
+        const timer = setTimeout(() => {
+          handleLongPress();
+        }, 500);
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    setIsLongPress(true);
-    const timer = setTimeout(() => {
-      handleLongPress();
-      setShowMenu(true);
-      setMouseX(e.clientX);
-      setMouseY(e.screenY - e.pageY);
-    }, 300);
+        document.addEventListener('mouseup', () => {
+          setIsLongPress(false);
+          setIsExpanded(false);
+          clearTimeout(timer);
+        });
+        document.addEventListener('mousemove', () => {
+          setIsLongPress(false);
+          clearTimeout(timer);
+        });
+      },
+      []
+  )
+  const handleChildMouseDown = useCallback(
+      (e: React.MouseEvent<HTMLSpanElement>) => {
+        setIsLongPress(false);
+        e.stopPropagation();
+      },
+      []
+  );
 
-    document.addEventListener('mouseup', () => {
-      setIsLongPress(false);
-      setIsExpanded(false);
-      clearTimeout(timer);
-    });
-    document.addEventListener('mousemove', () => {
-      setIsLongPress(false);
-      clearTimeout(timer);
-    });
-  };
-
-  const handleChildMouseDown = (e: React.MouseEvent<HTMLSpanElement>) => {
-    setIsLongPress(false);
-    e.stopPropagation();
-  };
 
   return (
       <>
-        <SetttingsModal
-            open={settingsModal}
-            onClose={() => setSettingsModal(false)}
+        <PostThreadModal
+            open={postThreadModal}
+            onClose={() => setPostThreadModal(false)}
             threadId={rootReply?.uri as string}
+            postId={aturi as string}
         />
         <Row
             align="stretch"
@@ -421,26 +408,15 @@ export const Post = (props: PostProps) => {
               borderRadius: '$md',
               padding: '$3',
               backgroundColor: isExpanded ? '$gray400' : 'rgba(0,0,0,0)',
+              '&:hover': {
+                backgroundColor: isEmbed ? '$gray300' : '$gray200',
+                cursor: isLongPress ? 'grabbing' : 'grab',
+              },
             }}
             onMouseDown={handleMouseDown}
         >
-          {showMenu && (
-              /*
-              <div
-                style={{
-                    position: 'absolute',
-                    backgroundColor: 'white',
-                    zIndex: 10000,
-                }}
-              >
-                {author.did === myDid && (<div>delete post</div>)}
-                {author.did !== myDid && (<div>report</div>)}
-                {author.did !== myDid && (<div>dislike</div>)}
-              </div>*/
-              <></>
-          )}
           {hasReply && <ReplyLine />}
-          <div onMouseDown={handleChildMouseDown}>
+          <div onMouseDown={handleChildMouseDown} style={{width:!isEmbed ? '50px' : '28px', height:!isEmbed ? '50px' : '28px'}}>
             <Tooltip
                 placement="right"
                 isDisabled={disableTooltip}
@@ -510,7 +486,7 @@ export const Post = (props: PostProps) => {
                 </Link>
             )}
             {!isRoot && parentReply != undefined && (
-                <div style={{width:'485px'}} onClick={() => setSettingsModal(true)}>
+                <div style={{width:'485px'}} onClick={() => setPostThreadModal(true)}>
 
                   <a style={{width:"100%"}}>
                     <div
@@ -740,7 +716,7 @@ export const Post = (props: PostProps) => {
             )}
             {isRoot && (
                 <a>
-                  <div onClick={() => setSettingsModal(true)}>
+                  <div onClick={() => setPostThreadModal(true)}>
                     {t("Timeline.Post.ReadMore")}
                   </div>
                 </a>

@@ -1,3 +1,4 @@
+import React from 'react'
 import { Record } from '@atproto/api/dist/client/types/app/bsky/feed/post'
 import {
     FeedViewPost,
@@ -9,6 +10,8 @@ import {
     faHeart as faHeartRegular,
     faCircle as faCircleRegular,
     faSquare as faSquareRegular,
+    faFlag as faFlagRegular,
+    faTrashCan as faTrashCanRegular,
 } from '@fortawesome/free-regular-svg-icons'
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons"
 import {
@@ -17,6 +20,8 @@ import {
     faCircle as faCircleSolid,
     faSquare as faSquareSolid,
     faReply as faReplySolid,
+    faEllipsis as faEllipsisSolid,
+    faShieldHalved as faShieldHalvedSolid,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -34,6 +39,7 @@ import {
     Text,
     Dropdown,
     Popover,
+    Loading
 } from '@nextui-org/react'
 import Link from 'next/link'
 import { useState, useMemo, useCallback, useEffect } from 'react'
@@ -43,9 +49,11 @@ import { ProfileViewBasic } from '@atproto/api/dist/client/types/app/bsky/actor/
 import { AppBskyEmbedRecord, AppBskyEmbedImages } from '@atproto/api'
 import { useAgent } from '@/atoms/agent'
 import { ImagesGrid } from '../ImagesGrid'
-import {SetttingsModal} from "@/components/PostThreadModal"
+import {PostThreadModal} from "@/components/PostThreadModal"
 import { useTranslation } from "react-i18next";
 import {DetectPlayContentURL} from "@/components/DetectPlayContentURL";
+import { ReportModal } from "@/components/ReportModal"
+
 
 
 const RepostByLabel = styled('div', {
@@ -139,12 +147,23 @@ const BlueDot = styled('div', {
 })
 
 const ReplyLine = styled('div', {
-    position: 'relative',
-    borderLeft: '2px solid $gray700',
-    left: 24,
+    zIndex: '0',
+    position: 'absolute',
+    borderLeft: '2px solid $gray500',
+    left: 28,
     top: 50,
     bottom: 2,
+    height:"999px"
 })
+
+const SideReplyLine = styled('div', {
+    position: 'absolute',
+    borderTop: '2px solid $gray500',  // 上辺を表すborderTopプロパティを使用
+    left: -3,
+    top: 30,
+    right: 470,  // rightプロパティを追加して要素の横幅を指定
+    height: '2px'  // 高さを2pxに指定
+});
 
 const URLCard = styled('div', {
     height: '100px',
@@ -217,6 +236,7 @@ interface PostProps {
     rootReply?: any
     postUri?: string
     aturi?: string
+    postCid?: string
     reasonRepost?: ReasonRepost
 
     author: ProfileViewBasic
@@ -267,6 +287,7 @@ export const ThreadPost = (props: PostProps) => {
         rootReply,
         aturi,
         postUri,
+        postCid,
         reasonRepost,
         author,
         record,
@@ -318,6 +339,9 @@ export const ThreadPost = (props: PostProps) => {
     const [mouseY, setMouseY] = useState(0);
     const [saveParentReply, setSaveParentReply] = useState(parentReply)
     const [settingsModal, setSettingsModal] = useState(false)
+    const [reportModal, setReportModal] = useState(false)
+    const [isDeleteProcessing, setIsDeleteProcessing] = useState(false)
+    const [isDeleted, setIsDeleted] = useState(false)
     const { t } = useTranslation()
 
 
@@ -376,6 +400,20 @@ export const ThreadPost = (props: PostProps) => {
         })
     }
 
+    const handleDeleteButtonClick = async () => {
+        //const result = await agent?.deletePost(aturi as string)
+        setIsDeleteProcessing(true)
+        try{
+            const result = await agent?.deletePost(aturi as string)
+            console.log(result)
+            setIsDeleteProcessing(false)
+            setIsDeleted(true)
+        }catch(e){
+            console.log(e)
+            setIsDeleteProcessing(false)
+        }
+    }
+
     const handleLongPress = () => {
         console.log(props);
         setIsExpanded(true);
@@ -405,13 +443,20 @@ export const ThreadPost = (props: PostProps) => {
         setIsLongPress(false);
         e.stopPropagation();
     };
-
+    console.log(myDid)
+    console.log(author.did)
     return (
         <>
-            <SetttingsModal
+            <PostThreadModal
                 open={settingsModal}
                 onClose={() => setSettingsModal(false)}
                 threadId={rootReply?.uri as string}
+            />
+            <ReportModal
+                open={reportModal}
+                onClose={() => setReportModal(false)}
+                aturi={aturi || ''}
+                postCid={postCid || ''}
             />
             <Row
                 align="stretch"
@@ -420,7 +465,10 @@ export const ThreadPost = (props: PostProps) => {
                     border: isEmbed ? '2px solid $gray400' : undefined,
                     borderRadius: '$md',
                     padding: '$3',
-                    backgroundColor: isExpanded ? '$gray400' : 'rgba(0,0,0,0)',
+                    backgroundColor: isExpanded ? '$gray400' : '$white',
+                    '&:hover': {
+                        backgroundColor: '$gray100',
+                    }
                 }}
                 onMouseDown={handleMouseDown}
             >
@@ -440,6 +488,7 @@ export const ThreadPost = (props: PostProps) => {
                     <></>
                 )}
                 {hasReply && <ReplyLine />}
+                {false && hasReply && <SideReplyLine />}
                 <div onMouseDown={handleChildMouseDown}>
                     <Tooltip
                         placement="right"
@@ -543,6 +592,45 @@ export const ThreadPost = (props: PostProps) => {
                                     {elapsed && `${timeUnit(elapsed, { noZero: true })[0]}`}
                                 </Link>
                             </PostDate>
+                            <div style={{ height: '16px', width: '18px', position: 'absolute', right: 0 }}>
+                                <Dropdown placement="bottom-left">
+                                    <Dropdown.Trigger>
+                                        <PostAction>
+                                            <FontAwesomeIcon
+                                                //onClick={onRepostClick}
+                                                icon={faEllipsisSolid}
+                                                //color="#787F85"
+                                                style={{ cursor: 'pointer' }}
+                                            />
+                                            {showRepostCount && repostCount}
+                                        </PostAction>
+                                    </Dropdown.Trigger>
+                                    <Dropdown.Menu
+                                        onAction={(key) => {
+                                            if (key === 'report') {
+                                                setReportModal(true)
+                                            } else if (key === 'block') {
+                                                console.log('blocked')
+                                            } else if (key === 'delete') {
+                                                if(!isDeleteProcessing){
+                                                    handleDeleteButtonClick()
+                                                }
+                                            }
+                                        }}
+                                        disabledKeys={myDid === author.did && !isDeleted ? ['report', 'block'] : (isDeleted && myDid === author.did ? ['report', 'block', 'delete'] : ['delete'])}
+                                    >
+                                        <Dropdown.Item key="report">
+                                            <FontAwesomeIcon icon={faFlagRegular}/>{" "}Report
+                                        </Dropdown.Item>
+                                        <Dropdown.Item key="delete" withDivider color="error">
+                                            {isDeleteProcessing && <Loading type="points" color="currentColor" size="sm" />}
+                                            {!isDeleteProcessing && !isDeleted && (<>
+                                                <FontAwesomeIcon icon={faTrashCanRegular}/>{" "}Delete post
+                                            </>)}
+                                        </Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </div>
                         </PostInfo>
                     )}
                     {isEmbed && quotedUserDID !== embedUserDID && (
@@ -735,8 +823,8 @@ export const ThreadPost = (props: PostProps) => {
                                     ></FontAwesomeIcon>
                                 </BlueDot>
                             </Col>
-
                         </Row>
+
                     )}
                     {isRoot && (
                         <a>

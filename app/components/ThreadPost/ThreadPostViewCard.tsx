@@ -17,6 +17,7 @@ interface PostViewCardProps {
     rootReply?: any
 
     hasReply?: boolean
+    sideHasReply?: boolean
 
     showReplyCount?: boolean
     showRepostCount?: boolean
@@ -34,6 +35,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
         post,
         reasonRepost,
         hasReply,
+        sideHasReply,
         rootReply,
         parentIsRoot,
         parentReply,
@@ -211,6 +213,7 @@ export const PostViewCard = (props: PostViewCardProps) => {
                 myDid={myDid}
                 postUri={post.uri.split('/').pop()}
                 aturi={post.uri}
+                postCid={post.cid}
                 record={record}
                 embed={embed}
                 author={post.author}
