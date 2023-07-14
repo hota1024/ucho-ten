@@ -47,7 +47,6 @@ export const ReportModal = (props: ReportModalProps) => {
     const [reportReasonType, setReportReasonType] = useState<string>('')
     const [isReportSending, setIsReportSending] = useState<boolean>(false)
     const [isReportSuccess, setIsReportSuccess] = useState<boolean | null>(null);
-    console.log(aturi, postCid)
     const reasonList = {
         spam:{reasonType:'com.atproto.moderation.defs#reasonSpam',reason:'スパム行為'},
         sexual:{reasonType:'com.atproto.moderation.defs#reasonSexual',reason:'望まない性的コンテンツ'},
@@ -147,7 +146,7 @@ export const ReportModal = (props: ReportModalProps) => {
                 <Grid.Container>
                     <Grid style={{width:'100%',height:'100%'}}>
                         <Textarea width={'100%'}
-                                  style={{minHeight:'160px'}}
+                                  minRows={9}
                                   bordered
                                   initialValue={reportReasonText}
                                   status={ reportReasonType === "com.atproto.moderation.defs#reasonOther" && reportReasonText.length == 0 ? 'error' : 'default'}
