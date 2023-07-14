@@ -46,6 +46,7 @@ import { ImagesGrid } from '../ImagesGrid'
 import {PostThreadModal} from "@/components/PostThreadModal"
 import { useTranslation } from "react-i18next";
 import {DetectPlayContentURL} from "@/components/DetectPlayContentURL";
+import useDarkMode from "use-dark-mode";
 
 
 const RepostByLabel = styled('div', {
@@ -180,7 +181,7 @@ const URLCardDetailContent = styled('div', {
 const URLCardTitle = styled('div', {
   fontSize: '$sm',
   fontWeight: 'bold',
-  color: '$gray800',
+  //color: '$gray800',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
@@ -311,6 +312,7 @@ export const Post = (props: PostProps) => {
   const [isLongPress, setIsLongPress] = useState(false)
   const [saveParentReply, setSaveParentReply] = useState(parentReply)
   const [postThreadModal, setPostThreadModal] = useState(false)
+  const darkMode = useDarkMode(false)
   const { t } = useTranslation()
 
 
@@ -610,7 +612,7 @@ export const Post = (props: PostProps) => {
                     </URLCardThumb>
                     <URLCardDetail>
                       <URLCardDetailContent>
-                        <URLCardTitle style={{ color: 'black' }}>
+                        <URLCardTitle style={{ color: darkMode.value ? '$white' : '$gray800' }}>
                           {(embed as any)?.external?.title}
                         </URLCardTitle>
                         <URLCardDesc style={{ fontSize: 'small' }}>

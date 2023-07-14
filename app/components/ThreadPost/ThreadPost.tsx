@@ -53,6 +53,7 @@ import {PostThreadModal} from "@/components/PostThreadModal"
 import { useTranslation } from "react-i18next";
 import {DetectPlayContentURL} from "@/components/DetectPlayContentURL";
 import { ReportModal } from "@/components/ReportModal"
+import useDarkMode from "use-dark-mode";
 
 
 
@@ -199,7 +200,7 @@ const URLCardDetailContent = styled('div', {
 const URLCardTitle = styled('div', {
     fontSize: '$sm',
     fontWeight: 'bold',
-    color: '$gray800',
+    //color: '$gray800',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -335,22 +336,15 @@ export const ThreadPost = (props: PostProps) => {
     const [isLongPress, setIsLongPress] = useState(false)
 
     const [showMenu, setShowMenu] = useState(false);
-    const [mouseX, setMouseX] = useState(0);
-    const [mouseY, setMouseY] = useState(0);
     const [saveParentReply, setSaveParentReply] = useState(parentReply)
     const [settingsModal, setSettingsModal] = useState(false)
     const [reportModal, setReportModal] = useState(false)
     const [isDeleteProcessing, setIsDeleteProcessing] = useState(false)
     const [isDeleted, setIsDeleted] = useState(false)
+    const [postThreadModal, setPostThreadModal] = useState(false)
+    const darkMode = useDarkMode(false)
     const { t } = useTranslation()
 
-
-    //console.log(saveParentReply)
-
-
-    if(embed){
-        //console.log(embed)
-    }
 
     const updateElapsed = useCallback(() => {
         if (!time) return 0
@@ -377,9 +371,6 @@ export const ThreadPost = (props: PostProps) => {
         }
     }, [time, updateElapsed])
 
-    if (!author) {
-        return <></>
-    }
 
     const getOGP = async (url : string) => {
         fetch(url).then(res => res.text()).then(text => {
@@ -400,6 +391,37 @@ export const ThreadPost = (props: PostProps) => {
         })
     }
 
+    const handleLongPress = () => {
+        console.log(props);
+        setIsExpanded(true);
+        setPostThreadModal(true)
+    };
+    const handleMouseDown = useCallback(
+        (e: React.MouseEvent<HTMLDivElement>) => {
+            setIsLongPress(true);
+            const timer = setTimeout(() => {
+                handleLongPress();
+            }, 500);
+
+            document.addEventListener('mouseup', () => {
+                setIsLongPress(false);
+                setIsExpanded(false);
+                clearTimeout(timer);
+            });
+            document.addEventListener('mousemove', () => {
+                setIsLongPress(false);
+                clearTimeout(timer);
+            });
+        },
+        []
+    )
+    const handleChildMouseDown = useCallback(
+        (e: React.MouseEvent<HTMLSpanElement>) => {
+            setIsLongPress(false);
+            e.stopPropagation();
+        },
+        []
+    );
     const handleDeleteButtonClick = async () => {
         //const result = await agent?.deletePost(aturi as string)
         setIsDeleteProcessing(true)
@@ -413,44 +435,16 @@ export const ThreadPost = (props: PostProps) => {
             setIsDeleteProcessing(false)
         }
     }
-
-    const handleLongPress = () => {
-        console.log(props);
-        setIsExpanded(true);
-    };
-
-    const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-        setIsLongPress(true);
-        const timer = setTimeout(() => {
-            handleLongPress();
-            setShowMenu(true);
-            setMouseX(e.clientX);
-            setMouseY(e.screenY - e.pageY);
-        }, 300);
-
-        document.addEventListener('mouseup', () => {
-            setIsLongPress(false);
-            setIsExpanded(false);
-            clearTimeout(timer);
-        });
-        document.addEventListener('mousemove', () => {
-            setIsLongPress(false);
-            clearTimeout(timer);
-        });
-    };
-
-    const handleChildMouseDown = (e: React.MouseEvent<HTMLSpanElement>) => {
-        setIsLongPress(false);
-        e.stopPropagation();
-    };
+    if(author === undefined) return null;
     console.log(myDid)
     console.log(author.did)
     return (
         <>
             <PostThreadModal
-                open={settingsModal}
-                onClose={() => setSettingsModal(false)}
+                open={isEmbed && postThreadModal ? true : false}
+                onClose={() => setPostThreadModal(false)}
                 threadId={rootReply?.uri as string}
+                postId={aturi as string}
             />
             <ReportModal
                 open={reportModal}
@@ -685,6 +679,7 @@ export const ThreadPost = (props: PostProps) => {
                                 postUri={
                                     (embed.record as { uri: string }).uri.split('/').pop() as string
                                 }
+                                aturi={(embed.record as any).record?.uri as string}
                                 createdAt={(embed.record as Record).indexedAt as string}
                                 embed={
                                     (embed?.record as any)?.embeds?.length
@@ -721,7 +716,7 @@ export const ThreadPost = (props: PostProps) => {
                                 </URLCardThumb>
                                 <URLCardDetail>
                                     <URLCardDetailContent>
-                                        <URLCardTitle style={{ color: 'black' }}>
+                                        <URLCardTitle style={{ color: darkMode.value ? '$white' : '$gray800' }}>
                                             {(embed as any)?.external?.title}
                                         </URLCardTitle>
                                         <URLCardDesc style={{ fontSize: 'small' }}>
@@ -748,6 +743,7 @@ export const ThreadPost = (props: PostProps) => {
                                     }
                                     isFollowing={(embed.record as any).record?.author?.viewer?.following as boolean}
                                     postUri={(embed.record as any).record?.uri.split('/').pop() as string}
+                                    aturi={(embed.record as any).record?.uri as string}
                                     createdAt={(embed.record as any).record?.indexedAt as string}
                                     embed={
                                         (embed.record as any)?.record
