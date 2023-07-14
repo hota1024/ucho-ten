@@ -313,9 +313,6 @@ export const Post = (props: PostProps) => {
   const [postThreadModal, setPostThreadModal] = useState(false)
   const { t } = useTranslation()
 
-  if(embed){
-    //console.log(embed)
-  }
 
   const updateElapsed = useCallback(() => {
     if (!time) return 0
@@ -342,9 +339,6 @@ export const Post = (props: PostProps) => {
     }
   }, [time, updateElapsed])
 
-  if (!author) {
-    return <></>
-  }
 
   const getOGP = async (url : string) => {
     fetch(url).then(res => res.text()).then(text => {
@@ -370,28 +364,34 @@ export const Post = (props: PostProps) => {
     setIsExpanded(true);
     setPostThreadModal(true)
   };
+  const handleMouseDown = useCallback(
+      (e: React.MouseEvent<HTMLDivElement>) => {
+        setIsLongPress(true);
+        const timer = setTimeout(() => {
+          handleLongPress();
+        }, 500);
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    setIsLongPress(true);
-    const timer = setTimeout(() => {
-      handleLongPress();
-    }, 500);
+        document.addEventListener('mouseup', () => {
+          setIsLongPress(false);
+          setIsExpanded(false);
+          clearTimeout(timer);
+        });
+        document.addEventListener('mousemove', () => {
+          setIsLongPress(false);
+          clearTimeout(timer);
+        });
+      },
+      []
+  )
+  const handleChildMouseDown = useCallback(
+      (e: React.MouseEvent<HTMLSpanElement>) => {
+        setIsLongPress(false);
+        e.stopPropagation();
+      },
+      []
+  );
 
-    document.addEventListener('mouseup', () => {
-      setIsLongPress(false);
-      setIsExpanded(false);
-      clearTimeout(timer);
-    });
-    document.addEventListener('mousemove', () => {
-      setIsLongPress(false);
-      clearTimeout(timer);
-    });
-  };
 
-  const handleChildMouseDown = (e: React.MouseEvent<HTMLSpanElement>) => {
-    setIsLongPress(false);
-    e.stopPropagation();
-  };
   return (
       <>
         <PostThreadModal

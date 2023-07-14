@@ -39,6 +39,7 @@ import {
     Text,
     Dropdown,
     Popover,
+    Loading
 } from '@nextui-org/react'
 import Link from 'next/link'
 import { useState, useMemo, useCallback, useEffect } from 'react'
@@ -339,6 +340,8 @@ export const ThreadPost = (props: PostProps) => {
     const [saveParentReply, setSaveParentReply] = useState(parentReply)
     const [settingsModal, setSettingsModal] = useState(false)
     const [reportModal, setReportModal] = useState(false)
+    const [isDeleteProcessing, setIsDeleteProcessing] = useState(false)
+    const [isDeleted, setIsDeleted] = useState(false)
     const { t } = useTranslation()
 
 
@@ -395,6 +398,20 @@ export const ThreadPost = (props: PostProps) => {
             const url = (result.filter(v=>(v as any).prop==="url")[0] as any).content;
             console.log(`${title} | ${url}`)
         })
+    }
+
+    const handleDeleteButtonClick = async () => {
+        //const result = await agent?.deletePost(aturi as string)
+        setIsDeleteProcessing(true)
+        try{
+            const result = await agent?.deletePost(aturi as string)
+            console.log(result)
+            setIsDeleteProcessing(false)
+            setIsDeleted(true)
+        }catch(e){
+            console.log(e)
+            setIsDeleteProcessing(false)
+        }
     }
 
     const handleLongPress = () => {
@@ -594,11 +611,13 @@ export const ThreadPost = (props: PostProps) => {
                                                 setReportModal(true)
                                             } else if (key === 'block') {
                                                 console.log('blocked')
-                                            } else if (key === 'badbutton') {
-                                                console.log('dislike')
+                                            } else if (key === 'delete') {
+                                                if(!isDeleteProcessing){
+                                                    handleDeleteButtonClick()
+                                                }
                                             }
                                         }}
-                                        disabledKeys={myDid === author.did ? ['report', 'block'] : ['delete']}
+                                        disabledKeys={myDid === author.did && !isDeleted ? ['report', 'block'] : (isDeleted && myDid === author.did ? ['report', 'block', 'delete'] : ['delete'])}
                                     >
                                         <Dropdown.Item key="report">
                                             <FontAwesomeIcon icon={faFlagRegular}/>{" "}Report
@@ -607,7 +626,10 @@ export const ThreadPost = (props: PostProps) => {
                                             <FontAwesomeIcon icon={faShieldHalvedSolid}/>{" "}Block
                                         </Dropdown.Item>
                                         <Dropdown.Item key="delete" withDivider color="error">
+                                            {isDeleteProcessing && <Loading type="points" color="currentColor" size="sm" />}
+                                            {!isDeleteProcessing && !isDeleted && (<>
                                                 <FontAwesomeIcon icon={faTrashCanRegular}/>{" "}Delete post
+                                            </>)}
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
