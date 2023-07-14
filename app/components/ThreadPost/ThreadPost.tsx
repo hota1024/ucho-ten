@@ -465,7 +465,7 @@ export const ThreadPost = (props: PostProps) => {
                     border: isEmbed ? '2px solid $gray400' : undefined,
                     borderRadius: '$md',
                     padding: '$3',
-                    backgroundColor: isExpanded ? '$gray400' : '$white',
+                    backgroundColor: isExpanded ? '$gray400' : 'rgba(0,0,0,0)',
                     '&:hover': {
                         backgroundColor: '$gray100',
                     }
