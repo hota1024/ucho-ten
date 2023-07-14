@@ -148,7 +148,7 @@ export const PostThreadModal = (props: PostThreadModalProps) => {
                     </Text>
                 </Modal.Header>
                 <Modal.Body>
-                    <Text style={{textAlign:'center'}}><Loading size='md'/></Text>
+                    <div style={{textAlign:'center'}}><Loading size='md'/></div>
                 </Modal.Body>
                 <Modal.Footer>
                 </Modal.Footer>
