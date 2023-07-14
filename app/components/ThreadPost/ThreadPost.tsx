@@ -466,7 +466,7 @@ export const ThreadPost = (props: PostProps) => {
                     <></>
                 )}
                 {hasReply && <ReplyLine />}
-                {hasReply && <SideReplyLine />}
+                {false && hasReply && <SideReplyLine />}
                 <div onMouseDown={handleChildMouseDown}>
                     <Tooltip
                         placement="right"

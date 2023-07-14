@@ -16,6 +16,7 @@ import {
     Switch,
     Text,
     Textarea,
+    Loading
 } from '@nextui-org/react'
 import { useAgent } from '@/atoms/agent'
 import { BskyAgent } from '@atproto/api'
@@ -33,14 +34,15 @@ import {FeedView} from "@/components/ThreadFeedView";
 export type PostThreadModalProps = {
     open: boolean
     onClose: () => void
-    threadId: string
+    threadId?: string
+    postId?: string
 }
 
 /**
  * SetttingsModal component.
  */
 export const PostThreadModal = (props: PostThreadModalProps) => {
-    const { open, onClose, threadId } = props;
+    const { open, onClose, threadId, postId } = props;
     const [agent] = useAgent();
     const [threadData, setThreadData] = useState<FeedViewPost | NotFoundPost | BlockedPost | { [k: string]: unknown; $type: string; } | undefined>(undefined);
     const [nestedReplies, setNestedReplies] = useState<any[]>([])
@@ -58,27 +60,54 @@ export const PostThreadModal = (props: PostThreadModalProps) => {
                 return;
             }
 
-            try {
-                setIsProcessing(true);
-                console.log(threadId)
-                const result = await agent.app.bsky.feed.getPostThread({
-                    uri: threadId,
-                });
+            if(threadId !== undefined){
+                try {
+                    setIsProcessing(true);
+                    console.log(threadId)
+                    const result = await agent.app.bsky.feed.getPostThread({
+                        uri: threadId as string,
+                    });
 
-                if (result && result.data && result.data.thread) {
-                    const postThread = result.data.thread;
-                    setReturnThreadData([result.data])
-                    setThreadData(postThread);
+                    if (result && result.data && result.data.thread) {
+                        const postThread = result.data.thread;
+                        setReturnThreadData([result.data])
+                        setThreadData(postThread);
 
-                    const nestedReplies = printNestedReplies(postThread?.replies as any);
-                    setNestedReplies(nestedReplies);
-                } else {
-                    throw new Error('Invalid post thread data');
+                        const nestedReplies = printNestedReplies(postThread?.replies as any);
+                        setNestedReplies(nestedReplies);
+                    } else {
+                        throw new Error('Invalid post thread data');
+                    }
+                } catch (error) {
+                    console.error('Error retrieving post thread:', error);
+                } finally {
+                    setIsProcessing(false);
                 }
-            } catch (error) {
-                console.error('Error retrieving post thread:', error);
-            } finally {
-                setIsProcessing(false);
+            }else if(threadId === undefined && postId !== undefined){
+                try {
+                    setIsProcessing(true);
+                    console.log(threadId)
+                    const result = await agent.app.bsky.feed.getPostThread({
+                        uri: postId as string,
+                    });
+
+                    console.log(result)
+
+                    if (result && result.data && result.data.thread) {
+                        const postThread = result.data.thread;
+                        setReturnThreadData([result.data])
+                        setThreadData(postThread);
+
+                        const nestedReplies = printNestedReplies(postThread?.replies as any);
+                        setNestedReplies(nestedReplies);
+                    } else {
+                        throw new Error('Invalid post thread data');
+                    }
+                } catch (error) {
+                    console.error('Error retrieving post thread:', error);
+                } finally {
+                    setIsProcessing(false);
+                }
             }
         };
 
@@ -119,12 +148,9 @@ export const PostThreadModal = (props: PostThreadModalProps) => {
                     </Text>
                 </Modal.Header>
                 <Modal.Body>
-                    <Text>Loading...</Text>
+                    <Text style={{textAlign:'center'}}><Loading size='md'/></Text>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onPress={onClose} flat css={{ width: '100%' }}>
-                        Close
-                    </Button>
                 </Modal.Footer>
             </Modal>
         );

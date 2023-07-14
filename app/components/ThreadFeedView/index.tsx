@@ -36,7 +36,7 @@ function hasNestedReply(post: any) {
 export const FeedView = (props: FeedViewProps) => {
     const [agent] = useAgent()
     const [feed, setFeed] = useState(props.feed)
-    const [replyParent, setReplyParent] = useState(props.feed.reply?.parent)
+    const [replyParent, setReplyParent] = useState(props.feed?.reply?.parent)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const reasonRepost = useMemo(() => feed.reason as ReasonRepost, [])

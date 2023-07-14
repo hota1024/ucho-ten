@@ -379,6 +379,7 @@ export const Post = (props: PostProps) => {
   const handleLongPress = () => {
     console.log(props);
     setIsExpanded(true);
+    setPostThreadModal(true)
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -405,13 +406,13 @@ export const Post = (props: PostProps) => {
     setIsLongPress(false);
     e.stopPropagation();
   };
-
   return (
       <>
         <PostThreadModal
             open={postThreadModal}
             onClose={() => setPostThreadModal(false)}
             threadId={rootReply?.uri as string}
+            postId={aturi as string}
         />
         <Row
             align="stretch"
