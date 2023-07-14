@@ -304,25 +304,14 @@ export const Post = (props: PostProps) => {
   const [agent] = useAgent()
   const [followHover, setFollowHover] = useState(false)
   const [showEmbedImages, setShowEmbedImages] = useState(!isEmbed)
-
   const images = AppBskyEmbedImages.isView(embed) ? embed.images ?? [] : []
-
   const [elapsed, setElapsed] = useState<number>()
   const time = useMemo(() => createdAt && new Date(createdAt), [createdAt])
-
   const [isExpanded, setIsExpanded] = useState(false)
   const [isLongPress, setIsLongPress] = useState(false)
-
-  const [showMenu, setShowMenu] = useState(false);
-  const [mouseX, setMouseX] = useState(0);
-  const [mouseY, setMouseY] = useState(0);
   const [saveParentReply, setSaveParentReply] = useState(parentReply)
   const [postThreadModal, setPostThreadModal] = useState(false)
   const { t } = useTranslation()
-
-
-  //console.log(saveParentReply)
-
 
   if(embed){
     //console.log(embed)
@@ -386,10 +375,7 @@ export const Post = (props: PostProps) => {
     setIsLongPress(true);
     const timer = setTimeout(() => {
       handleLongPress();
-      setShowMenu(true);
-      setMouseX(e.clientX);
-      setMouseY(e.screenY - e.pageY);
-    }, 300);
+    }, 500);
 
     document.addEventListener('mouseup', () => {
       setIsLongPress(false);
@@ -422,26 +408,15 @@ export const Post = (props: PostProps) => {
               borderRadius: '$md',
               padding: '$3',
               backgroundColor: isExpanded ? '$gray400' : 'rgba(0,0,0,0)',
+              '&:hover': {
+                backgroundColor: '$gray200',
+                cursor: isLongPress ? 'grabbing' : 'grab',
+              },
             }}
             onMouseDown={handleMouseDown}
         >
-          {showMenu && (
-              /*
-              <div
-                style={{
-                    position: 'absolute',
-                    backgroundColor: 'white',
-                    zIndex: 10000,
-                }}
-              >
-                {author.did === myDid && (<div>delete post</div>)}
-                {author.did !== myDid && (<div>report</div>)}
-                {author.did !== myDid && (<div>dislike</div>)}
-              </div>*/
-              <></>
-          )}
           {hasReply && <ReplyLine />}
-          <div onMouseDown={handleChildMouseDown}>
+          <div onMouseDown={handleChildMouseDown} style={{width:!isEmbed ? '50px' : '28px', height:!isEmbed ? '50px' : '28px'}}>
             <Tooltip
                 placement="right"
                 isDisabled={disableTooltip}
