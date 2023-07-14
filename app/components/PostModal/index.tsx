@@ -32,6 +32,7 @@ import imageCompression from "browser-image-compression";
 import { useDropzone, FileWithPath } from 'react-dropzone'
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from "react-i18next";
+import useDarkMode from "use-dark-mode";
 
 
 
@@ -97,7 +98,7 @@ const URLCardLink = styled('div', {
 
 
 const PostTextarea = styled('textarea', {
-  background: '#efefef',
+  //background: '#efefef',
   border: '1px solid #eaeaea',
   borderRadius: '$sm',
   resize: 'none',
@@ -133,6 +134,7 @@ export const PostModal = (props: PostModalProps) => {
   const [isDetectURL, setIsDetectURL] = useState(false)
   const [detectURLs, setDetectURLs] = useState<string[]>([])
   const [isSettingURLCard, setIsSettingURLCard] = useState(false)
+  const darkMode = useDarkMode(false)
   const { t, i18n } = useTranslation()
 
 
@@ -357,7 +359,7 @@ export const PostModal = (props: PostModalProps) => {
               onKeyDown={isPostable ? handleKeyDown : undefined}
               onClick={handleTextareaClick}
               onFocus={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
-              style={{border: isDragActive ? '2px dashed #000' : 'none', width:'100%', height:'100%'}}
+              style={{border: isDragActive ? '2px dashed #000' : 'none', width:'100%', height:'100%', backgroundColor: darkMode.value ? '#2d2d2d' : '#efefef'}}
           />
         </div>
       </Modal.Body>

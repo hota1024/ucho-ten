@@ -1,11 +1,29 @@
+'use client'
 import { Providers } from './providers'
 import 'react-medium-image-zoom/dist/styles.css'
+import { useEffect, useState } from 'react';
+//import { InsertBackgroundImage } from "./InsertBackgroundImage";
+import dynamic from 'next/dynamic'
+
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+    const [mounted, setMounted] = useState(false)
+    const ComponentWithNoSSR = dynamic(() => import('./InsertBackgroundImage'), {
+        ssr: false
+    })
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+
+    if(!mounted){
+
+    }
   return (
     <html lang="ja">
       <head>
@@ -32,6 +50,7 @@ export default function RootLayout({
           backgroundBlendMode: 'lighten',
         }}
       >
+        <ComponentWithNoSSR />
         <Providers>
             {children}
             <div style={{position:"absolute", right:10, bottom:10}}>
