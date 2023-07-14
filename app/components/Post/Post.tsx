@@ -388,7 +388,8 @@ export const Post = (props: PostProps) => {
         e.stopPropagation();
       },
       []
-  );
+  )
+  //authorがundefinedの場合はnullを返す
   if(author === undefined){
     return null
   }
@@ -565,23 +566,23 @@ export const Post = (props: PostProps) => {
                 <>
                   <Post
                       myDid={myDid}
-                      record={(embed.record as Record)?.value as Record}
-                      author={(embed.record as Record)?.author as ProfileViewBasic}
+                      record={(embed.record as Record).value as Record}
+                      author={(embed.record as Record).author as ProfileViewBasic}
                       isFollowing={
-                        !!((embed.record as Record)?.author as ProfileViewBasic)?.viewer
+                        !!((embed.record as Record).author as ProfileViewBasic)?.viewer
                             ?.following
                       }
                       postUri={
                         (embed.record as { uri: string }).uri.split('/').pop() as string
                       }
-                      createdAt={(embed.record as Record)?.indexedAt as string}
+                      createdAt={(embed.record as Record).indexedAt as string}
                       embed={
                         (embed?.record as any)?.embeds?.length
                             ? ((embed.record as any)
                                 .embeds[0] as AppBskyEmbedRecord.ViewRecord as any)
                             : null
                       }
-                      quotedUserDID={author?.did as string}
+                      quotedUserDID={author.did as string}
                       embedUserDID={((embed.record as Record)?.author as any)?.did as string}
                       isEmbed
                       hideActions
