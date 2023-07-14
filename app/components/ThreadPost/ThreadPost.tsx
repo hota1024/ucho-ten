@@ -1,3 +1,4 @@
+import React from 'react'
 import { Record } from '@atproto/api/dist/client/types/app/bsky/feed/post'
 import {
     FeedViewPost,
@@ -9,6 +10,8 @@ import {
     faHeart as faHeartRegular,
     faCircle as faCircleRegular,
     faSquare as faSquareRegular,
+    faFlag as faFlagRegular,
+    faTrashCan as faTrashCanRegular,
 } from '@fortawesome/free-regular-svg-icons'
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons"
 import {
@@ -18,6 +21,7 @@ import {
     faSquare as faSquareSolid,
     faReply as faReplySolid,
     faEllipsis as faEllipsisSolid,
+    faShieldHalved as faShieldHalvedSolid,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -422,7 +426,8 @@ export const ThreadPost = (props: PostProps) => {
         setIsLongPress(false);
         e.stopPropagation();
     };
-
+    console.log(myDid)
+    console.log(author.did)
     return (
         <>
             <PostThreadModal
@@ -578,7 +583,6 @@ export const ThreadPost = (props: PostProps) => {
                                                 //onClick={onRepostClick}
                                                 icon={faEllipsisSolid}
                                                 //color="#787F85"
-                                                color={isReposted ? '#36BA7A' : '#787F85'}
                                                 style={{ cursor: 'pointer' }}
                                             />
                                             {showRepostCount && repostCount}
@@ -594,12 +598,16 @@ export const ThreadPost = (props: PostProps) => {
                                                 console.log('dislike')
                                             }
                                         }}
+                                        disabledKeys={myDid === author.did ? ['report', 'block'] : ['delete']}
                                     >
                                         <Dropdown.Item key="report">
-                                            <Text>🚨 Report</Text>
+                                            <FontAwesomeIcon icon={faFlagRegular}/>{" "}Report
                                         </Dropdown.Item>
                                         <Dropdown.Item key="block">
-                                            <Text>🚫 Block</Text>
+                                            <FontAwesomeIcon icon={faShieldHalvedSolid}/>{" "}Block
+                                        </Dropdown.Item>
+                                        <Dropdown.Item key="delete" withDivider color="error">
+                                                <FontAwesomeIcon icon={faTrashCanRegular}/>{" "}Delete post
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
