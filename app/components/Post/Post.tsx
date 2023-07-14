@@ -390,7 +390,7 @@ export const Post = (props: PostProps) => {
       },
       []
   );
-
+  if(author === undefined) return null;
 
   return (
       <>
