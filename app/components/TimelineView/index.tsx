@@ -225,6 +225,7 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
       <ReloadButtonContainer
         css={{
           visibility: hasNewTimeline ? 'visible' : 'hidden',
+            zIndex:9999,//何があっても更新ボタンを最前面にする
         }}
       >
         <Button shadow color="primary" auto onPress={onLoadNewTimeline}>
