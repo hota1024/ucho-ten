@@ -654,7 +654,7 @@ export const Post = (props: PostProps) => {
                 <></>
             )}
             {!hideActions && (
-                <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
+                <Row css={{ mt: '$3', mb: hasReply ? '$5' : '$0' }} align="center">
                   <Col>
                     <PostAction>
                       <FontAwesomeIcon

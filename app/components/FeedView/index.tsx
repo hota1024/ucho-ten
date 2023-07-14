@@ -124,7 +124,7 @@ export const FeedView = (props: FeedViewProps) => {
 
   return (
     <>
-      <Card variant="flat" css={{ py: '$8' }}>
+      <Card variant="flat" css={{ py: '$8', opacity: 1}}>
         {feed?.reason !== undefined && feed?.reply !== undefined ?
             (<PostContainer>
               <PostViewCard
