@@ -42,14 +42,7 @@ export default function RootLayout({
         ></meta>
           <meta name="twitter:card" content="summarylargeimage"></meta>
       </head>
-      <body
-        style={{
-          backgroundImage: 'url(/images/backgroundimg/sky_00421.jpg)',
-          backgroundSize: 'cover',
-          backgroundColor: 'rgba(255,255,255,0.1)',
-          backgroundBlendMode: 'lighten',
-        }}
-      >
+      <body>
         <ComponentWithNoSSR />
         <Providers>
             {children}
