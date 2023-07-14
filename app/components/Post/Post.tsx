@@ -156,7 +156,7 @@ const URLCard = styled('div', {
   alignItems: 'center',
   color: '$gray800',
   '&:hover': {
-    backgroundColor: '$gray200',
+    backgroundColor: '$gray400',
   }
 })
 
@@ -409,7 +409,7 @@ export const Post = (props: PostProps) => {
               padding: '$3',
               backgroundColor: isExpanded ? '$gray400' : 'rgba(0,0,0,0)',
               '&:hover': {
-                backgroundColor: '$gray200',
+                backgroundColor: isEmbed ? '$gray300' : '$gray200',
                 cursor: isLongPress ? 'grabbing' : 'grab',
               },
             }}

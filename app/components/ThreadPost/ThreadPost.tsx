@@ -622,9 +622,6 @@ export const ThreadPost = (props: PostProps) => {
                                         <Dropdown.Item key="report">
                                             <FontAwesomeIcon icon={faFlagRegular}/>{" "}Report
                                         </Dropdown.Item>
-                                        <Dropdown.Item key="block">
-                                            <FontAwesomeIcon icon={faShieldHalvedSolid}/>{" "}Block
-                                        </Dropdown.Item>
                                         <Dropdown.Item key="delete" withDivider color="error">
                                             {isDeleteProcessing && <Loading type="points" color="currentColor" size="sm" />}
                                             {!isDeleteProcessing && !isDeleted && (<>

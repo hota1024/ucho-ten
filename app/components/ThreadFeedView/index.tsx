@@ -83,7 +83,6 @@ export const FeedView = (props: FeedViewProps) => {
     //console.log(props.feed[0])
 
     const renderPost = (post: any): JSX.Element => {
-        console.log(post);
 
         return (
             <>
