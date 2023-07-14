@@ -30,7 +30,7 @@ import {FeedView} from "@/components/ThreadFeedView";
 /**
  * SetttingsModal props.
  */
-export type SetttingsModalProps = {
+export type PostThreadModalProps = {
     open: boolean
     onClose: () => void
     threadId: string
@@ -39,7 +39,7 @@ export type SetttingsModalProps = {
 /**
  * SetttingsModal component.
  */
-export const SetttingsModal = (props: SetttingsModalProps) => {
+export const PostThreadModal = (props: PostThreadModalProps) => {
     const { open, onClose, threadId } = props;
     const [agent] = useAgent();
     const [threadData, setThreadData] = useState<FeedViewPost | NotFoundPost | BlockedPost | { [k: string]: unknown; $type: string; } | undefined>(undefined);
@@ -149,11 +149,6 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
                     <FeedView feed={returnThreadData} />
                 </Row>
             </Modal.Body>
-            <Modal.Footer>
-                <Button onPress={onClose} flat css={{ width: '100%' }}>
-                    Close
-                </Button>
-            </Modal.Footer>
         </Modal>
     )
 }

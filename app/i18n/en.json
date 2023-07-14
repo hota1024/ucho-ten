@@ -4,8 +4,8 @@
   },
   "LoginPage" : {
     "Button": {
-      "SignIn": "SignIn",
-      "SignUp": "SingUp"
+      "SignIn": "Sign In",
+      "SignUp": "Sing Up"
     },
     "SignInToBluesky": "Sign In to bsky.social",
     "HandleOrYourDomain": "handle or domain",
@@ -85,6 +85,12 @@
       "QuotedYourPost": "Quoted your post ",
       "UnableToRetrievePostings": "Unable to retrieve postings.",
       "FollowedYou": "Followed you "
+    },
+    "Report": {
+      "Button": {
+        "Send": "Send",
+        "Cancel": "Cancel"
+      }
     }
   },
   "ProfilePage": {

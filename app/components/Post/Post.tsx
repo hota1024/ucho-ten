@@ -43,7 +43,7 @@ import { ProfileViewBasic } from '@atproto/api/dist/client/types/app/bsky/actor/
 import { AppBskyEmbedRecord, AppBskyEmbedImages } from '@atproto/api'
 import { useAgent } from '@/atoms/agent'
 import { ImagesGrid } from '../ImagesGrid'
-import {SetttingsModal} from "@/components/PostThreadModal"
+import {PostThreadModal} from "@/components/PostThreadModal"
 import { useTranslation } from "react-i18next";
 import {DetectPlayContentURL} from "@/components/DetectPlayContentURL";
 
@@ -317,7 +317,7 @@ export const Post = (props: PostProps) => {
   const [mouseX, setMouseX] = useState(0);
   const [mouseY, setMouseY] = useState(0);
   const [saveParentReply, setSaveParentReply] = useState(parentReply)
-  const [settingsModal, setSettingsModal] = useState(false)
+  const [postThreadModal, setPostThreadModal] = useState(false)
   const { t } = useTranslation()
 
 
@@ -408,9 +408,9 @@ export const Post = (props: PostProps) => {
 
   return (
       <>
-        <SetttingsModal
-            open={settingsModal}
-            onClose={() => setSettingsModal(false)}
+        <PostThreadModal
+            open={postThreadModal}
+            onClose={() => setPostThreadModal(false)}
             threadId={rootReply?.uri as string}
         />
         <Row
@@ -510,7 +510,7 @@ export const Post = (props: PostProps) => {
                 </Link>
             )}
             {!isRoot && parentReply != undefined && (
-                <div style={{width:'485px'}} onClick={() => setSettingsModal(true)}>
+                <div style={{width:'485px'}} onClick={() => setPostThreadModal(true)}>
 
                   <a style={{width:"100%"}}>
                     <div
@@ -740,7 +740,7 @@ export const Post = (props: PostProps) => {
             )}
             {isRoot && (
                 <a>
-                  <div onClick={() => setSettingsModal(true)}>
+                  <div onClick={() => setPostThreadModal(true)}>
                     {t("Timeline.Post.ReadMore")}
                   </div>
                 </a>
