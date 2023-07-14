@@ -313,7 +313,6 @@ export const Post = (props: PostProps) => {
   const [postThreadModal, setPostThreadModal] = useState(false)
   const { t } = useTranslation()
 
-
   const updateElapsed = useCallback(() => {
     if (!time) return 0
 
@@ -389,8 +388,11 @@ export const Post = (props: PostProps) => {
         e.stopPropagation();
       },
       []
-  );
-
+  )
+  //authorがundefinedの場合はnullを返す
+  if(author === undefined){
+    return null
+  }
 
   return (
       <>
