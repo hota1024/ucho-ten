@@ -470,7 +470,7 @@ export const ThreadPost = (props: PostProps) => {
                         backgroundColor: '$gray100',
                     }
                 }}
-                onMouseDown={handleMouseDown}
+                onMouseDown={isEmbed ? handleMouseDown : undefined}
             >
                 {showMenu && (
                     /*
