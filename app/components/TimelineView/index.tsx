@@ -277,8 +277,15 @@ export const TimelineView: React.FC<TimelineViewProps> = (props) => {
                           )
                       }
                       //フォロワーが、自分がフォローしてない人へのpostへreplyしてたらそれを非表示にする
-                      if(feed.post.author.viewer.following !== undefined && feed.reply.parent.author.viewer.following === undefined){
+                      if((feed.post.author.viewer.following !== undefined && feed.post.author.did !== agent?.session?.did) && feed.reply.parent.author.viewer.following === undefined){
                           return null
+                      }
+                      if(feed.post.author.did === agent?.session?.did && feed.reply.parent.author.viewer.following === undefined){
+                          return (
+                              <Row key={`${feed.post.cid}${key}`} css={{ my: '$8' }}>
+                                  <FeedView feed={feed} />
+                              </Row>
+                          )
                       }
                   }
                   return (
