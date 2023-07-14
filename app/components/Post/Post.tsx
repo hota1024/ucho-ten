@@ -573,6 +573,7 @@ export const Post = (props: PostProps) => {
                       postUri={
                         (embed.record as { uri: string }).uri.split('/').pop() as string
                       }
+                      aturi={(embed.record as Record).uri as string}
                       createdAt={(embed.record as Record).indexedAt as string}
                       embed={
                         (embed?.record as any)?.embeds?.length
