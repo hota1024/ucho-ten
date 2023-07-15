@@ -15,6 +15,7 @@ import {
   Row,
   Col,
   Popover,
+  Grid,
   styled, Dropdown,
 } from '@nextui-org/react'
 import { useRef, useState } from 'react'
@@ -133,6 +134,8 @@ export const PostModal = (props: PostModalProps) => {
   const [isDetectURL, setIsDetectURL] = useState(false)
   const [detectURLs, setDetectURLs] = useState<string[]>([])
   const [isSettingURLCard, setIsSettingURLCard] = useState(false)
+  const [isSuccessGetOGP, setIsSuccessGetOGP] = useState(false)
+  const [getOGPData, setGetOGPData] = useState<any>(null)
   const { t, i18n } = useTranslation()
 
 
@@ -281,23 +284,36 @@ export const PostModal = (props: PostModalProps) => {
     e.preventDefault()
     e.stopPropagation()
   }
-  
+
   const detectURL = (text: string) => {
     // URLを検出する正規表現パターン
-    const urlPattern = /((?:https?|ftp):\/\/)(?:[\w-]+(?:\.[\w-]+)+)(?:\/[\w-]+)*(?:\/|\/[\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/gi
-    const urls = text.match(urlPattern)
-    setDetectURLs([])
+    const urlPattern = /(?:https?|ftp):\/\/[\w-]+(?:\.[\w-]+)+(?:[\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/g;
+    const urls = text.match(urlPattern);
+    setDetectURLs([]);
 
     if (urls && urls.length > 0) {
-      setIsDetectURL(true)
+      setIsDetectURL(true);
       urls.forEach((url) => {
-        setDetectURLs(prevURLs => [...prevURLs, url])
-      })
+        setDetectURLs((prevURLs) => [...prevURLs, url]);
+      });
     }
-  }
+  };
+
+
 
   const getOGP = async (url: string) => {
-    //console.log(url)
+    console.log(url)
+    try{
+      const response = await fetch(`https://ucho-ten-ogp-api.vercel.app/api/ogp?url=`+url);
+      const res = await response.json()
+      setGetOGPData(res)
+      console.log(res)
+      setIsSuccessGetOGP(true)
+      return res
+    }catch (e) {
+      setIsSuccessGetOGP(false)
+      return e
+    }
   }
 
   return (
@@ -362,7 +378,7 @@ export const PostModal = (props: PostModalProps) => {
         </div>
       </Modal.Body>
       <Modal.Footer>
-        {false && isDetectURL && !isSettingURLCard && (
+        {isDetectURL && !isSettingURLCard && (
             <div style={{textAlign:'left'}}>
               {detectURLs.map((url, index) => (
                   <Button onClick={() => {
@@ -376,31 +392,41 @@ export const PostModal = (props: PostModalProps) => {
               ))}
             </div>
          )}
-        {isSettingURLCard && false && (
-            <div>
-              <URLCard>
-                <URLCardThumb>
-                  <img
-                      src={undefined}
-                      style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                      alt={undefined}
-                  ></img>
-                </URLCardThumb>
-                <URLCardDetail>
-                  <URLCardDetailContent>
-                    <URLCardTitle style={{ color: 'black' }}>
-                      {undefined}
-                    </URLCardTitle>
-                    <URLCardDesc style={{ fontSize: 'small' }}>
-                      {undefined}
-                    </URLCardDesc>
-                    <URLCardLink>
-                      {undefined}
-                    </URLCardLink>
-                  </URLCardDetailContent>
-                </URLCardDetail>
-              </URLCard>
-            </div>
+        {isSettingURLCard && getOGPData && (
+            <Grid.Container style={{width:'100%'}}>
+              <Grid style={{width:'calc(100% - 485px)'}}>
+                <div style={{width:'100%'}}>X</div>
+              </Grid>
+              <Grid>
+                <URLCard onClick={() => {
+                  setIsSettingURLCard(false)
+                    setGetOGPData(undefined)
+                }}
+                         style={{textAlign:'left', cursor:'pointer'}}
+                >
+                  <URLCardThumb>
+                    <img
+                        src={getOGPData?.image}
+                        style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                        alt={getOGPData?.title}
+                    ></img>
+                  </URLCardThumb>
+                  <URLCardDetail>
+                    <URLCardDetailContent>
+                      <URLCardTitle style={{ color: 'black' }}>
+                        {getOGPData?.title}
+                      </URLCardTitle>
+                      <URLCardDesc style={{ fontSize: 'small' }}>
+                        {getOGPData?.description}
+                      </URLCardDesc>
+                      <URLCardLink>
+                        {getOGPData?.url}
+                      </URLCardLink>
+                    </URLCardDetailContent>
+                  </URLCardDetail>
+                </URLCard>
+              </Grid>
+            </Grid.Container>
         )}
         {contentImage.length > 0 && (
           <Text size="$sm" color="error">
