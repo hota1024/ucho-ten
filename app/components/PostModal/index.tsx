@@ -15,6 +15,7 @@ import {
   Row,
   Col,
   Popover,
+  Grid,
   styled, Dropdown,
 } from '@nextui-org/react'
 import { useRef, useState } from 'react'
@@ -22,7 +23,7 @@ import { Post } from '../Post/Post'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { faImage } from '@fortawesome/free-solid-svg-icons'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons'
 import { faLanguage } from '@fortawesome/free-solid-svg-icons'
 import { faFaceSurprise } from '@fortawesome/free-solid-svg-icons'
 import Zoom from 'react-medium-image-zoom'
@@ -132,7 +133,12 @@ export const PostModal = (props: PostModalProps) => {
   const [PostContentLanguage, setPostContentLanguage] = useState(new Set([navigator.language]))
   const [isDetectURL, setIsDetectURL] = useState(false)
   const [detectURLs, setDetectURLs] = useState<string[]>([])
+  const [selectedURL, setSelectedURL] = useState<string>('')
   const [isSettingURLCard, setIsSettingURLCard] = useState(false)
+  const [isSuccessGetOGP, setIsSuccessGetOGP] = useState(false)
+  const [isOGPGetProcessing, setIsOGPGetProcessing] = useState(false)
+  const [getOGPData, setGetOGPData] = useState<any>(null)
+  const [isGetOGPFetchError, setIsGetOGPFetchError] = useState(false)
   const { t, i18n } = useTranslation()
 
 
@@ -144,13 +150,34 @@ export const PostModal = (props: PostModalProps) => {
     setLoading(true)
 
     const blobs: BlobRef[] = []
-    for (const file of contentImage) {
-      const binary = new Uint8Array(await file.arrayBuffer())
+    const blobdesc: { $link?: string; mimeType?: string; size?: number } = {};
+    if(getOGPData){
+      const image = await fetch(`https://ucho-ten-image-api.vercel.app/api/image?url=${getOGPData?.image}`);
+      const buffer = await image.arrayBuffer();
+      console.log(buffer)
+      const binary = new Uint8Array(await buffer)
+      console.log(binary)
       const result = await agent.uploadBlob(binary, {
-        encoding: file.type,
+        encoding: "image/jpeg",
       })
-
       blobs.push(result.data.blob)
+      blobdesc["$link"] = result.data.blob.ref.toString() ? result.data.blob.ref.toString() : "bafkreidij774hmsfgruzkpaj6arwxskv4szmareb6d5pr43zbrhknoisfe"
+      blobdesc["mimeType"] = result.data.blob.mimeType ? result.data.blob.mimeType : "image/jpeg"
+      blobdesc["size"] = result.data.blob.size ? result.data.blob.size : 1361
+
+    }else if(getOGPData && !getOGPData?.image){
+      blobdesc["$link"] =  "bafkreidij774hmsfgruzkpaj6arwxskv4szmareb6d5pr43zbrhknoisfe"
+      blobdesc["mimeType"] = "image/jpeg"
+      blobdesc["size"] =  1361
+    }else{
+      for (const file of contentImage) {
+        const binary = new Uint8Array(await file.arrayBuffer())
+        //console.log(file.type)
+        const result = await agent.uploadBlob(binary, {
+          encoding: file.type,
+        })
+        blobs.push(result.data.blob)
+      }
     }
 
     const images = blobs.map((blob, key) => ({
@@ -167,17 +194,36 @@ export const PostModal = (props: PostModalProps) => {
       langs: Array.from(PostContentLanguage),
       embed:
         blobs.length > 0
-          ? {
-              $type: 'app.bsky.embed.images',
-              images,
-            }
-          : undefined,
+            ? getOGPData ? {
+                $type: 'app.bsky.embed.external',
+                external:{
+                  uri: getOGPData?.url ? getOGPData.url : selectedURL,
+                  title: getOGPData?.title ? getOGPData.title : selectedURL,
+                  description: getOGPData?.description ? getOGPData.description : "Sorry, no description available.",
+                  thumb: {
+                    $type: "blob",
+                    ref: {
+                      $link: blobdesc["$link"],
+                    },
+                    mimeType: blobdesc["mimeType"],
+                    size: blobdesc["size"],
+                  }
+                }
+              }
+            : {
+                $type: 'app.bsky.embed.images',
+                images,
+              }
+            : undefined,
     })
 
     setLoading(false)
     onClose()
     setContentText('')
     setContentImages([])
+    setIsSettingURLCard(false)
+    setIsSuccessGetOGP(false)
+    setGetOGPData(null)
   }
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
@@ -281,23 +327,45 @@ export const PostModal = (props: PostModalProps) => {
     e.preventDefault()
     e.stopPropagation()
   }
-  
+
   const detectURL = (text: string) => {
     // URLを検出する正規表現パターン
-    const urlPattern = /((?:https?|ftp):\/\/)(?:[\w-]+(?:\.[\w-]+)+)(?:\/[\w-]+)*(?:\/|\/[\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/gi
-    const urls = text.match(urlPattern)
-    setDetectURLs([])
+    const urlPattern = /(?:https?|ftp):\/\/[\w-]+(?:\.[\w-]+)+(?:[\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/g;
+    const urls = text.match(urlPattern);
+    setDetectURLs([]);
 
     if (urls && urls.length > 0) {
-      setIsDetectURL(true)
+      setIsDetectURL(true);
       urls.forEach((url) => {
-        setDetectURLs(prevURLs => [...prevURLs, url])
-      })
+        setDetectURLs((prevURLs) => [...prevURLs, url]);
+      });
     }
-  }
+  };
+
+
 
   const getOGP = async (url: string) => {
-    //console.log(url)
+    console.log(url)
+    setIsOGPGetProcessing(true)
+    try{
+      const response = await fetch(`https://ucho-ten-ogp-api.vercel.app/api/ogp?url=`+url)
+      if (!response.ok) {
+        throw new Error('HTTP status ' + response.status);
+      }
+      const res = await response.json()
+      setGetOGPData(res)
+      console.log(res)
+      setIsSuccessGetOGP(true)
+      setIsOGPGetProcessing(false)
+      return res
+    }catch (e) {
+      setIsOGPGetProcessing(false)
+      setIsSuccessGetOGP(false)
+      setIsSettingURLCard(false)
+      setIsGetOGPFetchError(true)
+      console.log(e)
+      return e
+    }
   }
 
   return (
@@ -362,11 +430,18 @@ export const PostModal = (props: PostModalProps) => {
         </div>
       </Modal.Body>
       <Modal.Footer>
-        {false && isDetectURL && !isSettingURLCard && (
+        {isGetOGPFetchError && (
+            <div style={{textAlign:'right'}}>
+              <Text color='error'>Fetch Error</Text>
+            </div>
+        )}
+        {isDetectURL && !isSettingURLCard && contentImage.length == 0 && (
             <div style={{textAlign:'left'}}>
               {detectURLs.map((url, index) => (
                   <Button onClick={() => {
                         setIsSettingURLCard(true)
+                        setIsGetOGPFetchError(false)
+                        setSelectedURL(url)
                         getOGP(url)
                         }
                       }
@@ -376,31 +451,90 @@ export const PostModal = (props: PostModalProps) => {
               ))}
             </div>
          )}
-        {isSettingURLCard && false && (
-            <div>
-              <URLCard>
-                <URLCardThumb>
-                  <img
-                      src={undefined}
-                      style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                      alt={undefined}
-                  ></img>
-                </URLCardThumb>
-                <URLCardDetail>
-                  <URLCardDetailContent>
-                    <URLCardTitle style={{ color: 'black' }}>
-                      {undefined}
-                    </URLCardTitle>
-                    <URLCardDesc style={{ fontSize: 'small' }}>
-                      {undefined}
-                    </URLCardDesc>
-                    <URLCardLink>
-                      {undefined}
-                    </URLCardLink>
-                  </URLCardDetailContent>
-                </URLCardDetail>
-              </URLCard>
-            </div>
+        {isOGPGetProcessing && (
+            <Grid.Container style={{width:'100%'}}>
+              <Grid style={{width:'calc(100% - 485px)'}}>
+              </Grid>
+              <Grid>
+                <URLCard onClick={() => {
+                  setIsSettingURLCard(false)
+                  setGetOGPData(undefined)
+                }}
+                         style={{textAlign:'left', cursor:'pointer'}}
+                >
+                  <URLCardThumb>
+                    <div style={{position: "relative", textAlign: "center",
+                      top: "50%",
+                      left: '50%',
+                      transform: "translateY(-50%) translateX(-50%)",
+                      WebkitTransform: "translateY(-50%) translateX(-50%)"}}>
+                      <Loading type="points" color="currentColor" size="md" />
+                    </div>
+                  </URLCardThumb>
+                  <URLCardDetail>
+                    <URLCardDetailContent>
+                      <URLCardTitle style={{ color: 'black' }}>
+                        {undefined}
+                      </URLCardTitle>
+                      <URLCardDesc style={{ fontSize: 'small' }}>
+                        <div style={{textAlign:'center'}}>
+                          <Loading type="points" color="currentColor" size="md" />
+                        </div>
+                      </URLCardDesc>
+                      <URLCardLink>
+                        {undefined}
+                      </URLCardLink>
+                    </URLCardDetailContent>
+                  </URLCardDetail>
+                </URLCard>
+              </Grid>
+            </Grid.Container>
+        )}
+        {isSettingURLCard && getOGPData && !isOGPGetProcessing && (
+            <Grid.Container style={{width:'100%'}}>
+              <Grid style={{width:'calc(100% - 485px)',
+                            backgroundColor:'rgba(255,0,0,0.1)',
+                            borderRadius:'10px',
+                            cursor:'pointer',
+                            }}
+                    onClick={() => {
+                      setIsSettingURLCard(false)
+                      setGetOGPData(undefined)
+                    }}
+              >
+                <div style={{width:'100%', textAlign:'center', marginTop:'50%'}}>
+                  <Text color='error'>
+                    <FontAwesomeIcon icon={faTrashCan} size='lg'/>
+                  </Text>
+                </div>
+              </Grid>
+              <Grid>
+                <URLCard
+                         style={{textAlign:'left', cursor:'pointer'}}
+                >
+                  <URLCardThumb>
+                    <img
+                        src={getOGPData?.image ? getOGPData?.image : undefined}
+                        style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                        alt={getOGPData?.title && getOGPData?.image ? getOGPData.title : undefined}
+                    ></img>
+                  </URLCardThumb>
+                  <URLCardDetail>
+                    <URLCardDetailContent>
+                      <URLCardTitle style={{ color: 'black' }}>
+                        {getOGPData?.title ? getOGPData.title : selectedURL}
+                      </URLCardTitle>
+                      <URLCardDesc style={{ fontSize: 'small' }}>
+                        {getOGPData?.description ? getOGPData.description : "Sorry, no description available."}
+                      </URLCardDesc>
+                      <URLCardLink>
+                        {getOGPData?.url ? getOGPData.url : selectedURL}
+                      </URLCardLink>
+                    </URLCardDetailContent>
+                  </URLCardDetail>
+                </URLCard>
+              </Grid>
+            </Grid.Container>
         )}
         {contentImage.length > 0 && (
           <Text size="$sm" color="error">
@@ -478,7 +612,7 @@ export const PostModal = (props: PostModalProps) => {
           </div>
           <label htmlFor={inputId}>
             <Button
-              disabled={loading || compressProcessing || isImageMaxLimited}
+              disabled={loading || compressProcessing || isImageMaxLimited || getOGPData || isOGPGetProcessing}
               as="span"
               auto
               light
@@ -494,7 +628,7 @@ export const PostModal = (props: PostModalProps) => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 handleOnAddImage(e)
               }
-              disabled={loading || compressProcessing || isImageMaxLimited}
+              disabled={loading || compressProcessing || isImageMaxLimited || getOGPData || isOGPGetProcessing}
             />
           </label>
           <div>
