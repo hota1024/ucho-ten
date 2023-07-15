@@ -23,7 +23,7 @@ import { Post } from '../Post/Post'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { faImage } from '@fortawesome/free-solid-svg-icons'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons'
 import { faLanguage } from '@fortawesome/free-solid-svg-icons'
 import { faFaceSurprise } from '@fortawesome/free-solid-svg-icons'
 import Zoom from 'react-medium-image-zoom'
@@ -454,7 +454,6 @@ export const PostModal = (props: PostModalProps) => {
         {isOGPGetProcessing && (
             <Grid.Container style={{width:'100%'}}>
               <Grid style={{width:'calc(100% - 485px)'}}>
-                <div style={{width:'100%'}}>X</div>
               </Grid>
               <Grid>
                 <URLCard onClick={() => {
@@ -493,14 +492,24 @@ export const PostModal = (props: PostModalProps) => {
         )}
         {isSettingURLCard && getOGPData && !isOGPGetProcessing && (
             <Grid.Container style={{width:'100%'}}>
-              <Grid style={{width:'calc(100% - 485px)'}}>
-                <div style={{width:'100%'}}>X</div>
+              <Grid style={{width:'calc(100% - 485px)',
+                            backgroundColor:'rgba(255,0,0,0.1)',
+                            borderRadius:'10px',
+                            cursor:'pointer',
+                            }}
+                    onClick={() => {
+                      setIsSettingURLCard(false)
+                      setGetOGPData(undefined)
+                    }}
+              >
+                <div style={{width:'100%', textAlign:'center', marginTop:'50%'}}>
+                  <Text color='error'>
+                    <FontAwesomeIcon icon={faTrashCan} size='lg'/>
+                  </Text>
+                </div>
               </Grid>
               <Grid>
-                <URLCard onClick={() => {
-                  setIsSettingURLCard(false)
-                    setGetOGPData(undefined)
-                }}
+                <URLCard
                          style={{textAlign:'left', cursor:'pointer'}}
                 >
                   <URLCardThumb>
