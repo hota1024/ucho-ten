@@ -21,7 +21,3 @@ export const useMuteWords = () => useAtom(muteWords)
 const disableScrollOnLoadButtonPress = atomWithStorage('disableScrollOnLoadButtonPress', false)
 
 export const useDisableScrollOnLoadButtonPress = () => useAtom(disableScrollOnLoadButtonPress)
-
-const appearanceColorMode = atomWithStorage<'system'| 'light' | 'dark'>('appearanceColor', 'system')
-
-export const useAppearanceColorMode = () => useAtom(appearanceColorMode)
