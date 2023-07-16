@@ -1,5 +1,8 @@
 'use client'
 import React,{ useEffect,useState } from 'react';
+import {
+    useAppearanceColorMode
+} from '@/atoms/settings'
 /*import {
     useAppearanceColorMode
 } from '@/atoms/settings';*/
@@ -13,8 +16,8 @@ interface InsertBackgroundImageProps {
 export const InsertBackgroundImage: React.FC<InsertBackgroundImageProps> = ({ children }: { children: React.ReactNode }) => {
     const [mounted, setMounted] = useState(false)
     //const localAppearanceColorMode = JSON.parse(localStorage.getItem('appearanceColorMode') ?? 'system');
-    //const [appearanceColorMode, setAppearanceColorMode] = useAppearanceColorMode();
-    const [appearanceColorMode, setAppearanceColorMode] = 'system'
+    const [appearanceColorMode, setAppearanceColorMode] = useAppearanceColorMode();
+    //const [appearanceColorMode, setAppearanceColorMode] = 'system'
     const darkMode = useDarkMode(false)
     console.log(appearanceColorMode)
     //console.log(localStorage)
@@ -42,7 +45,7 @@ export const InsertBackgroundImage: React.FC<InsertBackgroundImageProps> = ({ ch
             style={{
                 backgroundImage: appearanceColorMode === 'dark' ? `url(${darkModeBGI})` : appearanceColorMode === "light" ? `url(${lightModeBGI})` : darkMode.value ? `url(${darkModeBGI})` : `url(${lightModeBGI})`,
                 backgroundSize: 'cover',
-                backgroundColor: ( appearanceColorMode === 'dark' || appearanceColorMode !== "light" && darkMode.value) ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)',
+                backgroundColor: ( appearanceColorMode === 'dark' || appearanceColorMode !== "light" && darkMode.value) ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.1)',
                 backgroundBlendMode: ( appearanceColorMode === 'dark' || appearanceColorMode !== "light" && darkMode.value) ? 'darken' : 'lighten',
             }}
         >
