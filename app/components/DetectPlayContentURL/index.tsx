@@ -16,7 +16,9 @@ export const DetectPlayContentURL: React.FC<DetectPlayContentURLProps> = (props)
     }
 
     let videoId = '';
+    let musicId = '';
     let hasYouTube = false;
+    let hasSpotify = false;
 
     const textElements: ReactNode[] = record.text.split('\n').map((line, index) => {
         const matches = line.match(/(@[a-zA-Z0-9-.]+|https?:\/\/[a-zA-Z0-9-./?=_%&:#@]+)/g) as any
@@ -32,7 +34,13 @@ export const DetectPlayContentURL: React.FC<DetectPlayContentURLProps> = (props)
                         const searchParams = new URLSearchParams(url.search);
                         videoId = searchParams.get('v') as string
                         hasYouTube = true
+                    } else if(url.hostname === 'open.spotify.com'){
+                        const searchParams = new URLSearchParams(url.search);
+                        musicId = url.pathname.split("/").pop() as string
+                        console.log(url.pathname.split("/").pop())
+                        hasSpotify = true
                     }
+
                 }
                 return match;
             });
@@ -53,8 +61,15 @@ export const DetectPlayContentURL: React.FC<DetectPlayContentURLProps> = (props)
                     allowFullScreen
                 />
             </div>
-
         );
+    } if(hasSpotify){
+        return(
+            <iframe style={{borderRadius: "12px", width: "100%", height: "80px"}}
+                    src={`https://open.spotify.com/embed/track/${musicId}`}
+                    height="80" frameBorder="0" allowFullScreen={true}
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            />
+        )
     } else {
         return null
     }

@@ -49,9 +49,10 @@ export const PostRecordTextView = (props: PostRecordTextViewProps) => {
                 if(url.endsWith('.')){
                   url = url.slice(0, -1)
                 }
+                console.log(match)
                 return (
                   <a key={j} href={url} target="_blank" rel="noopener noreferrer">
-                    {match}
+                    {match.replace(/^(https?:\/\/)/, '')}
                   </a>
                 )
               } else {
