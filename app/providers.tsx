@@ -59,7 +59,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return isBrowser ? (
     <JotaiProvider>
-      <NextUIProvider theme={darkMode.value ? darkTheme : lightTheme}>
+      <NextUIProvider theme={darkTheme}>
         {children}
       </NextUIProvider>
     </JotaiProvider>
