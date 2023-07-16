@@ -11,19 +11,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-    const [mounted, setMounted] = useState(false)
     const ComponentWithNoSSR = dynamic(() => import('./InsertBackgroundImage'), {
         ssr: false
     })
 
-    useEffect(() => {
-        setMounted(true)
-    }, [])
-
-
-    if(!mounted){
-
-    }
   return (
     <html lang="ja">
       <head>
@@ -42,8 +33,7 @@ export default function RootLayout({
         ></meta>
           <meta name="twitter:card" content="summarylargeimage"></meta>
       </head>
-      <body>
-        <ComponentWithNoSSR />
+      <ComponentWithNoSSR>
         <Providers>
             {children}
             <div style={{position:"absolute", right:10, bottom:10}}>
@@ -52,7 +42,7 @@ export default function RootLayout({
                 </div>
             </div>
         </Providers>
-      </body>
+      </ComponentWithNoSSR >
     </html>
   )
 }

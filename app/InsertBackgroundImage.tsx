@@ -6,9 +6,11 @@ import React,{ useEffect,useState } from 'react';
 import useDarkMode from 'use-dark-mode';
 
 
-interface InsertBackgroundImageProps {}
+interface InsertBackgroundImageProps {
+    children: React.ReactNode;
+}
 
-export const InsertBackgroundImage: React.FC<InsertBackgroundImageProps> = () => {
+export const InsertBackgroundImage: React.FC<InsertBackgroundImageProps> = ({ children }: { children: React.ReactNode }) => {
     const [mounted, setMounted] = useState(false)
     //const localAppearanceColorMode = JSON.parse(localStorage.getItem('appearanceColorMode') ?? 'system');
     //const [appearanceColorMode, setAppearanceColorMode] = useAppearanceColorMode();
@@ -36,38 +38,17 @@ export const InsertBackgroundImage: React.FC<InsertBackgroundImageProps> = () =>
     }, [appearanceColorMode]);
 
     return (
-        <div
+        <body
             style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100vh',
-                overflow: 'hidden',
-                visibility: mounted ? 'visible' : 'hidden',
+                backgroundImage: appearanceColorMode === 'dark' ? `url(${darkModeBGI})` : appearanceColorMode === "light" ? `url(${lightModeBGI})` : darkMode.value ? `url(${darkModeBGI})` : `url(${lightModeBGI})`,
+                backgroundSize: 'cover',
+                backgroundColor: ( appearanceColorMode === 'dark' || appearanceColorMode !== "light" && darkMode.value) ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)',
+                backgroundBlendMode: ( appearanceColorMode === 'dark' || appearanceColorMode !== "light" && darkMode.value) ? 'darken' : 'lighten',
             }}
         >
-            <img
-                src={
-                    appearanceColorMode === 'dark'
-                        ? darkModeBGI
-                        : appearanceColorMode === 'light'
-                            ? lightModeBGI
-                            : darkMode.value
-                                ? darkModeBGI
-                                : lightModeBGI
-                }
-                alt="background"
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    visibility: mounted ? 'visible' : 'hidden',
-                }}
-                draggable="false"
-            />
-        </div>
-    );
+            {children}
+        </body>
+    )
 };
 
 export default InsertBackgroundImage;
