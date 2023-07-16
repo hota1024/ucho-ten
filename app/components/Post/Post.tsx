@@ -378,6 +378,10 @@ export const Post = (props: PostProps) => {
           setIsLongPress(false);
           clearTimeout(timer);
         });
+        document.addEventListener('contextmenu', () => {
+          setIsLongPress(false);
+          clearTimeout(timer);
+        });
       },
       []
   )
@@ -647,9 +651,8 @@ export const Post = (props: PostProps) => {
                       />
                     </>
                 )}
-            {!embed && !isEmbed && (
-                //<DetectPlayContentURL record={record}/>
-                <></>
+            {false && (
+                <DetectPlayContentURL record={record}/>
             )}
             {!hideActions && (
                 <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
