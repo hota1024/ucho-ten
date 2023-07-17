@@ -124,9 +124,6 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
           </div>
         </Row>
         <Text size={20} b>
-          Background Image
-        </Text>
-        <Text size={20} b>
           {t("Modal.Settings.MuteWords")}
         </Text>
         <Row>
