@@ -315,7 +315,7 @@ export const FeedView = (props: FeedViewProps) => {
                                               showLikeCount
                                               showReplyCount
                                               showRepostCount
-                                              onFetch={fetchReplyParent}
+                                              onFetch={fetchFeed}
                                               postType={"reply"}
                                           />
                                         </PostContainer>

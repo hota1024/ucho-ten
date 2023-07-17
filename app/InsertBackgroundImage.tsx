@@ -7,6 +7,8 @@ import {
     useAppearanceColorMode
 } from '@/atoms/settings';*/
 import useDarkMode from 'use-dark-mode';
+import 'react-medium-image-zoom/dist/styles.css'
+
 
 
 interface InsertBackgroundImageProps {
@@ -45,8 +47,8 @@ export const InsertBackgroundImage: React.FC<InsertBackgroundImageProps> = ({ ch
             style={{
                 backgroundImage: appearanceColorMode === 'dark' ? `url(${darkModeBGI})` : appearanceColorMode === "light" ? `url(${lightModeBGI})` : darkMode.value ? `url(${darkModeBGI})` : `url(${lightModeBGI})`,
                 backgroundSize: 'cover',
-                backgroundColor: ( appearanceColorMode === 'dark' || appearanceColorMode !== "light" && darkMode.value) ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.1)',
-                backgroundBlendMode: ( appearanceColorMode === 'dark' || appearanceColorMode !== "light" && darkMode.value) ? 'darken' : 'lighten',
+                backgroundColor: ( appearanceColorMode === 'dark' || appearanceColorMode === "system" && darkMode.value) ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.1)',
+                backgroundBlendMode: ( appearanceColorMode === 'dark' || appearanceColorMode === "system" && darkMode.value) ? 'darken' : 'lighten',
             }}
         >
         {children}
