@@ -124,37 +124,6 @@ export const SetttingsModal = (props: SetttingsModalProps) => {
           </div>
         </Row>
         <Text size={20} b>
-          Background Image
-        </Text>
-        <Row align="center">
-          <Col>
-            <Text>select color</Text>
-          </Col>
-          <div>
-            <Dropdown>
-              <Dropdown.Button light css={{ tt: "capitalize" }}>
-                {appearanceColorMode}
-              </Dropdown.Button>
-              <Dropdown.Menu
-                  aria-label="Multiple selection actions"
-                  selectionMode="single"
-                  disallowEmptySelection
-                  selectedKeys={appearanceColorMode}
-                  onSelectionChange={(e) => {
-                    //console.log(e)
-                    //@ts-ignore
-                    setAppearanceColorMode(e.currentKey)
-                  }}
-              >
-                <Dropdown.Item key='system'>System</Dropdown.Item>
-                <Dropdown.Item key='light'>Light</Dropdown.Item>
-                <Dropdown.Item key='dark'>Dark</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
-        </Row>
-
-        <Text size={20} b>
           {t("Modal.Settings.MuteWords")}
         </Text>
         <Row>
