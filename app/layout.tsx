@@ -1,4 +1,3 @@
-'use client'
 import { Providers } from './providers'
 import 'react-medium-image-zoom/dist/styles.css'
 import dynamic from 'next/dynamic'
@@ -9,9 +8,9 @@ export default function RootLayout({
                                    }: {
     children: React.ReactNode
 }) {
-    const ComponentWithNoSSR = dynamic(() => import('./InsertBackgroundImage'), {
+    /*const ComponentWithNoSSR = dynamic(() => import('./InsertBackgroundImage'), {
         ssr: false
-    })
+    })*/
 
     return (
         <html lang="ja">
@@ -30,7 +29,14 @@ export default function RootLayout({
             <link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml" />
             <meta name="robots" content="noarchive,max-image-preview"></meta>
         </head>
-        <ComponentWithNoSSR>
+        <body
+            style={{
+                backgroundImage: 'url(/images/backgroundimg/sky_00421.jpg)',
+                backgroundSize: 'cover',
+                backgroundColor: 'rgba(255,255,255,0.1)',
+                backgroundBlendMode: 'lighten',
+            }}
+        >
             <Providers>
                 {children}
                 <div style={{position:"absolute", right:10, bottom:10}}>
@@ -39,7 +45,7 @@ export default function RootLayout({
                     </div>
                 </div>
             </Providers>
-        </ComponentWithNoSSR >
+        </body >
         </html>
     )
 }
