@@ -7,6 +7,8 @@ import {
     useAppearanceColorMode
 } from '@/atoms/settings';*/
 import useDarkMode from 'use-dark-mode';
+import 'react-medium-image-zoom/dist/styles.css'
+
 
 
 interface InsertBackgroundImageProps {
