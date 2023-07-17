@@ -112,15 +112,6 @@ const PostDate = styled('div', {
   },
 })
 
-const timeUnit = utx(
-  makeConsecutiveUnits([
-    makeUnit(1000, 's'),
-    makeUnit(60, 'm'),
-    makeUnit(60, 'h'),
-    makeUnit(24, 'd'),
-  ])
-)
-
 const PostAction = styled('div', {
   display: 'flex',
   alignItems: 'center',
@@ -312,6 +303,14 @@ export const Post = (props: PostProps) => {
   const [saveParentReply, setSaveParentReply] = useState(parentReply)
   const [postThreadModal, setPostThreadModal] = useState(false)
   const { t } = useTranslation()
+  const timeUnit = utx(
+      makeConsecutiveUnits([
+        makeUnit(1000, 's'),
+        makeUnit(60, 'm'),
+        makeUnit(60, 'h'),
+        makeUnit(24, 'd'),
+      ])
+  )
 
   const updateElapsed = useCallback(() => {
     if (!time) return 0
@@ -376,6 +375,10 @@ export const Post = (props: PostProps) => {
           clearTimeout(timer);
         });
         document.addEventListener('mousemove', () => {
+          setIsLongPress(false);
+          clearTimeout(timer);
+        });
+        document.addEventListener('contextmenu', () => {
           setIsLongPress(false);
           clearTimeout(timer);
         });
@@ -648,9 +651,8 @@ export const Post = (props: PostProps) => {
                       />
                     </>
                 )}
-            {!embed && !isEmbed && (
-                //<DetectPlayContentURL record={record}/>
-                <></>
+            {false && (
+                <DetectPlayContentURL record={record}/>
             )}
             {!hideActions && (
                 <Row css={{ mt: '$3', mb: hasReply ? '$10' : '$0' }} align="center">
