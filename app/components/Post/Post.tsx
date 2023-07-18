@@ -628,10 +628,9 @@ export const Post = (props: PostProps) => {
                   </URLCard>
                 </a>
             )}
-
             {embed &&
                 !isEmbed &&
-                embed.$type === 'app.bsky.embed.recordWithMedia#view' && (
+                embed.$type === 'app.bsky.embed.recordWithMedia#view' && (embed?.record as any)?.record?.$type !== 'app.bsky.embed.record#viewNotFound' &&  (
                     <>
                       <Post
                           myDid={myDid}
@@ -651,6 +650,7 @@ export const Post = (props: PostProps) => {
                       />
                     </>
                 )}
+
             {false && (
                 <DetectPlayContentURL record={record}/>
             )}
