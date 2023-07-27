@@ -1,8 +1,11 @@
 {
-  "name": "eslint-config-custom",
+  "name": "@ucho-ten/eslint-config-custom",
   "version": "0.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf .turbo && rm -rf node_modules"
+  },
   "dependencies": {
     "eslint-config-next": "^13.4.1",
     "eslint-config-prettier": "^8.3.0",
