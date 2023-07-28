@@ -36,7 +36,7 @@ export const useLocalStorageSession = create(
       setAuthState: (state) => set({ authState: state }),
     }),
     {
-      name: "bluesky-react-session-storage",
+      name: "bluesky-react/session-storage",
     }
   )
 );
