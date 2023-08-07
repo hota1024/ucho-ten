@@ -17,5 +17,5 @@
     "noFallthroughCasesInSwitch": true,
     "types": ["vite/client"],
   },
-  "include": ["stories", "decorators"],
+  "include": ["stories", "decorators", "components/DebugMenu"],
 }

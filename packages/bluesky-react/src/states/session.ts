@@ -32,8 +32,14 @@ export const useLocalStorageSession = create(
     (set) => ({
       session: null,
       authState: "logged-out",
-      setSession: (session) => set({ session }),
-      setAuthState: (state) => set({ authState: state }),
+      setSession: (session) => {
+        set({ session });
+        useSessionStore.setState({ session });
+      },
+      setAuthState: (authState) => {
+        set({ authState });
+        useSessionStore.setState({ authState });
+      },
     }),
     {
       name: "bluesky-react/session-storage",

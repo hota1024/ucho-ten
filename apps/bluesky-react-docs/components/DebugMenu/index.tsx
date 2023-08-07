@@ -1,6 +1,6 @@
 import { useContext, useId, useState } from "react";
 import styles from "./styles.module.css";
-import { LocalStorageContext } from "../provideLocalStorage";
+import { LocalStorageContext } from "../../decorators/provideLocalStorage";
 
 export function DebugMenu() {
   const [showSettings, setShowSettings] = useState(false);
@@ -61,4 +61,8 @@ export function DebugMenu() {
       )}
     </>
   );
+}
+
+export function Alert(props: React.PropsWithChildren) {
+  return <div className={styles.alert}>{props.children}</div>;
 }

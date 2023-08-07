@@ -1,0 +1,12 @@
+.pre {
+  display: block;
+  background: #202020;
+  padding: 1rem;
+  border-radius: 8px;
+  overflow: auto;
+}
+
+.code {
+  color: white;
+  font-size: 1rem;
+}
