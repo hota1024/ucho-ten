@@ -8,6 +8,7 @@ import type { UsePostLazyReturn } from "./type";
 
 export function usePostLazy(): UsePostLazyReturn {
   // shared states //
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const client = useClient();
   const { posts, merge } = usePostStore();
 
