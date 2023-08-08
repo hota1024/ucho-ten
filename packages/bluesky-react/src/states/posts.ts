@@ -1,4 +1,4 @@
-import { PostView } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+import type { PostView } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { create } from "zustand";
 
 export interface PostStoreState {

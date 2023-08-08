@@ -1,8 +1,10 @@
-import { useClient } from "@/hooks";
-import { UseSessionReturn } from "./type";
+import type { AtpSessionData } from "@atproto/api";
 import { useEffect, useState } from "react";
-import { AtpSessionData } from "@atproto/api";
-import { AuthState } from "@/client";
+
+import type { AuthState } from "@/client";
+import { useClient } from "@/hooks";
+
+import type { UseSessionReturn } from "./type";
 
 /**
  * returns shared session data and login function.

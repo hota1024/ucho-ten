@@ -1,6 +1,8 @@
-import { useClient } from "@/hooks";
 import { useEffect } from "react";
-import { UseOnLoginHandler } from "./type";
+
+import { useClient } from "@/hooks";
+
+import type { UseOnLoginHandler } from "./type";
 
 /**
  * calls handler function when user logged in.

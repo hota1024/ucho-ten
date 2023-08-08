@@ -1,9 +1,11 @@
-import { AppBskyActorGetProfile } from "@atproto/api";
-import { UseProfileOpts, UseProfileReturn } from "./type";
+import type { AppBskyActorGetProfile } from "@atproto/api";
+import type { ProfileViewDetailed } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
+import { useCallback, useEffect, useState } from "react";
+
 import { useClient, useSession } from "@/hooks";
 import { useProfilesStore } from "@/states";
-import { useCallback, useEffect, useState } from "react";
-import { ProfileViewDetailed } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
+
+import type { UseProfileOpts, UseProfileReturn } from "./type";
 
 /**
  * returns user profile that specified in `params.actor`.

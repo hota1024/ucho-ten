@@ -1,8 +1,10 @@
+import type { PostView } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { useCallback, useEffect, useState } from "react";
-import { useClient } from "../useClient";
-import { UsePostLazyReturn } from "./type";
-import { PostView } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+
 import { usePostStore } from "@/states";
+
+import { useClient } from "../useClient";
+import type { UsePostLazyReturn } from "./type";
 
 export function usePostLazy(): UsePostLazyReturn {
   // shared states //

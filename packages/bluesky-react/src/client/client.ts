@@ -1,7 +1,12 @@
-import { AtpAgentLoginOpts, AtpSessionData, BskyAgent } from "@atproto/api";
-import { AuthState, ClientInterface } from "./interface";
-import { EventManager, EventHandler, EventUnsubscribe } from "./event-manager";
+import type {
+  AtpAgentLoginOpts,
+  AtpSessionData,
+  BskyAgent,
+} from "@atproto/api";
+
 import { InvalidIdentifierOrPassword } from "../errors";
+import { EventManager } from "./event-manager";
+import type { AuthState, ClientInterface } from "./interface";
 
 export class Client implements ClientInterface {
   readonly eventSessionChanged = new EventManager<AtpSessionData | null>();

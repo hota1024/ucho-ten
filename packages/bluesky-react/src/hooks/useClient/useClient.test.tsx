@@ -1,6 +1,7 @@
-import { useClient } from ".";
-import { createPdsServer, renderBlueskyHook } from "@/testing";
 import { Client } from "@/client";
+import { createPdsServer, renderBlueskyHook } from "@/testing";
+
+import { useClient } from ".";
 
 describe("useClient hook test", () => {
   let service: string;

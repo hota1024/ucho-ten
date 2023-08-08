@@ -14,7 +14,7 @@ export class EventManager<T = void> {
   #handlers = new Map<symbol, EventHandler<T>>();
 
   emit(data: T) {
-    for (const [_, handler] of this.#handlers) {
+    for (const [, handler] of this.#handlers) {
       try {
         handler(data);
       } catch (error) {

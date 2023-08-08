@@ -1,5 +1,5 @@
-import { AppBskyActorGetProfile } from "@atproto/api";
-import { ProfileViewDetailed } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
+import type { AppBskyActorGetProfile } from "@atproto/api";
+import type { ProfileViewDetailed } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
 
 /**
  * useProfile options.

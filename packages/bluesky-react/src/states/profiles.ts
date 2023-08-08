@@ -1,4 +1,4 @@
-import { ProfileViewDetailed } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
+import type { ProfileViewDetailed } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
 import { create } from "zustand";
 
 export interface ProfileStoreState {

@@ -1,6 +1,8 @@
-import { useOnLogin, useOnLogout, useSession } from "@/hooks";
-import { PersistSessionManager, UsePersistSessionReturn } from "./type";
 import { useEffect, useState } from "react";
+
+import { useOnLogin, useOnLogout, useSession } from "@/hooks";
+
+import type { PersistSessionManager, UsePersistSessionReturn } from "./type";
 
 /**
  * use persist session.

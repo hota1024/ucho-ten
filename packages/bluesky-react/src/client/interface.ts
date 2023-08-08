@@ -1,6 +1,10 @@
-import { AtpAgentLoginOpts, BskyAgent } from "@atproto/api";
-import { EventManager, EventHandler, EventUnsubscribe } from "./event-manager";
-import { AtpSessionData } from "@atproto/api";
+import type {
+  AtpAgentLoginOpts,
+  AtpSessionData,
+  BskyAgent,
+} from "@atproto/api";
+
+import type { EventManager } from "./event-manager";
 
 export type AuthState =
   | "logging-in"

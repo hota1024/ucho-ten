@@ -1,11 +1,13 @@
-import { BlueskyProvider } from "@/context";
-import {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type {
   Queries,
-  renderHook,
   queries,
   RenderHookOptions,
   RenderHookResult,
 } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
+
+import { BlueskyProvider } from "@/context";
 
 export function renderBlueskyHook<
   Result,
@@ -34,7 +36,7 @@ export function renderBlueskyHook<
 }
 
 export function renderLibHooks<
-  T extends {},
+  T extends object,
   R = {
     [K in keyof T]: () => T[K];
   }

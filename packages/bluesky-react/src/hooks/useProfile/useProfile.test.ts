@@ -1,13 +1,15 @@
+import { act } from "react-dom/test-utils";
+
 import {
   createPdsServer,
   renderLibHooks,
   waitFor,
   waitForLogin,
 } from "@/testing";
-import { useProfile } from ".";
-import { useSession } from "../useSession";
+
 import { useClient } from "../useClient";
-import { act } from "react-dom/test-utils";
+import { useSession } from "../useSession";
+import { useProfile } from ".";
 
 describe("useProfile hook test", () => {
   let service: string;

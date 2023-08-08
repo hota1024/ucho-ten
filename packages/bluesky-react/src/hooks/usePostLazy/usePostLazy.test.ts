@@ -1,12 +1,14 @@
+import { act } from "react-dom/test-utils";
+
 import {
   createPdsServer,
   renderLibHooks,
   waitFor,
   waitForLogin,
 } from "@/testing";
-import { useSession } from "../useSession";
+
 import { useClient } from "../useClient";
-import { act } from "react-dom/test-utils";
+import { useSession } from "../useSession";
 import { usePostLazy } from ".";
 
 describe("usePostLazy hook test", () => {

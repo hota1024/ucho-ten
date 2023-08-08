@@ -1,6 +1,7 @@
-import { act } from "react-dom/test-utils";
 import { waitFor } from "@testing-library/react";
-import { UseSessionReturn } from "@/hooks/useSession/type";
+import { act } from "react-dom/test-utils";
+
+import type { UseSessionReturn } from "@/hooks/useSession/type";
 
 export async function createPdsServer(path = "") {
   const res = await fetch(`http://localhost:1986/${path}`, { method: "POST" });

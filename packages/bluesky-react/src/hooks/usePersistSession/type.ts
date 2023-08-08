@@ -1,4 +1,4 @@
-import { AtpSessionData } from "@atproto/api";
+import type { AtpSessionData } from "@atproto/api";
 
 /**
  * PersistSessionManager interface.

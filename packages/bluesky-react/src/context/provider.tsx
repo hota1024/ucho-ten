@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { BlueskyContext } from "./context";
 import { BskyAgent } from "@atproto/api";
+import React, { useState } from "react";
+
 import { Client } from "../client";
+import { BlueskyContext } from "./context";
 
 export interface BlueskyProviderProps extends React.PropsWithChildren {
   /**

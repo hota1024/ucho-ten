@@ -1,6 +1,8 @@
-import { useClient } from "@/hooks";
-import { UseOnLogoutHandler } from "./type";
 import { useEffect } from "react";
+
+import { useClient } from "@/hooks";
+
+import type { UseOnLogoutHandler } from "./type";
 
 /**
  * calls handler function when user logged out.

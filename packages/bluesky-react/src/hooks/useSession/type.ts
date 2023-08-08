@@ -1,4 +1,4 @@
-import { AuthState, ClientInterface } from "@/client";
+import type { AuthState, ClientInterface } from "@/client";
 
 /**
  * useSession return.

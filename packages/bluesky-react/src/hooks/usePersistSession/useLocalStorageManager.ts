@@ -1,4 +1,4 @@
-import { PersistSessionManager } from "./type";
+import type { PersistSessionManager } from "./type";
 
 /**
  * returns persist session manager that uses localStorage.

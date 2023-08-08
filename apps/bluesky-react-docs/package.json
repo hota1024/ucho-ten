@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "storybook dev -p 6007",
-    "build": "storybook build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "build": "storybook build"
   },
   "dependencies": {
     "@atproto/api": "^0.4.3",
@@ -29,7 +28,7 @@
     "@ucho-ten/eslint-config-custom": "workspace:*",
     "@vitejs/plugin-react": "^4.0.3",
     "bluesky-react": "workspace:^",
-    "eslint": "^8.45.0",
+    "eslint": "^8.15.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "storybook": "^7.1.1",
