@@ -15,5 +15,14 @@
     "turbo": "latest"
   },
   "packageManager": "pnpm@8.6.10",
-  "name": "ucho-ten"
+  "name": "ucho-ten",
+  "pnpm": {
+    "packageExtensions": {
+      "better-sqlite3": {
+        "dependencies": {
+          "node-gyp": "^8.4.1"
+        }
+      }
+    }
+  }
 }

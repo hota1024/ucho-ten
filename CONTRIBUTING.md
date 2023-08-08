@@ -7,3 +7,9 @@
 - Turborepo + pnpm
 - Next.js
 - Storybook
+
+## 🌏 環境
+
+- sqlite3
+- Node.js = 18.17.0
+- pnpm > 8.6.0

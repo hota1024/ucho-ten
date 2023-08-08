@@ -1,9 +1,5 @@
-import {
-  AtpAgentLoginOpts,
-  BskyAgent,
-  ComAtprotoServerGetSession,
-} from "@atproto/api";
-import { EventHandler, EventUnsubscribe } from "./emmiter";
+import { AtpAgentLoginOpts, BskyAgent } from "@atproto/api";
+import { EventManager, EventHandler, EventUnsubscribe } from "./event-manager";
 import { AtpSessionData } from "@atproto/api";
 
 export type AuthState =
@@ -24,34 +20,24 @@ export interface ClientInterface {
   readonly session: AtpSessionData | null;
 
   /**
-   * subscribe session change.
-   *
-   * @param handler handler.
+   * event of session.
    */
-  onSessionChanged(
-    handler: EventHandler<AtpSessionData | null>
-  ): EventUnsubscribe;
+  readonly eventSessionChanged: EventManager<AtpSessionData | null>;
 
   /**
-   * subscribe auth state change.
-   *
-   * @param handler handler.
+   * event of auth state.
    */
-  onAuthStateChanged(handler: EventHandler<AuthState>): EventUnsubscribe;
+  readonly eventAuthStateChanged: EventManager<AuthState>;
 
   /**
-   * subscribe login.
-   *
-   * @param handler handler.
+   * event of login.
    */
-  onLogin(handler: EventHandler<AtpSessionData>): EventUnsubscribe;
+  readonly eventOnLogin: EventManager<AtpSessionData>;
 
   /**
-   * subscribe logout.
-   *
-   * @param handler handler.
+   * event of logout.
    */
-  onLogout(handler: EventHandler): EventUnsubscribe;
+  readonly eventOnLogout: EventManager;
 
   /**
    * login with credentials.

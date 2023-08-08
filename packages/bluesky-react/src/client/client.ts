@@ -1,13 +1,13 @@
 import { AtpAgentLoginOpts, AtpSessionData, BskyAgent } from "@atproto/api";
 import { AuthState, ClientInterface } from "./interface";
-import { Emitter, EventHandler, EventUnsubscribe } from "./emmiter";
+import { EventManager, EventHandler, EventUnsubscribe } from "./event-manager";
 import { InvalidIdentifierOrPassword } from "../errors";
 
 export class Client implements ClientInterface {
-  #eventSessionChanged = new Emitter<AtpSessionData | null>();
-  #eventAuthStateChanged = new Emitter<AuthState>();
-  #eventOnLogin = new Emitter<AtpSessionData>();
-  #eventOnLogout = new Emitter();
+  readonly eventSessionChanged = new EventManager<AtpSessionData | null>();
+  readonly eventAuthStateChanged = new EventManager<AuthState>();
+  readonly eventOnLogin = new EventManager<AtpSessionData>();
+  readonly eventOnLogout = new EventManager();
 
   /**
    * @param agent `BskyAgent` instance of `@atproto/api`
@@ -18,37 +18,19 @@ export class Client implements ClientInterface {
     return this.agent.session ?? null;
   }
 
-  onSessionChanged(
-    handler: EventHandler<AtpSessionData | null>
-  ): EventUnsubscribe {
-    return this.#eventSessionChanged.on(handler);
-  }
-
-  onAuthStateChanged(handler: EventHandler<AuthState>): EventUnsubscribe {
-    return this.#eventAuthStateChanged.on(handler);
-  }
-
-  onLogin(handler: EventHandler<AtpSessionData>): EventUnsubscribe {
-    return this.#eventOnLogin.on(handler);
-  }
-
-  onLogout(handler: () => void): EventUnsubscribe {
-    return this.#eventOnLogout.on(handler);
-  }
-
   async login(opts: AtpAgentLoginOpts): Promise<AtpSessionData> {
-    this.#eventAuthStateChanged.emit("logging-in");
+    this.eventAuthStateChanged.emit("logging-in");
 
     try {
       const { data } = await this.agent.login(opts);
 
-      this.#eventSessionChanged.emit(data);
-      this.#eventAuthStateChanged.emit("logged-in");
-      this.#eventOnLogin.emit(data);
+      this.eventSessionChanged.emit(data);
+      this.eventAuthStateChanged.emit("logged-in");
+      this.eventOnLogin.emit(data);
 
       return data;
     } catch (error) {
-      this.#eventAuthStateChanged.emit("logged-out");
+      this.eventAuthStateChanged.emit("logged-out");
 
       if (
         error instanceof Error &&
@@ -62,18 +44,18 @@ export class Client implements ClientInterface {
   }
 
   async resumeSession(session: AtpSessionData): Promise<AtpSessionData> {
-    this.#eventAuthStateChanged.emit("logging-in");
+    this.eventAuthStateChanged.emit("logging-in");
 
     try {
       const { data } = await this.agent.resumeSession(session);
       const newSession = { ...session, ...data };
 
-      this.#eventSessionChanged.emit(newSession);
-      this.#eventAuthStateChanged.emit("logged-in");
+      this.eventSessionChanged.emit(newSession);
+      this.eventAuthStateChanged.emit("logged-in");
 
       return newSession;
     } catch (error) {
-      this.#eventAuthStateChanged.emit("logged-out");
+      this.eventAuthStateChanged.emit("logged-out");
 
       if (
         error instanceof Error &&
@@ -89,8 +71,8 @@ export class Client implements ClientInterface {
   logout(): void {
     this.agent.session = undefined;
 
-    this.#eventSessionChanged.emit(null);
-    this.#eventAuthStateChanged.emit("logged-out");
-    this.#eventOnLogout.emit({});
+    this.eventSessionChanged.emit(null);
+    this.eventAuthStateChanged.emit("logged-out");
+    this.eventOnLogout.emit();
   }
 }

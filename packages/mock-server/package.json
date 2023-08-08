@@ -1,0 +1,20 @@
+{
+  "name": "mock-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/mock-server.ts"
+  },
+  "keywords": [],
+  "author": "hota1024",
+  "license": "ISC",
+  "devDependencies": {
+    "@atproto/dev-env": "^0.2.2",
+    "@ucho-ten/eslint-config-custom": "workspace:*",
+    "@ucho-ten/tsconfig": "workspace:*",
+    "eslint": "^8.15.0",
+    "typescript": "latest",
+    "ts-node": "^10.9.1"
+  }
+}

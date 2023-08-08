@@ -1,5 +1,5 @@
 {
-  "extends": "@ucho-ten/tsconfig/react-library.json",
+  "extends": "@ucho-ten/tsconfig/base.json",
   "include": ["."],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {

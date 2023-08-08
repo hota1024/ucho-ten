@@ -10,7 +10,7 @@ export type EventHandler<T = void> = T extends void
       (data: T): void;
     };
 
-export class Emitter<T> {
+export class EventManager<T = void> {
   #handlers = new Map<symbol, EventHandler<T>>();
 
   emit(data: T) {
@@ -23,7 +23,7 @@ export class Emitter<T> {
     }
   }
 
-  on(handler: EventHandler<T>): EventUnsubscribe {
+  subscribe(handler: EventHandler<T>): EventUnsubscribe {
     const key = Symbol(`handler#${this.#handlers.size}`);
 
     this.#handlers.set(key, handler);
