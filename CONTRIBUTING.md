@@ -21,7 +21,7 @@
 ### リポジトリのクローン
 
 - ブランチは `next` です。
-- PR を出す際は `next/(feat | fix | etc..)/<name>` のようなブランチを作成して作業を行います。
+- PR を出す際は `next-dev/(feat | fix | etc..)/<name>` のようなブランチを作成して作業を行います。
 
 ```shell
 git clone -b next https://github.com/hota1024/ucho-ten.git
