@@ -41,7 +41,7 @@ export function usePostLazy(
       const post: PostView = res.data.thread.post as PostView; // Explicit type cast
       console.log(post)
 
-      merge(new Map([[post.uri, post]]));
+      merge(new Map<string, PostView>([[post.uri, post]]));
 
       setPost(post);
     } catch (error) {
