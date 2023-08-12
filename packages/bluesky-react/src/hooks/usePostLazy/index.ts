@@ -2,9 +2,9 @@ import type { AppBskyFeedGetPostThread } from "@atproto/api";
 import type { PostView } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { useCallback, useEffect, useState } from "react";
 
+import { useClient } from "@/hooks";
 import { usePostStore } from "@/states";
 
-import { useClient } from "../useClient";
 import type { UsePostLazyReturn } from "./type";
 
 /**
@@ -38,11 +38,11 @@ export function usePostLazy(
       setLoading(true);
 
       const res = await client.agent.getPostThread({uri: uri}, opts);
-      const {post} = res.data.thread
+      const post: PostView = res.data.thread.post as PostView; // Explicit type cast
       console.log(post)
-      // @ts-expect-error aaaaa
+
       merge(new Map([[post.uri, post]]));
-      // @ts-expect-error aaaaa
+
       setPost(post);
     } catch (error) {
       setError(error);
@@ -50,8 +50,8 @@ export function usePostLazy(
       setLoading(false);
     }
 
-    return {post} as any;
-  }, []);
+    return post as PostView;
+  }, [client.agent, merge, opts, post]);
 
   // effects //
   useEffect(() => {
