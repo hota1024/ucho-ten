@@ -31,15 +31,13 @@ export function usePostLazy(
 
   // functions //
   const fetchPost = useCallback(async (uri: string) => {
-    // TODO: 実装する。
-
+  
     try {
       setError(null);
       setLoading(true);
 
       const res = await client.agent.getPostThread({uri: uri}, opts);
       const post: PostView = res.data.thread.post as PostView; // Explicit type cast
-      console.log(post)
 
       merge(new Map<string, PostView>([[post.uri, post]]));
 
@@ -55,7 +53,6 @@ export function usePostLazy(
 
   // effects //
   useEffect(() => {
-    // TODO: 実装する。
     if (!post) {
       return;
     }
