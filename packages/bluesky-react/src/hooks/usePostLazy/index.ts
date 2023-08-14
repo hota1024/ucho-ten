@@ -1,7 +1,8 @@
-import type { AppBskyFeedGetPostThread } from "@atproto/api";
-import type { PostView } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+import { AppBskyFeedDefs, type AppBskyFeedGetPostThread } from "@atproto/api";
+import { type PostView } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { useCallback, useEffect, useState } from "react";
 
+import { BlueskyReactError } from "@/errors";
 import { useClient } from "@/hooks";
 import { usePostStore } from "@/states";
 
@@ -14,13 +15,11 @@ import type { UsePostLazyReturn } from "./type";
  * @param opts `UseProfileOpts`
  * @returns `UseProfileReturn`
  */
-
 export function usePostLazy(
   params?: AppBskyFeedGetPostThread.QueryParams,
   opts?: AppBskyFeedGetPostThread.CallOptions
 ): UsePostLazyReturn {
   // shared states //
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const client = useClient();
   const { posts, merge } = usePostStore();
 
@@ -37,8 +36,15 @@ export function usePostLazy(
         setLoading(true);
 
         const res = await client.agent.getPostThread({ uri: uri }, opts);
-        const post: PostView = res.data.thread.post as PostView; // Explicit type cast
+        const { thread } = res.data;
 
+        if (!AppBskyFeedDefs.isThreadViewPost(thread)) {
+          throw new BlueskyReactError(
+            `cannot get thread view post in usePostLazy`
+          );
+        }
+
+        const post = thread.post;
         merge(new Map<string, PostView>([[post.uri, post]]));
 
         setPost(post);
