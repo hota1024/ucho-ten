@@ -52,13 +52,13 @@ export function usePostLazy(
         return post as PostView;
       } catch (error) {
         setError(error);
+
+        throw error;
       } finally {
         setLoading(false);
       }
-
-      return post as PostView;
     },
-    [client.agent, merge, opts, post]
+    [client.agent, merge, opts]
   );
 
   // effects //
