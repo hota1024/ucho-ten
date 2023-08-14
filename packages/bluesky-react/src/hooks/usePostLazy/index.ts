@@ -16,8 +16,8 @@ import type { UsePostLazyReturn } from "./type";
  */
 
 export function usePostLazy(
-    params?: AppBskyFeedGetPostThread.QueryParams,
-    opts?: AppBskyFeedGetPostThread.CallOptions,
+  params?: AppBskyFeedGetPostThread.QueryParams,
+  opts?: AppBskyFeedGetPostThread.CallOptions
 ): UsePostLazyReturn {
   // shared states //
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -30,26 +30,28 @@ export function usePostLazy(
   const [error, setError] = useState<unknown>(null);
 
   // functions //
-  const fetchPost = useCallback(async (uri: string) => {
-  
-    try {
-      setError(null);
-      setLoading(true);
+  const fetchPost = useCallback(
+    async (uri: string) => {
+      try {
+        setError(null);
+        setLoading(true);
 
-      const res = await client.agent.getPostThread({uri: uri}, opts);
-      const post: PostView = res.data.thread.post as PostView; // Explicit type cast
+        const res = await client.agent.getPostThread({ uri: uri }, opts);
+        const post: PostView = res.data.thread.post as PostView; // Explicit type cast
 
-      merge(new Map<string, PostView>([[post.uri, post]]));
+        merge(new Map<string, PostView>([[post.uri, post]]));
 
-      setPost(post);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
+        setPost(post);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
 
-    return post as PostView;
-  }, [client.agent, merge, opts, post]);
+      return post as PostView;
+    },
+    [client.agent, merge, opts, post]
+  );
 
   // effects //
   useEffect(() => {
