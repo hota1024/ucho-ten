@@ -48,6 +48,8 @@ export function usePostLazy(
         merge(new Map<string, PostView>([[post.uri, post]]));
 
         setPost(post);
+
+        return post as PostView;
       } catch (error) {
         setError(error);
       } finally {
