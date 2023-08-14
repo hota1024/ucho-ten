@@ -52,6 +52,7 @@ describe("usePostLazy hook test", () => {
       uri: post.uri,
     });
   });
+
   test("投稿が他の hooks と共有できる", async () => {
     const { client, session, postLazy1, postLazy2 } = renderLibHooks(
       () => ({
@@ -77,6 +78,29 @@ describe("usePostLazy hook test", () => {
 
     // 参照先が同じであるべき
     expect(postLazy1().post).toBe(postLazy2().post);
+  });
+
+  test("fetchPost が取得した投稿を返す", async () => {
+    const { client, session, postLazy } = renderLibHooks(
+      () => ({
+        client: useClient(),
+        session: useSession(),
+        postLazy: usePostLazy(),
+      }),
+      service
+    );
+    await waitForLogin(session);
+
+    const post = await client().agent.post({
+      text: "test",
+    });
+
+    await act(async () => {
+      const result = await postLazy().fetchPost(post.uri);
+
+      // 取得した投稿は呼び出し元から利用できるべき
+      expect(result.uri).toBe(post.uri);
+    });
   });
 
   /**
