@@ -5,9 +5,9 @@ import { useCallback, useEffect, useState } from "react";
 
 import { BlueskyReactError } from "@/errors";
 import { useClient } from "@/hooks";
-import { useFollowsStore } from "@/states";
+import { useFollowersStore } from "@/states";
 
-import type { UseFollowsLazyReturn } from "./type";
+import type { UseFollowersLazyReturn } from "./type";
 
 /**
  * returns user profile that specified in `params.actor`.
@@ -16,23 +16,23 @@ import type { UseFollowsLazyReturn } from "./type";
  * @param opts `UseProfileOpts`
  * @returns `UseProfileReturn`
  */
-export function useFollowsLazy(
+export function useFollowersLazy(
     params?: AppBskyGraphGetFollows.QueryParams,
     opts?: AppBskyGraphGetFollows.CallOptions
-): UseFollowsLazyReturn {
+): UseFollowersLazyReturn {
     // shared states //
     const client = useClient();
-    const { combinedFollows, merge } = useFollowsStore();
+    const { combinedFollowers, merge } = useFollowersStore();
 
     // local states //
-    const [follows, setFollows] = useState<ProfileView[] | null>(null);
+    const [followers, setFollowers] = useState<ProfileView[] | null>(null);
     const [cursor, setCursor] = useState<string | null>(null)
     const [targetDid, setTargetDid] = useState<string | null>(null)
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<unknown>(null);
 
     // functions //
-    const fetchFollows = useCallback(
+    const fetchFollowers = useCallback(
         async (actor: string, cursor?: string) => {
             try {
                 setError(null);
@@ -43,7 +43,7 @@ export function useFollowsLazy(
                 console.log(data)
                 setCursor(data?.cursor as string)
                 merge(new Map<string, ProfileView[]>([[data.subject.did, data.follows]]));
-                setFollows(follows);
+                setFollowers(follows);
 
                 return data as never;
             } catch (error) {
@@ -59,16 +59,16 @@ export function useFollowsLazy(
 
     // effects //
     useEffect(() => {
-        if (!follows) {
+        if (!followers) {
             return;
         }
 
-        const newPost = combinedFollows.get(targetDid as string);
+        const newPost = combinedFollowers.get(targetDid as string);
 
         if (newPost) {
-            setFollows(newPost);
+            setFollowers(newPost);
         }
-    }, [follows, setFollows]);
+    }, [followers, setFollowers]);
 
-    return { follows, cursor, fetchFollows, loading, error };
+    return { followers, cursor, fetchFollowers, loading, error };
 }

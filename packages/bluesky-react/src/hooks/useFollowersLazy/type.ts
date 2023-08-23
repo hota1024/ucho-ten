@@ -5,22 +5,22 @@ import type { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/
 /**
  * useProfile options.
  */
-export interface UseFollowsLazyOpts extends AppBskyActorGetProfile.CallOptions {}
+export interface UseFollowersLazyOpts extends AppBskyActorGetProfile.CallOptions {}
 
 /**
  * useProfile return.
  */
-export interface UseFollowsLazyReturn {
+export interface UseFollowersLazyReturn {
     /**
      * `ProfileViewDetailed` state.
      */
-    follows?: ProfileView[] | null;
+    followers?: ProfileView[] | null;
     cursor?: string | null;
 
     /**
      * fetch profile and update states.
      */
-    fetchFollows(actor: string, cursor?:string): Promise<ProfileView[]>;
+    fetchFollowers(actor: string, cursor?:string): Promise<ProfileView[]>;
 
     /**
      * loading.
