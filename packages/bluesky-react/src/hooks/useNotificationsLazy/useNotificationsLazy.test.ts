@@ -9,7 +9,7 @@ import {
 
 import { useClient } from "../useClient";
 import { useSession } from "../useSession";
-import { useFollowersLazy } from ".";
+import { useNotificationsLazy } from ".";
 
 describe("usePostLazy hook test", () => {
     let service: string;
@@ -22,7 +22,7 @@ describe("usePostLazy hook test", () => {
             () => ({
                 client: useClient(),
                 session: useSession(),
-                followersLazy: useFollowersLazy(),
+                followersLazy: useNotificationsLazy(),
             }),
             service
         );
@@ -35,10 +35,10 @@ describe("usePostLazy hook test", () => {
         // 取得前の `loading` は `false` であるべき。
         expect(followersLazy().loading).toBeFalsy();
         // 取得前の `post` は `null` であるべき。
-        expect(followersLazy().followers).toBeNull();
+        expect(followersLazy().notifications).toBeNull();
 
         act(() => {
-            followersLazy().fetchFollowers("dummy.test");
+            followersLazy().fetchNotifications();
         });
 
         // 取得後の `loading` は `true` であるべき。
@@ -54,8 +54,8 @@ describe("usePostLazy hook test", () => {
             () => ({
                 client: useClient(),
                 session: useSession(),
-                followersLazy1: useFollowersLazy(),
-                followersLazy2: useFollowersLazy(),
+                followersLazy1: useNotificationsLazy(),
+                followersLazy2: useNotificationsLazy(),
             }),
             service
         );
@@ -65,15 +65,15 @@ describe("usePostLazy hook test", () => {
             text: "test",
         });
         act(() => {
-            followersLazy1().fetchFollowers("dummy.test");
-            followersLazy2().fetchFollowers("dummy.test");
+            followersLazy1().fetchNotifications();
+            followersLazy2().fetchNotifications();
         });
 
         await waitFor(() => expect(followersLazy1().loading).toBeFalsy());
         await waitFor(() => expect(followersLazy2().loading).toBeFalsy());
 
         // 参照先が同じであるべき
-        expect(JSON.stringify(followersLazy1().followers)).toBe(JSON.stringify(followersLazy2().followers));
+        expect(JSON.stringify(followersLazy1().notifications)).toBe(JSON.stringify(followersLazy2().notifications));
     });
 
     test("fetchPost が取得した投稿を返す", async () => {
@@ -81,7 +81,7 @@ describe("usePostLazy hook test", () => {
             () => ({
                 client: useClient(),
                 session: useSession(),
-                postLazy: useFollowersLazy(),
+                postLazy: useNotificationsLazy(),
             }),
             service
         );
@@ -92,9 +92,12 @@ describe("usePostLazy hook test", () => {
         });
 
         await act(async () => {
-            const follow = await client().agent.follow("did:plc:ffapiykk4b2t5mdfcdeaciob")
-            console.log(follow)
-            const result = await postLazy().fetchFollowers("dummy.test");
+            const post = await client().agent.post({
+                text: "test",
+            })
+            const repost = await client().agent.repost(post.uri,post.cid)
+            const like = await client().agent.like(post.uri, post.cid)
+            const result = await postLazy().fetchNotifications();
             console.log(result)
             // 取得した投稿は呼び出し元から利用できるべき
             //expect(result).toBe(post.uri);
