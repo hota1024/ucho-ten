@@ -29,7 +29,7 @@ describe("useProfileLazy hook test", () => {
 
         await act(async () => {
             try {
-                await profileLazy().fetchRepostedBy("dummy");
+                await profileLazy().fetchLikes("dummy");
             } catch (error) {
                 // maybe catch unauthorized error
                 expect(error).toBeInstanceOf(Error);
@@ -58,12 +58,12 @@ describe("useProfileLazy hook test", () => {
 
         console.log(post)
 
-        const repost = await client().agent.repost(post.uri, post.cid);
+        const like = await client().agent.like(post.uri, post.cid) ;
 
-        console.log(repost)
-
+        console.log(like)
+        console.log(post.uri)
         await act(async () => {
-            const result = await repostedbyLazy().fetchRepostedBy(post.uri);
+            const result = await repostedbyLazy().fetchLikes(post.uri);
             console.log(result)
             // 取得した投稿は呼び出し元から利用できるべき
             //expect(result.uri).toBe(post.uri);
