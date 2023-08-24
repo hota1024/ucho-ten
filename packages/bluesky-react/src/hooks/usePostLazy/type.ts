@@ -1,4 +1,4 @@
-import type { PostView } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+import type { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
 
 /**
  * usePostLazy return.
@@ -7,14 +7,14 @@ export interface UsePostLazyReturn {
   /**
    * post view.
    */
-  post: PostView | null;
+  seggestions: ProfileView[] | null;
 
   /**
    * fetch post.
    *
    * @param uri post uri.
    */
-  fetchPost(uri: string): Promise<PostView>;
+  fetchPost(limit?: string, cursor?: string): Promise<ProfileView[]>;
 
   /**
    * loading.
