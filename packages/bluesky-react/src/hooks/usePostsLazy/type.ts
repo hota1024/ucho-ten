@@ -1,26 +1,26 @@
 import type { AppBskyActorGetProfile } from "@atproto/api";
 import type { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
+import type { PostView } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 
 
 /**
  * useProfile options.
  */
-export interface UseFollowersLazyOpts extends AppBskyActorGetProfile.CallOptions {}
+export interface UsePostsLazyOpts extends AppBskyActorGetProfile.CallOptions {}
 
 /**
  * useProfile return.
  */
-export interface UseFollowersLazyReturn {
+export interface UsePostsLazyReturn {
     /**
      * `ProfileViewDetailed` state.
      */
-    followers?: ProfileView[] | null;
-    cursor?: string | null;
+    post?: PostView[] | null;
 
     /**
      * fetch profile and update states.
      */
-    fetchFollowers(actor: string, cursor?:string): Promise<ProfileView[]>;
+    fetchPosts(uris: string[]): Promise<PostView[]>;
 
     /**
      * loading.
