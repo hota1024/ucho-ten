@@ -39,7 +39,7 @@ export function useSuggestions(
                 const { data } = await client.agent.getSuggestions({limit: limit, cursor:cursor});
                 const { actors } = data;
                 console.log(data)
-                //merge(new Map<string, ProfileView[]>([[data.did, data]]));
+                merge(new Map<string, ProfileView[]>([["none", actors]]));
 
                 //setSuggestions(data);
 
@@ -57,15 +57,15 @@ export function useSuggestions(
 
     // effects //
     useEffect(() => {
-       /* if (!suggestions) {
+        if (!suggestions) {
             return;
         }
 
-        const newSuggestions = suggestionArrays.get();
+        const newSuggestions = suggestionArrays.get("none");
 
         if (newSuggestions) {
             setSuggestions(newSuggestions);
-        }*/
+        }
     }, [suggestions, suggestions]);
 
     return { suggestions, fetchSuggestions, loading, error };
