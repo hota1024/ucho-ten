@@ -19,7 +19,7 @@ export interface UseSuggestionsReturn {
     /**
      * fetch profile and update states.
      */
-    fetchProfile(): Promise<void>;
+    fetchSuggestions(): Promise<void>;
 
     /**
      * loading.

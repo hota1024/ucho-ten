@@ -14,7 +14,7 @@ import type { UseSuggestionsOpts, UseSuggestionsReturn } from "./type";
  * @param opts `UseProfileOpts`
  * @returns `UseProfileReturn`
  */
-export function useProfile(
+export function useSuggestions(
     params: AppBskyActorGetSuggestions.QueryParams,
     opts?: UseSuggestionsOpts
 ): UseSuggestionsReturn {
