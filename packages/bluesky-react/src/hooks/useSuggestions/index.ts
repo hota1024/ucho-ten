@@ -41,7 +41,7 @@ export function useSuggestions(
 
             const { data } = await client.agent.getSuggestions(params, opts);
             const { actors } = data;
-            console.log(data)
+
             merge(new Map<string, ProfileView[]>([["none", actors]]));
 
             setSuggestions(actors);
