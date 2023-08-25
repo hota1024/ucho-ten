@@ -1,72 +1,75 @@
 import type { AppBskyActorGetSuggestions } from "@atproto/api";
-import type { ProfileViewDetailed } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
 import type { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
-
 import { useCallback, useEffect, useState } from "react";
 
-import { useClient } from "@/hooks";
-import { useSuggestionsStore } from "@/states";
+import { useClient, useSession } from "@/hooks";
+import {useSuggestionsStore} from "@/states";
 
-import type { UseProfileLazyOpts, UseProfileLazyReturn } from "./type";
+import type { UseSuggestionsOpts, UseSuggestionsReturn } from "./type";
 
 /**
- * returns user profile state and fetch function.
+ * returns user profile that specified in `params.actor`.
  *
- * @param opts `UseProfileLazyOpts`
+ * @param params `AppBskyActorGetSuggestions.QueryParams`
+ * @param opts `UseProfileOpts`
  * @returns `UseProfileReturn`
  */
-export function useSuggestions(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    params?: AppBskyActorGetSuggestions.QueryParams,
-    opts?: AppBskyActorGetSuggestions.OutputSchema
-): UseProfileLazyReturn {
+export function useProfile(
+    params: AppBskyActorGetSuggestions.QueryParams,
+    opts?: UseSuggestionsOpts
+): UseSuggestionsReturn {
     // shared states //
     const client = useClient();
+    const { session } = useSession();
     const { suggestionArrays, merge } = useSuggestionsStore();
 
     // local states //
     const [suggestions, setSuggestions] = useState<ProfileView[] | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<unknown>(null);
 
     // functions //
-    const fetchSuggestions = useCallback(
-        async ( limit?: number, cursor?: string) => {
-            try {
-                setError(null);
-                setLoading(true);
+    const fetchSuggestions = useCallback(async () => {
+        if (!session) {
+            // returns if agent has not a session.
+            return;
+        }
 
-                const { data } = await client.agent.getSuggestions({limit: limit, cursor:cursor});
-                const { actors } = data;
-                console.log(data)
-                merge(new Map<string, ProfileView[]>([["none", actors]]));
+        try {
+            setError(null);
+            setLoading(true);
 
-                //setSuggestions(data);
+            const { data } = await client.agent.getSuggestions(params, opts);
+            const { actors } = data;
+            console.log(data)
+            merge(new Map<string, ProfileView[]>([["none", actors]]));
 
-                return actors;
-            } catch (error) {
-                setError(error);
+            setSuggestions(actors);
+        } catch (error) {
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
 
-                throw error;
-            } finally {
-                setLoading(false);
-            }
-        },
-        [client.agent, merge]
-    );
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [session]);
 
     // effects //
+    useEffect(() => {
+        fetchSuggestions();
+    }, [fetchSuggestions]);
+
     useEffect(() => {
         if (!suggestions) {
             return;
         }
 
-        const newSuggestions = suggestionArrays.get("none");
+        const newProfile = suggestionArrays.get("none");
 
-        if (newSuggestions) {
-            setSuggestions(newSuggestions);
+        if (newProfile) {
+            setSuggestions(newProfile);
         }
-    }, [suggestions, suggestions]);
+    }, [suggestions, suggestionArrays]);
 
     return { suggestions, fetchSuggestions, loading, error };
 }
