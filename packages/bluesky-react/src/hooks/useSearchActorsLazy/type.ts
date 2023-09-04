@@ -1,24 +1,27 @@
-import type { AppBskyActorSearchActors } from "@atproto/api";
 import type { ProfileViewDetailed } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
 
 /**
- * useProfile options.
+ * useSuggestionsLazy options.
  */
-export interface UseSearchActorsOpts extends AppBskyActorSearchActors.CallOptions {}
+export interface UseSearchActorsLazy {}
 
 /**
- * useProfile return.
+ * useSuggestionsLazy return.
  */
-export interface UseSearchActorsReturn {
+export interface UseSearchActorsLazyReturn {
   /**
-   * `ProfileViewDetailed` state.
+   * `ProfileViewDetailed[]` state.
    */
   searchActors?: ProfileViewDetailed[] | null;
 
   /**
    * fetch profile and update states.
    */
-  fetchSearchActors(): Promise<void>;
+  fetchSearchActors(
+      term?:string,
+      cursor?:string,
+      limit?:number
+  ): Promise<ProfileViewDetailed[]>;
 
   /**
    * loading.

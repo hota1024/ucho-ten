@@ -9,7 +9,7 @@ import {
 
 import { useClient } from "../useClient";
 import { useSession } from "../useSession";
-import { useSearchActors } from ".";
+import { useSearchActorsLazy } from ".";
 
 describe("useProfile hook test", () => {
   let service: string;
@@ -18,20 +18,20 @@ describe("useProfile hook test", () => {
   });
 
   test("should all states work", async () => {
-    const { client, session, seatchActors1, seatchActors2 } = renderLibHooks(
+    const { client, session, searchActors1, searchActors2 } = renderLibHooks(
       () => ({
         client: useClient(),
         session: useSession(),
-        seatchActors1: useSearchActors({ term: "dummy.test" }),
-        seatchActors2: useSearchActors({ term: "dummy.test" }),
+        searchActors1: useSearchActorsLazy({ term: "dummy.test" }),
+        searchActors2: useSearchActorsLazy({ term: "dummy.test" }),
       }),
       service
     );
     await waitForLogin(session);
 
-    await waitFor(() => expect(seatchActors1().loading).toBe(false));
+    await waitFor(() => expect(searchActors1().loading).toBe(false));
 
-    expect(seatchActors1().searchActors).toMatchObject([{
+    expect(searchActors1().searchActors).toMatchObject([{
       handle: "dummy.test",
       displayName: "dummy",
     }]);
@@ -41,16 +41,16 @@ describe("useProfile hook test", () => {
     }));
 
     act(() => {
-      seatchActors1().fetchSearchActors();
+      searchActors1().fetchSearchActors();
     });
 
-    await waitFor(() => expect(seatchActors1().loading).toBe(false));
-    console.log(seatchActors1().searchActors)
-    console.log(seatchActors2().searchActors)
-    expect(seatchActors2().searchActors).toMatchObject([{
+    await waitFor(() => expect(searchActors1().loading).toBe(false));
+    console.log(searchActors1().searchActors)
+    console.log(searchActors2().searchActors)
+    expect(searchActors2().searchActors).toMatchObject([{
       displayName: "dummy(updated)",
     }]);
-    expect(seatchActors2().searchActors).toMatchObject([{
+    expect(searchActors2().searchActors).toMatchObject([{
       displayName: "dummy(updated)",
     }]);
   });
