@@ -32,6 +32,7 @@
     "storybook": "^7.4.0",
     "@storybook/react": "^7.4.0",
     "@storybook/nextjs": "^7.4.0",
+    "@storybook/addon-postcss": "2.0.0",
     "@storybook/addon-links": "^7.4.0",
     "@storybook/addon-essentials": "^7.4.0",
     "@storybook/blocks": "^7.4.0",
