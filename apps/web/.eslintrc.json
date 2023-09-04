@@ -1,0 +1,8 @@
+{
+  "root": true,
+  "extends": [
+    "@ucho-ten/custom",
+    "plugin:storybook/recommended",
+    "plugin:storybook/recommended"
+  ]
+}
