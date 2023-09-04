@@ -1,24 +1,27 @@
-import type { ComAtprotoRepoUploadBlob } from "@atproto/api";
 import type{ BlobRef } from "@atproto/lexicon";
 
 /**
- * useProfile options.
+ * useSuggestionsLazy options.
  */
-export interface UseUploadBlobOpts extends ComAtprotoRepoUploadBlob.CallOptions {}
+export interface UseSearchActorsLazy {}
 
 /**
- * useProfile return.
+ * useSuggestionsLazy return.
  */
-export interface UseUploadBlobReturn {
+export interface UseSearchActorsLazyReturn {
     /**
-     * `ProfileViewDetailed` state.
+     * `ProfileViewDetailed[]` state.
      */
     uploadblobs?: BlobRef | null;
 
     /**
      * fetch profile and update states.
      */
-    uploadBlob(): Promise<void>;
+    uploadblob(
+        term?:string,
+        cursor?:string,
+        limit?:number
+    ): Promise<BlobRef>;
 
     /**
      * loading.
