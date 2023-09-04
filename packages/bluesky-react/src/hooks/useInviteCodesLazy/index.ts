@@ -1,22 +1,23 @@
-import type { AppBskyActorGetProfile } from "@atproto/api";
+import type { ComAtprotoServerGetAccountInviteCodes } from "@atproto/api";
 import type { InviteCode } from "@atproto/api/src/client/types/com/atproto/server/defs";
 import { useCallback, useEffect, useState } from "react";
 
-import { useClient, useSession } from "@/hooks";
+import { useClient } from "@/hooks";
 import {useInviteCodesStore} from "@/states";
 
-import type { UseInviteCodesLazyOpts, UseInviteCodesLazyReturn } from "./type";
+import type { UseInviteCodesLazyReturn } from "./type";
 
 
 /**
- * returns user profile state and fetch function.
+ * returns user InviteCodes state and fetch function.
  *
- * @param opts `UseProfileLazyOpts`
- * @returns `UseProfileReturn`
+ * @param params
+ * @param opts `useInviteCodesLazyOpts`
+ * @returns `useInviteCodesLazy`
  */
-export function useProfileLazy(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    opts: UseInviteCodesLazyOpts = {}
+export function useInviteCodesLazy(
+    params?: ComAtprotoServerGetAccountInviteCodes.QueryParams,
+    opts?: ComAtprotoServerGetAccountInviteCodes.CallOptions
 ): UseInviteCodesLazyReturn {
     // shared states //
     const client = useClient();
@@ -34,7 +35,7 @@ export function useProfileLazy(
                 setError(null);
                 setLoading(true);
 
-                const { data } = await client.agent.com.atproto.server.getAccountInviteCodes()
+                const { data } = await client.agent.com.atproto.server.getAccountInviteCodes(params,opts)
                 const { codes } = data
 
                 merge(new Map<string, InviteCode[]>([["", codes]]));
@@ -59,10 +60,10 @@ export function useProfileLazy(
             return;
         }
 
-        const newProfile = combinedInviteCodes.get("");
+        const newInviteCodes = combinedInviteCodes.get("");
 
-        if (newProfile) {
-            setInviteCodes(newProfile);
+        if (newInviteCodes) {
+            setInviteCodes(newInviteCodes);
         }
     }, [inviteCodes, combinedInviteCodes]);
 
