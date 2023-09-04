@@ -1,25 +1,23 @@
-import type { AppBskyActorGetProfile } from "@atproto/api";
 import type { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
 
+/**
+ * useSuggestionsLazy options.
+ */
+export interface UseSuggestionsLazy {}
 
 /**
- * useProfile options.
+ * useSuggestionsLazy return.
  */
-export interface UseSuggestionsOpts extends AppBskyActorGetProfile.CallOptions {}
-
-/**
- * useProfile return.
- */
-export interface UseSuggestionsReturn {
+export interface UseSuggestionsLazyReturn {
     /**
-     * `ProfileViewDetailed` state.
+     * `ProfileView[]` state.
      */
     suggestions?: ProfileView[] | null;
 
     /**
      * fetch profile and update states.
      */
-    fetchSuggestions(): Promise<void>;
+    fetchSuggestions(): Promise<ProfileView[]>;
 
     /**
      * loading.

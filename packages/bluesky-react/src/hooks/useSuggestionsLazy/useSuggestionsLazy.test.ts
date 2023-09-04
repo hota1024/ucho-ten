@@ -9,7 +9,7 @@ import {
 
 import { useClient } from "../useClient";
 import { useSession } from "../useSession";
-import { useSuggestions } from ".";
+import { useSuggestionsLazy } from ".";
 
 describe("useProfile hook test", () => {
     let service: string;
@@ -22,8 +22,8 @@ describe("useProfile hook test", () => {
             () => ({
                 client: useClient(),
                 session: useSession(),
-                suggestions1: useSuggestions(),
-                suggestions2: useSuggestions(),
+                suggestions1: useSuggestionsLazy(),
+                suggestions2: useSuggestionsLazy(),
             }),
             service
         );
