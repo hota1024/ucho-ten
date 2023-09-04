@@ -2,23 +2,26 @@ import type { AppBskyActorGetProfile } from "@atproto/api";
 import type { InviteCode } from "@atproto/api/src/client/types/com/atproto/server/defs";
 
 /**
- * useProfile options.
+ * useProfileLazy options.
  */
-export interface UseInviteCodesOpts extends AppBskyActorGetProfile.CallOptions {}
+export interface UseInviteCodesLazyOpts {}
 
 /**
- * useProfile return.
+ * useInviteCodesLazy return.
  */
-export interface UseInviteCodesReturn {
+export interface UseInviteCodesLazyReturn {
     /**
-     * `ProfileViewDetailed` state.
+     * `InviteCode[]` state.
      */
     inviteCodes?: InviteCode[] | null;
 
     /**
      * fetch profile and update states.
      */
-    fetchInviteCodes(): Promise<void>;
+    fetchInviteCodes(
+        params?: AppBskyActorGetProfile.QueryParams,
+        opts?: AppBskyActorGetProfile.CallOptions
+    ): Promise<InviteCode[]>;
 
     /**
      * loading.
