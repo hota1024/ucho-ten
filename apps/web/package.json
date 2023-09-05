@@ -11,6 +11,10 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.2",
+    "@fortawesome/free-regular-svg-icons": "^6.4.2",
+    "@fortawesome/free-solid-svg-icons": "^6.4.2",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@nextui-org/react": "^2.1.10",
     "@types/node": "20.5.9",
     "@types/react": "18.2.21",
@@ -22,22 +26,23 @@
     "next": "13.4.19",
     "postcss": "8.4.29",
     "react": "18.2.0",
+    "react-circular-progressbar": "^2.1.0",
     "react-dom": "^18.2.0",
     "tailwindcss": "3.3.3",
     "typescript": "5.2.2"
   },
   "devDependencies": {
+    "@storybook/addon-essentials": "^7.4.0",
+    "@storybook/addon-interactions": "^7.4.0",
+    "@storybook/addon-links": "^7.4.0",
+    "@storybook/addon-onboarding": "^1.0.8",
+    "@storybook/addon-postcss": "2.0.0",
+    "@storybook/blocks": "^7.4.0",
+    "@storybook/nextjs": "^7.4.0",
+    "@storybook/react": "^7.4.0",
+    "@storybook/testing-library": "^0.2.0",
     "@ucho-ten/eslint-config-custom": "workspace:*",
     "@ucho-ten/tsconfig": "workspace:*",
-    "storybook": "^7.4.0",
-    "@storybook/react": "^7.4.0",
-    "@storybook/nextjs": "^7.4.0",
-    "@storybook/addon-postcss": "2.0.0",
-    "@storybook/addon-links": "^7.4.0",
-    "@storybook/addon-essentials": "^7.4.0",
-    "@storybook/blocks": "^7.4.0",
-    "@storybook/addon-onboarding": "^1.0.8",
-    "@storybook/addon-interactions": "^7.4.0",
-    "@storybook/testing-library": "^0.2.0"
+    "storybook": "^7.4.0"
   }
 }
