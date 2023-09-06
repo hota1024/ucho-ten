@@ -21,9 +21,16 @@ import {
     Popover, PopoverTrigger, PopoverContent,
 } from "@nextui-org/react";
 
-
-export function CreatePostPage() {
-
+interface Props {
+    className?: string
+    color: 'light' | 'dark'
+    isMobile?: boolean
+    uploadImageAvailable?: boolean
+    isDragActive?: boolean
+    open?: boolean
+}
+export const CreatePostPage: React.FC<Props> = (props: Props) => {
+    const {className, color, isMobile, uploadImageAvailable, open} = props;
     const reg = /^[\u0009-\u000d\u001c-\u0020\u11a3-\u11a7\u1680\u180e\u2000-\u200f\u202f\u205f\u2060\u3000\u3164\ufeff\u034f\u2028\u2029\u202a-\u202e\u2061-\u2063\ufeff]*$/;
     const [PostContentLanguage, setPostContentLanguage] = useState(new Set([navigator.language]))
     const inputId = Math.random().toString(32).substring(2)
@@ -121,7 +128,7 @@ export function CreatePostPage() {
         setContentImages((b) => [...b, ...compressedImages]);
     };
 
-    const AppearanceColor = "light"
+    const AppearanceColor = color
     const onEmojiClick = (event: any) => {
         if (textareaRef.current) {
             const target = textareaRef.current
@@ -150,10 +157,10 @@ export function CreatePostPage() {
   return (
       <main className={background({color:AppearanceColor, isMobile:isMobile})}>
           <div className={backgroundColor()}></div>
-          <div className={PostModal({isMobile:isMobile})}>
+          <div className={PostModal({color:AppearanceColor, isMobile:isMobile})}>
               <div className={header()}>
                   <button className={headerCancelButton()}>cancel</button>
-                  <div className={headerTitle()}>P</div>
+                  <div className={headerTitle()}>Post</div>
                   <Button className={headerPostButton()}
                           onPress={handlePostClick}
                   >send</Button>
@@ -219,7 +226,7 @@ export function CreatePostPage() {
                       )}
                   </div>
               </div>
-              <div className={footer()}>
+              <div className={footer({color:AppearanceColor})}>
                   <div className={footerTooltip()}>
                       <div className={footerTooltipStyle()}>
                           <label htmlFor={inputId}>
@@ -275,7 +282,7 @@ export function CreatePostPage() {
                       </div>
                       <BrowserView>
                           <div className={footerTooltipStyle()}>
-                              <Popover placement="right">
+                              <Popover placement="right-end">
                                   <PopoverTrigger>
                                       <Button as='span' startContent={<FontAwesomeIcon icon={faFaceLaughBeam} style={{height:'100%'}}/>}/>
                                   </PopoverTrigger>
@@ -284,7 +291,7 @@ export function CreatePostPage() {
                                           data={data}
                                           onEmojiSelect={onEmojiClick}
                                           style={{ width: '100%' }}
-                                          theme="light"
+                                          theme={color}
                                           previewPosition="none"
                                       />
                                   </PopoverContent>
@@ -306,3 +313,5 @@ export function CreatePostPage() {
       </main>
   );
 }
+
+export default CreatePostPage;

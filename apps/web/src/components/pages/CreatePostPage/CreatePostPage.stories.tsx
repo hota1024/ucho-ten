@@ -1,4 +1,7 @@
+import { ComponentStory } from '@storybook/react'
 import type { Meta, StoryObj } from "@storybook/react";
+import { BrowserView, MobileView, isMobile } from "react-device-detect"
+
 
 import { CreatePostPage } from "./CreatePostPage";
 
@@ -9,11 +12,19 @@ const meta = {
     layout: "fullscreen",
   },
   tags: ["autodocs"],
+  args:{
+    className: "",
+    color: window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light",
+    isMobile: isMobile,
+    uploadImageAvailable: false,
+  }
 } satisfies Meta<typeof CreatePostPage>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {},
-};
+const Template: ComponentStory<typeof CreatePostPage> = (props:any) => {
+  return <CreatePostPage {...props} />
+}
+
+export const Default = Template.bind({})
