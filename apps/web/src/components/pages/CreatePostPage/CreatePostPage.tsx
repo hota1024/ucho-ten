@@ -1,10 +1,14 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useCallback} from "react";
 import { createPostPage } from "./styles";
+import { BrowserView, MobileView, isMobile } from "react-device-detect"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faImage } from '@fortawesome/free-regular-svg-icons'
-import { faCirclePlus, faXmark, faPen } from '@fortawesome/free-solid-svg-icons'
-import { CircularProgressbar } from 'react-circular-progressbar';
+import { faCirclePlus, faXmark, faPen, faFaceLaughBeam } from '@fortawesome/free-solid-svg-icons'
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { useDropzone, FileWithPath } from 'react-dropzone'
 import 'react-circular-progressbar/dist/styles.css';
+import data from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
 import {
     Dropdown,
     DropdownTrigger,
@@ -14,7 +18,9 @@ import {
     Button,
     Image,
     Spinner,
+    Popover, PopoverTrigger, PopoverContent,
 } from "@nextui-org/react";
+
 
 export function CreatePostPage() {
 
@@ -29,18 +35,57 @@ export function CreatePostPage() {
         contentImage.length >= 5 || contentImage.length === 4 // 4枚まで
     const isImageMinLimited = contentImage.length === 0 // 4枚まで
     const [compressProcessing, setCompressProcessing] = useState(false)
-    const { Container,
-            Header, HeaderPostButton, HeaderTitle,
-            Content, ContentTextArea,
-            Footer, FooterBackgroundColor,
+    const { background, backgroundColor,
             PostModal,
-            header, headerTitle, headerPostButton,
-            content, contentLeft, contentLeftAuthorIcon,
-                     contentRight, contentRightTextArea, contentRightImagesContainer,
+            header, headerTitle, headerPostButton, headerCancelButton,
+            content, contentLeft, contentLeftAuthorIcon, contentLeftAuthorIconImage,
+                     contentRight, contentRightContainer, contentRightTextArea, contentRightImagesContainer,
             footer, footerTooltip,
                     footerCharacterCount, footerCharacterCountText, footerCharacterCountCircle,
                     footerTooltipStyle,
     } = createPostPage();
+
+    const onDrop = useCallback(async (files: File[]) => {
+        if(contentImage.length + files.length > 4){
+            return
+        }
+        const maxFileSize = 975 * 1024; // 975KB
+
+
+        const compressedImages = await Promise.all(
+            Array.from(files).map(async (file) => {
+                if (file.size > maxFileSize) {
+                    try {
+                        setCompressProcessing(true)
+                        const compressedFile = file
+                        setCompressProcessing(false)
+
+                        return compressedFile;
+                    } catch (error) {
+                        console.error(error);
+                        return file
+                    }
+                } else {
+                    return file;
+                }
+            })
+        );
+        setContentImages((b) => [...b, ...compressedImages]);
+
+        // 5. 圧縮されたファイルをsetContentImagesで設定する
+    }, []);
+    const { getRootProps, isDragActive} = useDropzone({ onDrop });
+    //const filesUpdated: FileWithPath[] = acceptedFiles;
+    const handleDrop = (e:any) => {
+        e.preventDefault();
+        //const file = e.dataTransfer.files[0];
+        // ファイルの処理を行う
+    };
+
+    const handleDragOver = (e:any) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+    };
 
     const handlePostClick = async () => {
         setLoading(true)
@@ -76,28 +121,82 @@ export function CreatePostPage() {
         setContentImages((b) => [...b, ...compressedImages]);
     };
 
+    const AppearanceColor = "light"
+    const onEmojiClick = (event: any) => {
+        if (textareaRef.current) {
+            const target = textareaRef.current
+            const cursorPosition = target.selectionStart
+            const content = `${contentText.slice(0, cursorPosition)}${
+                event.native
+            }${contentText.slice(cursorPosition, contentText.length)}`
+            setContentText(content)
+        } else {
+            setContentText(contentText + event.native)
+        }
+    }
+
+    // ドラッグをキャンセルする
+    const handleDragStart = (e:any) => {
+        e.preventDefault();
+    };
+
+    const userList = [
+        { name: 'John Doe', avatar: 'https://i.pravatar.cc/100?img=1', did: 'did:plc:txandrhc7afdozk6a2itgltm' },
+        { name: 'Jane Doe', avatar: 'https://i.pravatar.cc/100?img=2', did: 'did:plc:txandrhc7afdozk6a2itgltm'},
+        { name: 'Kate Doe', avatar: 'https://i.pravatar.cc/100?img=3', did: 'did:plc:txandrhc7afdozk6a2itgltm'},
+        { name: 'Mark Doe', avatar: 'https://i.pravatar.cc/100?img=4', did: 'did:plc:txandrhc7afdozk6a2itgltm'},
+    ]
+
   return (
-      <main className={" w-full h-full"} style={{backgroundColor:'rgba(0, 0, 0, 0.33)', backgroundImage:'url(https://raw.githubusercontent.com/kawaikute-gomen/ucho-ten-images-repo/main/images/backgroundImages/light/sky_00421.jpg)'}}>
-          <div className={PostModal()}>
+      <main className={background({color:AppearanceColor, isMobile:isMobile})}>
+          <div className={backgroundColor()}></div>
+          <div className={PostModal({isMobile:isMobile})}>
               <div className={header()}>
-                  <div className={headerTitle()}>Post</div>
-                  <button className={headerPostButton()}>send</button>
+                  <button className={headerCancelButton()}>cancel</button>
+                  <div className={headerTitle()}>P</div>
+                  <Button className={headerPostButton()}
+                          onPress={handlePostClick}
+                  >send</Button>
               </div>
-              <div className={content()}>
+              <div className={content({isDragActive:isDragActive})} {...getRootProps({ onDrop: handleDrop, onDragOver: handleDragOver })}>
                   <div className={contentLeft()}>
                       <div className={contentLeftAuthorIcon()}>
-                          <div style={{width:'100%', height:'100%', overflow:'hidden'}}></div>
+                          <Dropdown placement="right-start">
+                              <DropdownTrigger>
+                                  <img className={contentLeftAuthorIconImage()}
+                                       alt={"author icon"}
+                                       onDragStart={handleDragStart}
+                                       src={"https://av-cdn.bsky.app/img/avatar/plain/did:plc:txandrhc7afdozk6a2itgltm/bafkreihwad5kaujw2f6kbfg37zmkhclgd3ap7grixl6pusfb5b34s6jite@jpeg"}
+                                  ></img>
+                              </DropdownTrigger>
+                              <DropdownMenu>
+                                  <DropdownSection title='accounts'>
+                                      {userList.map((user, index) => (
+                                          <DropdownItem
+                                              key={index}
+                                              description={user["did"]}
+                                              startContent={<img style={{height: '30px', width: '30px'}} src={user["avatar"]} />}
+                                          >{user["name"]}</DropdownItem>
+                                      ))}
+                                  </DropdownSection>
+                              </DropdownMenu>
+                          </Dropdown>
                       </div>
                   </div>
                   <div className={contentRight()}>
-                      <div className={`w-full ${contentImage.length > 0 ? "h-[calc(100%-105px)]" : "h-full"}`}>
+                      <div className={contentRightContainer({uploadImageAvailable:contentImage.length > 0})}>
                           <textarea className={contentRightTextArea()}
-                                    style={{backgroundColor:'transparent', resize:'none', outline: 'none'}}
+                                    aria-label="post input area"
                                     placeholder={"Yo, Do you do Brusco?"}
+                                    maxLength={10000}
+                                    value={contentText}
                                     autoFocus={true}
                                     onChange={(e) => {
                                         setContentText(e.target.value)
-                                    }}/>
+                                    }}
+                                    disabled={loading}
+                                    onFocus={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
+                          />
                       </div>
                       {contentImage.length > 0 && (
                           <div className={contentRightImagesContainer()}>
@@ -107,7 +206,7 @@ export function CreatePostPage() {
                                           src={URL.createObjectURL(image)}
                                           alt="image"
                                           style={{borderRadius:'10px', objectFit:'cover'}}
-                                          className={"h-[85px] w-[85px] object-cover object-center"}
+                                          className={"h-[105px] w-[95px] object-cover object-center"}
                                       />
                                       <div className={"z-10 absolute top-0 left-0"}>
                                           <button onClick={() => handleOnRemoveImage(index)}>
@@ -125,17 +224,14 @@ export function CreatePostPage() {
                       <div className={footerTooltipStyle()}>
                           <label htmlFor={inputId}>
                               <Button
-                                  disabled={loading || compressProcessing || isImageMaxLimited}
                                   as="span"
+                                  disabled={loading || compressProcessing || isImageMaxLimited}
                                   startContent={<FontAwesomeIcon icon={faImage} style={{height:'100%'}}/>}
                               />
-
                               <input
-                                  hidden
+                                  hidden multiple
+                                  type="file" accept="image/*,.png,.jpg,.jpeg,.webp,.gif,.svg,.bmp,.tiff,.avif,.heic,.heif"
                                   id={inputId}
-                                  type="file"
-                                  multiple
-                                  accept="image/*,.png,.jpg,.jpeg,.webp,.gif,.svg,.bmp,.tiff,.avif,.heic,.heif"
                                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                       handleOnAddImage(e)
                                   }
@@ -146,19 +242,20 @@ export function CreatePostPage() {
                       <div className={footerTooltipStyle()} style={{bottom:'5%'}}>
                           <Dropdown backdrop="blur">
                               <DropdownTrigger>
-                                  <Button
-                                      variant="bordered"
-                                  >
-                                      {PostContentLanguage}
+                                  <Button variant="bordered">
+                                      {`lang:${Array.from(PostContentLanguage).join(",")}`}
                                   </Button>
                               </DropdownTrigger>
                               <DropdownMenu
+                                  disallowEmptySelection
                                   aria-label="Multiple selection actions"
                                   selectionMode="multiple"
-                                  disallowEmptySelection
                                   selectedKeys={PostContentLanguage}
-                                  //@ts-ignore
-                                  onSelectionChange={PostContentLanguage.size >= 3 ? null : setPostContentLanguage}
+                                  onSelectionChange={(e) => {
+                                      if (Array.from(e).length < 4) {
+                                          setPostContentLanguage(e as Set<string>);
+                                      }
+                                  }}
                               >
                                   <DropdownItem key='es'>Espalier</DropdownItem>
                                   <DropdownItem key='fr'>Francais</DropdownItem>
@@ -173,11 +270,34 @@ export function CreatePostPage() {
                               </DropdownMenu>
                           </Dropdown>
                       </div>
-                      <FontAwesomeIcon className={footerTooltipStyle()} icon={faCirclePlus} size={"sm"}></FontAwesomeIcon>
+                      <div className={footerTooltipStyle()}>
+                          <FontAwesomeIcon icon={faCirclePlus} style={{height:'100%'}}></FontAwesomeIcon>
+                      </div>
+                      <BrowserView>
+                          <div className={footerTooltipStyle()}>
+                              <Popover placement="right">
+                                  <PopoverTrigger>
+                                      <Button as='span' startContent={<FontAwesomeIcon icon={faFaceLaughBeam} style={{height:'100%'}}/>}/>
+                                  </PopoverTrigger>
+                                  <PopoverContent>
+                                      <Picker
+                                          data={data}
+                                          onEmojiSelect={onEmojiClick}
+                                          style={{ width: '100%' }}
+                                          theme="light"
+                                          previewPosition="none"
+                                      />
+                                  </PopoverContent>
+                              </Popover>
+                          </div>
+                      </BrowserView>
                       <div className={footerCharacterCount()}>
                           <div className={footerCharacterCountText()} style={{color:contentText.length >= 300 ? "red": 'white'}}>{300 - contentText.length}</div>
                           <div style={{width:'20px', height:'20px', marginLeft:'5px'}}>
-                              <CircularProgressbar value={contentText.length} maxValue={300} />
+                              <CircularProgressbar
+                                  value={contentText.length} maxValue={300}
+                                  styles={buildStyles({pathColor:contentText.length >= 300 ? "red" : "deepskyblue",})}
+                              />
                           </div>
                       </div>
                   </div>
