@@ -2,8 +2,8 @@ import React, {useState, useRef, useCallback} from "react";
 import { createPostPage } from "./styles";
 import { BrowserView, MobileView, isMobile } from "react-device-detect"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { faImage } from '@fortawesome/free-regular-svg-icons'
-import { faCirclePlus, faXmark, faPen, faFaceLaughBeam } from '@fortawesome/free-solid-svg-icons'
+import { faImage, faTrashCan } from '@fortawesome/free-regular-svg-icons'
+import { faCirclePlus, faXmark, faPen, faFaceLaughBeam, faLink } from '@fortawesome/free-solid-svg-icons'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { useDropzone, FileWithPath } from 'react-dropzone'
 import 'react-circular-progressbar/dist/styles.css';
@@ -18,8 +18,13 @@ import {
     Button,
     Image,
     Spinner,
+    Input,
     Popover, PopoverTrigger, PopoverContent,
 } from "@nextui-org/react";
+
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure} from "@nextui-org/react";
+
+import Textarea from 'react-textarea-autosize'; // 追加
 
 interface Props {
     className?: string
@@ -38,6 +43,14 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
     const [contentImage, setContentImages] = useState<File[]>([])
     const [loading, setLoading] = useState(false)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
+    const hiddenInput = useRef<HTMLDivElement>(null)
+    const [isDetectedURL, setIsDetectURL] = useState(false)
+    const [detectedURLs, setDetectURLs] = useState<string[]>([])
+    const [selectedURL, setSelectedURL] = useState<string>('')
+    const [isOGPGetProcessing, setIsOGPGetProcessing] = useState(false)
+    const [isSetURLCard, setIsSetURLCard] = useState(false)
+    const [getOGPData, setGetOGPData] = useState<any>(null)
+    const [isGetOGPFetchError, setIsGetOGPFetchError] = useState(false)
     const isImageMaxLimited =
         contentImage.length >= 5 || contentImage.length === 4 // 4枚まで
     const isImageMinLimited = contentImage.length === 0 // 4枚まで
@@ -46,11 +59,15 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
             PostModal,
             header, headerTitle, headerPostButton, headerCancelButton,
             content, contentLeft, contentLeftAuthorIcon, contentLeftAuthorIconImage,
-                     contentRight, contentRightContainer, contentRightTextArea, contentRightImagesContainer,
+                     contentRight, contentRightContainer, contentRightTextArea, contentRightImagesContainer, contentRightUrlsContainer,
+                     contentRightUrlCard, contentRightUrlCardDeleteButton,
+                     URLCard, URLCardThumbnail, URLCardDetail, URLCardDetailContent, URLCardTitle, URLCardDescription, URLCardLink,
             footer, footerTooltip,
                     footerCharacterCount, footerCharacterCountText, footerCharacterCountCircle,
                     footerTooltipStyle,
     } = createPostPage();
+    const {isOpen, onOpen, onOpenChange} = useDisclosure();
+
 
     const onDrop = useCallback(async (files: File[]) => {
         if(contentImage.length + files.length > 4){
@@ -154,16 +171,67 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
         { name: 'Mark Doe', avatar: 'https://i.pravatar.cc/100?img=4', did: 'did:plc:txandrhc7afdozk6a2itgltm'},
     ]
 
+    const detectURL = (text: string) => {
+        // URLを検出する正規表現パターン
+        const urlPattern = /(?:https?|ftp):\/\/[\w-]+(?:\.[\w-]+)+(?:[\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/g;
+        const urls = text.match(urlPattern);
+        setDetectURLs([]);
+
+        if (urls && urls.length > 0) {
+            setIsDetectURL(true);
+            urls.forEach((url) => {
+                setDetectURLs((prevURLs) => [...prevURLs, url]);
+                console.log(url)
+            });
+        }
+    };
+    const getOGP = async (url: string) => {
+        console.log(url)
+        setIsOGPGetProcessing(true)
+        try{
+            const response = await fetch(`https://ucho-ten-ogp-api.vercel.app/api/ogp?url=`+url)
+            if (!response.ok) {
+                throw new Error('HTTP status ' + response.status);
+            }
+            const res = await response.json()
+            setGetOGPData(res)
+            console.log(res)
+            setIsOGPGetProcessing(false)
+            return res
+        }catch (e) {
+            setIsOGPGetProcessing(false)
+            setIsSetURLCard(false)
+            setIsGetOGPFetchError(true)
+            console.log(e)
+            return e
+        }
+    }
+
   return (
       <main className={background({color:AppearanceColor, isMobile:isMobile})}>
           <div className={backgroundColor()}></div>
+          {isOpen && (
+              window.prompt("Please enter link", "Harry Potter")
+          )}
           <div className={PostModal({color:AppearanceColor, isMobile:isMobile})}>
               <div className={header()}>
-                  <button className={headerCancelButton()}>cancel</button>
+                  <Button
+                      variant="light"
+                      className={headerCancelButton()}
+                      isDisabled={loading}
+                  >
+                      cancel
+                  </Button>
                   <div className={headerTitle()}>Post</div>
                   <Button className={headerPostButton()}
+                          radius={'full'}
+                          color={'primary'}
                           onPress={handlePostClick}
-                  >send</Button>
+                          isDisabled={loading || contentText.length === 0 || contentText.length > 300 || isImageMaxLimited}
+                          isLoading={loading}
+                  >
+                      {loading ? '' : 'send'}
+                  </Button>
               </div>
               <div className={content({isDragActive:isDragActive})} {...getRootProps({ onDrop: handleDrop, onDragOver: handleDragOver })}>
                   <div className={contentLeft()}>
@@ -191,37 +259,186 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
                       </div>
                   </div>
                   <div className={contentRight()}>
-                      <div className={contentRightContainer({uploadImageAvailable:contentImage.length > 0})}>
-                          <textarea className={contentRightTextArea()}
-                                    aria-label="post input area"
-                                    placeholder={"Yo, Do you do Brusco?"}
-                                    maxLength={10000}
-                                    value={contentText}
-                                    autoFocus={true}
-                                    onChange={(e) => {
-                                        setContentText(e.target.value)
-                                    }}
-                                    disabled={loading}
-                                    onFocus={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
-                          />
-                      </div>
+                      <Textarea className={contentRightTextArea()}
+                                aria-label="post input area"
+                                placeholder={"Yo, Do you do Brusco?"}
+                                rows={contentText.split('\n').length}
+                                maxLength={10000}
+                                value={contentText}
+                                autoFocus={true}
+                                minRows={3}
+                                onChange={(e) => {
+                                    if (hiddenInput.current) hiddenInput.current.textContent = e.target.value + '\u200b'
+                                    setContentText(e.target.value)
+                                    detectURL(e.target.value)
+                                }}
+                                disabled={loading}
+                                onFocus={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
+                      />
                       {contentImage.length > 0 && (
                           <div className={contentRightImagesContainer()}>
                               {contentImage.map((image, index) => (
-                                  <div key={index} className={"relative w-1/4 h-full"}>
+                                  <div key={index} className={"relative w-1/4 h-full flex"}>
                                       <Image
                                           src={URL.createObjectURL(image)}
                                           alt="image"
                                           style={{borderRadius:'10px', objectFit:'cover'}}
                                           className={"h-[105px] w-[95px] object-cover object-center"}
                                       />
-                                      <div className={"z-10 absolute top-0 left-0"}>
-                                          <button onClick={() => handleOnRemoveImage(index)}>
-                                              <FontAwesomeIcon icon={faXmark} size={"sm"}></FontAwesomeIcon>
+                                      <div style={{ zIndex:'10', position: 'absolute', top: 5, left: 5 }}>
+                                          <button
+                                              style={{
+                                                  height: '20px',
+                                                  width: '20px',
+                                                  padding: '0px',
+                                                  borderRadius: '50%',
+                                                  backgroundColor: 'rgba(0,0,0,0.3)',
+                                              }}
+                                              onClick={() => handleOnRemoveImage(index)}
+                                          >
+                                              <FontAwesomeIcon icon={faXmark} size="sm" className={' mb-[2px]'}/>
+                                          </button>
+                                      </div>
+                                      <div style={{ zIndex:'10', position: 'absolute', bottom: 5, left: 5 }}>
+                                          <button
+                                              style={{
+                                                  height: '20px',
+                                                  width: '100%',
+                                                  padding: '0px',
+                                                  borderRadius: '12.5%',
+                                                  backgroundColor: 'rgba(0,0,0,0.3)',
+                                              }}
+                                              onClick={() => handleOnRemoveImage(index)}
+                                          >
+                                              ALT
+                                          </button>
+                                      </div>
+                                      <div style={{ zIndex:'10', position: 'absolute', bottom: 5, right: '20px' }}>
+                                          <button
+                                              style={{
+                                                  height: '20px',
+                                                  width: '20px',
+                                                  padding: '0px',
+                                                  borderRadius: '50%',
+                                                  backgroundColor: 'rgba(0,0,0,0.3)',
+                                              }}
+                                              onClick={() => handleOnRemoveImage(index)}
+                                          >
+                                              <FontAwesomeIcon icon={faPen} size="sm" className={' mb-[2px]'}/>
                                           </button>
                                       </div>
                                   </div>
                               ))}
+                          </div>
+                      )}
+                      {isDetectedURL && !isSetURLCard && contentImage.length == 0 && (
+                          <div style={{overflowX:'scroll'}}>
+                              <div style={{textAlign:'left', }}
+                                   className={contentRightUrlsContainer()}
+                              >
+                                  {detectedURLs.map((url, index) => (
+                                      <button
+                                          style={{
+                                              flex: '0 1 calc(100%)',
+                                              boxSizing: 'border-box',
+                                              textOverflow: 'ellipsis',
+                                              overflow: 'hidden',
+                                              whiteSpace: 'nowrap',
+                                              textAlign:'left',
+                                              marginRight:'10px',
+                                          }}
+                                          onClick={() => {
+                                               setIsSetURLCard(true)
+                                               setIsGetOGPFetchError(false)
+                                               setSelectedURL(url)
+                                               getOGP(url)
+                                               }
+                                          }
+                                          key={index}
+                                      >Add: {url}</button>
+                                  ))}
+                              </div>
+                          </div>
+                      )}
+                      {isOGPGetProcessing && (
+                          <div className={contentRightUrlCard()}>
+                              <div className={contentRightUrlCardDeleteButton()}>
+                              </div>
+                              <div>
+                                  <div onClick={() => {
+                                      setIsSetURLCard(false)
+                                      setGetOGPData(undefined)
+                                  }}
+                                           style={{textAlign:'left', cursor:'pointer'}}
+                                  >
+                                      <div className={URLCardThumbnail()}>
+                                          <div style={{position: "relative", textAlign: "center",
+                                              top: "50%",
+                                              left: '50%',
+                                              transform: "translateY(-50%) translateX(-50%)",
+                                              WebkitTransform: "translateY(-50%) translateX(-50%)"}}>
+                                              <Spinner color="white" size="md" />
+                                          </div>
+                                      </div>
+                                      <div className={URLCardDetail()}>
+                                          <div className={URLCardDetailContent()}>
+                                              <div className={URLCardTitle()} style={{ color: 'black' }}>
+                                                  {undefined}
+                                              </div>
+                                              <div className={URLCardDescription()} style={{ fontSize: 'small' }}>
+                                                  <div style={{textAlign:'center'}}>
+                                                      <Spinner color="white" size="md" />
+                                                  </div>
+                                              </div>
+                                              <div className={URLCardLink()}>
+                                                  {undefined}
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      )}
+                      {isSetURLCard && getOGPData && !isOGPGetProcessing && (
+                          <div className={contentRightUrlCard()}>
+                              <div className={contentRightUrlCardDeleteButton()}
+                                    onClick={() => {
+                                        setIsSetURLCard(false)
+                                        setGetOGPData(undefined)
+                                    }}
+                              >
+                                  <div style={{width:'100%', textAlign:'center', marginTop:'50%'}}>
+                                      <div className={'text-red'}>
+                                          <FontAwesomeIcon icon={faTrashCan} size='lg'/>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div>
+                                  <div className={URLCard()}
+                                      style={{textAlign:'left', cursor:'pointer'}}
+                                  >
+                                      <div className={URLCardThumbnail()}>
+                                          <img
+                                              src={getOGPData?.image ? getOGPData?.image : undefined}
+                                              style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                                              alt={getOGPData?.title && getOGPData?.image ? getOGPData.title : undefined}
+                                          ></img>
+                                      </div>
+                                      <div className={URLCardDetail()}>
+                                          <div className={URLCardDetailContent()}>
+                                              <div className={URLCardTitle()} style={{ color: 'black' }}>
+                                                  {getOGPData?.title ? getOGPData.title : selectedURL}
+                                              </div>
+                                              <div className={URLCardDescription()} style={{ fontSize: 'small' }}>
+                                                  {getOGPData?.description ? getOGPData.description : "Sorry, no description available."}
+                                              </div>
+                                              <div className={URLCardLink()}>
+                                                  {getOGPData?.url ? getOGPData.url : selectedURL}
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
                           </div>
                       )}
                   </div>
@@ -231,10 +448,14 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
                       <div className={footerTooltipStyle()}>
                           <label htmlFor={inputId}>
                               <Button
-                                  as="span"
-                                  disabled={loading || compressProcessing || isImageMaxLimited}
-                                  startContent={<FontAwesomeIcon icon={faImage} style={{height:'100%'}}/>}
-                              />
+                                  as='span'
+                                  isIconOnly
+                                  variant="light"
+                                  className={'h-[24px] text-white'}
+                                  isDisabled={loading || compressProcessing || isImageMaxLimited}
+                              >
+                                  <FontAwesomeIcon icon={faImage} className={'h-[20px] mb-[5px]'}/>
+                              </Button>
                               <input
                                   hidden multiple
                                   type="file" accept="image/*,.png,.jpg,.jpeg,.webp,.gif,.svg,.bmp,.tiff,.avif,.heic,.heif"
@@ -249,9 +470,7 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
                       <div className={footerTooltipStyle()} style={{bottom:'5%'}}>
                           <Dropdown backdrop="blur">
                               <DropdownTrigger>
-                                  <Button variant="bordered">
-                                      {`lang:${Array.from(PostContentLanguage).join(",")}`}
-                                  </Button>
+                                  {`lang:${Array.from(PostContentLanguage).join(",")}`}
                               </DropdownTrigger>
                               <DropdownMenu
                                   disallowEmptySelection
@@ -278,19 +497,49 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
                           </Dropdown>
                       </div>
                       <div className={footerTooltipStyle()}>
-                          <FontAwesomeIcon icon={faCirclePlus} style={{height:'100%'}}></FontAwesomeIcon>
+                          <Dropdown backdrop="blur">
+                              <DropdownTrigger>
+                                  <FontAwesomeIcon icon={faCirclePlus} className={'h-[20px] mb-[4px] text-white'}/>
+                              </DropdownTrigger>
+                              <DropdownMenu
+                                  disallowEmptySelection
+                                  aria-label="Multiple selection actions"
+                                  selectionMode="multiple"
+                                  selectedKeys={PostContentLanguage}
+                                  onSelectionChange={(e) => {
+                                      if (Array.from(e).length < 4) {
+                                          //setPostContentLanguage(e as Set<string>);
+                                      }
+                                  }}
+                              >
+                                  <DropdownItem key='split'>文章を複数のポストに分割する</DropdownItem>
+                                  <DropdownItem
+                                      key='linkcard'
+                                      onPress={() => {
+                                            window.prompt("Please enter link", "")
+                                      }
+                                  }>リンクカードを追加する</DropdownItem>
+                                  <DropdownItem key='de'>Deutsch</DropdownItem>
+                                  <DropdownItem key='it'>Italiano</DropdownItem>
+                              </DropdownMenu>
+                          </Dropdown>
                       </div>
                       <BrowserView>
                           <div className={footerTooltipStyle()}>
                               <Popover placement="right-end">
                                   <PopoverTrigger>
-                                      <Button as='span' startContent={<FontAwesomeIcon icon={faFaceLaughBeam} style={{height:'100%'}}/>}/>
+                                      <Button
+                                          isIconOnly
+                                          variant="light"
+                                          className={'h-[24px] text-white'}
+                                      >
+                                          <FontAwesomeIcon icon={faFaceLaughBeam} className={'h-[20px] mb-[4px]'}/>
+                                      </Button>
                                   </PopoverTrigger>
                                   <PopoverContent>
                                       <Picker
                                           data={data}
                                           onEmojiSelect={onEmojiClick}
-                                          style={{ width: '100%' }}
                                           theme={color}
                                           previewPosition="none"
                                       />
