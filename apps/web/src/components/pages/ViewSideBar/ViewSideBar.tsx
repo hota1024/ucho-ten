@@ -67,7 +67,7 @@ export const ViewSideBar: React.FC<Props> = (props: Props) => {
                        src={'https://av-cdn.bsky.app/img/avatar/plain/did:plc:txandrhc7afdozk6a2itgltm/bafkreihwad5kaujw2f6kbfg37zmkhclgd3ap7grixl6pusfb5b34s6jite@jpeg'}/>
                   <div className={'ml-[12px]'}>
                       <div className={AuthorDisplayName()}>ばいそに</div>
-                      <div className={AuthorHandle()}>@bisn.ucho-ten.net</div>
+                      <div className={AuthorHandle({color:color})}>@bisn.ucho-ten.net</div>
                   </div>
               </div>
               <div className={Content()}>
