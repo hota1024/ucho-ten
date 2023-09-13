@@ -3,11 +3,11 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { BrowserView, MobileView, isMobile } from "react-device-detect"
 
 
-import { OtherSettingsPagePage } from "./OtherSettingsPagePage";
+import { SettingContentFilteringPage } from "./SettingContentFilteringPage";
 
 const meta = {
-  title: "Pages/OtherSettingsPagePage",
-  component: OtherSettingsPagePage,
+  title: "Pages/SettingContentFilteringPage",
+  component: SettingContentFilteringPage,
   parameters: {
     layout: "fullscreen",
   },
@@ -17,13 +17,13 @@ const meta = {
     color: window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light",
     isMobile: isMobile,
   }
-} satisfies Meta<typeof OtherSettingsPagePage>;
+} satisfies Meta<typeof SettingContentFilteringPage>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const Template: ComponentStory<typeof OtherSettingsPagePage> = (props:any) => {
-  return <OtherSettingsPagePage {...props} />
+const Template: ComponentStory<typeof SettingContentFilteringPage> = (props:any) => {
+  return <SettingContentFilteringPage {...props} />
 }
 
 export const Default = Template.bind({})
