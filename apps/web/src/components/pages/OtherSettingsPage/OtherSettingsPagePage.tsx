@@ -36,7 +36,7 @@ export const OtherSettingsPagePage: React.FC<Props> = (props: Props) => {
 
   return (
       <main className={background({color:color, isMobile:isMobile})}>
-          <Table hideHeader aria-label="Example static collection table" className={table({color:color})}>
+          <Table hideHeader removeWrapper aria-label="Example static collection table" className={table({color:color})}>
               <TableHeader>
                   <TableColumn>Content</TableColumn>
                   <TableColumn>switch</TableColumn>
