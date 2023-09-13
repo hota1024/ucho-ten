@@ -1,1 +1,1 @@
-export * from "./CreatePostPage";
+export * from "./ViewProfilePage";
