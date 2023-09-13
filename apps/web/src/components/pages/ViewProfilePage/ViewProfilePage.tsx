@@ -19,29 +19,30 @@ import {
     Image,
     Spinner,
     Input,
-    Popover, PopoverTrigger, PopoverContent,
+    Popover, PopoverTrigger, PopoverContent,useDisclosure
 } from "@nextui-org/react";
-
-import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure} from "@nextui-org/react";
-
-import Textarea from 'react-textarea-autosize'; // 追加
 
 interface Props {
     className?: string
     color: 'light' | 'dark'
     isMobile?: boolean
     isProfileMine: true | false
+    isFollowing?: true | false
 }
 export const ViewProfilePage: React.FC<Props> = (props: Props) => {
-    const {className, color, isMobile,isProfileMine} = props;
+    const {className, color, isMobile,isProfileMine, isFollowing} = props;
     const reg = /^[\u0009-\u000d\u001c-\u0020\u11a3-\u11a7\u1680\u180e\u2000-\u200f\u202f\u205f\u2060\u3000\u3164\ufeff\u034f\u2028\u2029\u202a-\u202e\u2061-\u2063\ufeff]*$/;
     const [loading, setLoading] = useState(false)
     const { background, ProfileContainer, ProfileInfoContainer, HeaderImageContainer, ProfileHeaderImage,
         ProfileImage, ProfileDisplayName, ProfileHandle, ProfileCopyButton, ProfileActionButton,FollowButton,ProfileBio,Buttons, PropertyButton, PostContainer,
     } = viewProfilePage();
 
+    const {isOpen, onOpen, onOpenChange} = useDisclosure();
+    const [onHoverButton, setOnHoverButton] = useState(false);
 
-  return (
+
+
+    return (
       <main className={background({color:color, isMobile:isMobile})}>
           <div className={ProfileContainer()}>
               <div className={HeaderImageContainer()}>
@@ -92,8 +93,15 @@ export const ViewProfilePage: React.FC<Props> = (props: Props) => {
                               </DropdownMenu>
                           </Dropdown>
                       )}
-                      <Button className={FollowButton()}>
-                          {isProfileMine ? ('Edit Profile') : ('Follow')}
+                      <Button className={FollowButton()}
+                        onMouseLeave={() => {
+                            setOnHoverButton(false)
+                        }}
+                        onMouseEnter={() => {
+                            setOnHoverButton(true)
+                        }}
+                      >
+                          {isProfileMine ? ('Edit Profile') : isFollowing ? !onHoverButton ? ('Following') : ('Un Follow') : ('Follow')}
                       </Button>
                   </div>
                   <div className={ProfileDisplayName()}>ばいそに</div>
@@ -102,7 +110,7 @@ export const ViewProfilePage: React.FC<Props> = (props: Props) => {
               </div>
           </div>
           <div className={PostContainer()}>
-              
+
           </div>
       </main>
   );
