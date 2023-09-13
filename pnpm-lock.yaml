@@ -46,18 +46,9 @@ importers:
       '@fortawesome/react-fontawesome':
         specifier: ^0.2.0
         version: 0.2.0(@fortawesome/fontawesome-svg-core@6.4.2)(react@18.2.0)
-      '@nextui-org/button':
-        specifier: ^2.0.18
-        version: 2.0.18(framer-motion@10.16.2)(react-dom@18.2.0)(react@18.2.0)(tailwindcss@3.3.3)
       '@nextui-org/react':
         specifier: ^2.1.10
         version: 2.1.10(@types/react@18.2.21)(framer-motion@10.16.2)(react-dom@18.2.0)(react@18.2.0)(tailwindcss@3.3.3)
-      '@nextui-org/system':
-        specifier: ^2.0.7
-        version: 2.0.7(react-dom@18.2.0)(react@18.2.0)(tailwindcss@3.3.3)
-      '@nextui-org/theme':
-        specifier: ^2.1.6
-        version: 2.1.6(tailwindcss@3.3.3)
       '@types/node':
         specifier: 20.5.9
         version: 20.5.9
@@ -100,9 +91,9 @@ importers:
       react-dropzone:
         specifier: ^14.2.3
         version: 14.2.3(react@18.2.0)
-      react-textarea-autosize:
-        specifier: ^8.5.3
-        version: 8.5.3(@types/react@18.2.21)(react@18.2.0)
+      react-swipeable-list:
+        specifier: ^1.9.1
+        version: 1.9.1
       tailwindcss:
         specifier: 3.3.3
         version: 3.3.3
@@ -15008,6 +14999,10 @@ packages:
       invariant: 2.2.4
       react: 18.2.0
       tslib: 2.6.1
+
+  /react-swipeable-list@1.9.1:
+    resolution: {integrity: sha512-5BcJ3m/ZN306aTA4eIZsnI9rVw12IMZlngWYVttfmkVoss00lXdW5Dy60nn/zQmVKxxSTmF/k1C9zY35x+KfkA==}
+    dev: false
 
   /react-textarea-autosize@8.5.3(@types/react@18.2.21)(react@18.2.0):
     resolution: {integrity: sha512-XT1024o2pqCuZSuBt9FwHlaDeNtVrtCXu0Rnz88t1jUGheCLa3PhjE1GH8Ctm2axEtvdCl5SUHYschyQ0L5QHQ==}
