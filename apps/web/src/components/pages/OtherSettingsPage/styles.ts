@@ -1,6 +1,6 @@
 import { tv } from "@nextui-org/react";
 
-export const settingContentFilteringPage = tv({
+export const otherSettingsPage = tv({
     slots: {
         background: 'w-[100svw] h-[100svh]',
         table :'',
