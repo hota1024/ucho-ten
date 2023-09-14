@@ -16,7 +16,8 @@ const meta = {
     className: "",
     color: window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light",
     isMobile: isMobile,
-    uploadImageAvailable: false,
+    useSearchBar: true,
+    useFooterInputArea: true,
   }
 } satisfies Meta<typeof CreatePostPage>;
 
