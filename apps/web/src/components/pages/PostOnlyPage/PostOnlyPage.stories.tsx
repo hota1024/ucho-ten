@@ -19,6 +19,7 @@ const meta = {
     isLiked: false,
     isReposted: false,
     isBookmarked: false,
+    isPostMine: false,
   }
 } satisfies Meta<typeof PostOnlyPage>;
 

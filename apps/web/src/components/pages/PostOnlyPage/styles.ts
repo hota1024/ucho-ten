@@ -4,14 +4,14 @@ export const postOnlyPage = tv({
     slots: {
         background: 'w-[100svw] h-[100svh]',
         Container: 'h-full min-w-[350px] max-w-[500px]',
-        AuthorPost: 'h-[383px] w-full border-b-[1px] border-[#AAAAAA]',
+        AuthorPost: 'w-full border-b-[1px] border-[#AAAAAA]',
         Author: 'flex items-center pt-[10px] pl-[14px] pr-[24px] pb-[9px]',
         AuthorIcon: 'bg-[#D9D9D9] h-[50px] w-[50px] rounded-[10px] mr-[12px]',
         AuthorDisplayName: 'text-[16px]',
         AuthorHandle: 'text-[12px]',
         PostContent: 'pl-[26px] pt-[6px] pr-[24px] pb-[20px] w-full',
         PostCreatedAt: 'pl-[14px] text-[#AAAAAA] text-[12px]',
-        ReactionButtonContainer: 'mt-[16px] pl-[40px] pr-[40px] flex justify-between ',
+        ReactionButtonContainer: 'mt-[16px] pl-[40px] pr-[40px] mb-[16px] flex justify-between ',
         ReactionButton: 'text-[20px] text-[#AAAAAA] cursor-pointer',
 
 
