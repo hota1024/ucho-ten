@@ -8,6 +8,8 @@ import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell} from "@
 import {Button, ButtonGroup} from "@nextui-org/react";
 
 import {  Dropdown,  DropdownTrigger,  DropdownMenu,  DropdownSection,  DropdownItem} from "@nextui-org/react";
+import {Simulate} from "react-dom/test-utils";
+import drop = Simulate.drop;
 
 interface Props {
     className?: string
@@ -15,7 +17,7 @@ interface Props {
     isMobile?: boolean
 }
 export const OtherSettingsPagePage: React.FC<Props> = (props: Props) => {
-    const {className, color, isMobile,} = props;
+    const {className, color, isMobile} = props;
     const reg = /^[\u0009-\u000d\u001c-\u0020\u11a3-\u11a7\u1680\u180e\u2000-\u200f\u202f\u205f\u2060\u3000\u3164\ufeff\u034f\u2028\u2029\u202a-\u202e\u2061-\u2063\ufeff]*$/;
     const [loading, setLoading] = useState(false)
     const [selectedLangKeys, setSelectedLangKeys] = useState(new Set(["日本語"]));
@@ -31,12 +33,14 @@ export const OtherSettingsPagePage: React.FC<Props> = (props: Props) => {
     const [isDontQuoteNotif, setIsDontQuoteNotif] = useState(false)
     const [isDontScroll, setIsDontScroll] = useState(false)
 
-    const { background, table,
+    const [appearanceColor, setAppearanceColor] = useState<'system'|'light'|'dark'>('system')
+    const colorMode = appearanceColor === 'system' ? color : appearanceColor
+    const { background, table, dropdown,
     } = otherSettingsPage();
 
   return (
-      <main className={background({color:color, isMobile:isMobile})}>
-          <Table hideHeader removeWrapper aria-label="Example static collection table" className={table({color:color})}>
+      <main className={background({color:colorMode, isMobile:isMobile})}>
+          <Table hideHeader removeWrapper className={table({color:colorMode})}>
               <TableHeader>
                   <TableColumn>Content</TableColumn>
                   <TableColumn>switch</TableColumn>
@@ -50,9 +54,18 @@ export const OtherSettingsPagePage: React.FC<Props> = (props: Props) => {
                   <TableRow key="999">
                       <TableCell>
                           <ButtonGroup>
-                              <Button>Default</Button>
-                              <Button>Light</Button>
-                              <Button>Dark</Button>
+                              <Button
+                                onClick={() => setAppearanceColor('system')}
+                                isDisabled={appearanceColor === 'system'}
+                              >Default</Button>
+                              <Button
+                                    onClick={() => setAppearanceColor('light')}
+                                    isDisabled={appearanceColor === 'light'}
+                              >Light</Button>
+                              <Button
+                                    onClick={() => setAppearanceColor('dark')}
+                                    isDisabled={appearanceColor === 'dark'}
+                              >Dark</Button>
                           </ButtonGroup>
                       </TableCell>
                       <TableCell>
@@ -61,7 +74,7 @@ export const OtherSettingsPagePage: React.FC<Props> = (props: Props) => {
                   <TableRow key="2">
                       <TableCell>表示言語</TableCell>
                       <TableCell>
-                          <Dropdown>
+                          <Dropdown className={dropdown({color:colorMode})}>
                               <DropdownTrigger>
                                   <Button
                                       variant="bordered"
@@ -97,7 +110,7 @@ export const OtherSettingsPagePage: React.FC<Props> = (props: Props) => {
                   <TableRow key="5">
                       <TableCell>ポストの翻訳先言語</TableCell>
                       <TableCell>
-                          <Dropdown>
+                          <Dropdown className={dropdown({color:colorMode})}>
                               <DropdownTrigger>
                                   <Button
                                       variant="bordered"
