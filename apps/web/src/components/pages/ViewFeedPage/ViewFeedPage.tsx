@@ -31,7 +31,7 @@ export const ViewFeedPage: React.FC<Props> = (props: Props) => {
     const reg = /^[\u0009-\u000d\u001c-\u0020\u11a3-\u11a7\u1680\u180e\u2000-\u200f\u202f\u205f\u2060\u3000\u3164\ufeff\u034f\u2028\u2029\u202a-\u202e\u2061-\u2063\ufeff]*$/;
     const [loading, setLoading] = useState(false)
     const { background, ProfileContainer, ProfileInfoContainer, HeaderImageContainer, ProfileHeaderImage,
-        ProfileImage, ProfileDisplayName, ProfileHandle, ProfileCopyButton, ProfileActionButton,FollowButton,ProfileBio,Buttons, ShareButton, PostContainer, PinButton,
+        ProfileImage, ProfileDisplayName, ProfileHandle, ProfileCopyButton, ProfileActionButton,FollowButton,ProfileBio,Buttons, ShareButton, PostContainer, PinButton, dropdown,
     } = viewFeedPage();
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
@@ -41,11 +41,11 @@ export const ViewFeedPage: React.FC<Props> = (props: Props) => {
 
     return (
       <main className={background({color:color, isMobile:isMobile})}>
-          <div className={ProfileContainer()}>
+          <div className={ProfileContainer({color:color})}>
               <div className={ProfileInfoContainer()}>
                   <img className={ProfileImage()} src={'https://av-cdn.bsky.app/img/avatar/plain/did:plc:txandrhc7afdozk6a2itgltm/bafkreihwad5kaujw2f6kbfg37zmkhclgd3ap7grixl6pusfb5b34s6jite@jpeg'}></img>
                   <div className={Buttons()}>
-                      <Dropdown>
+                      <Dropdown className={dropdown({color:color})}>
                           <DropdownTrigger>
                               <div className={ProfileCopyButton()}>
                                   <FontAwesomeIcon icon={faArrowUpFromBracket} className={ShareButton({color:color})}/>
@@ -64,7 +64,7 @@ export const ViewFeedPage: React.FC<Props> = (props: Props) => {
                       <div className={ProfileActionButton()}>
                           <FontAwesomeIcon icon={faThumbTack} className={PinButton({isPinned:isPinned})}/>
                       </div>
-                      <Button className={FollowButton()}
+                      <Button className={FollowButton({color:color})}
                         onMouseLeave={() => {
                             setOnHoverButton(false)
                         }}
@@ -75,7 +75,7 @@ export const ViewFeedPage: React.FC<Props> = (props: Props) => {
                           {isSubscribe ? ('UnSubscribe') : ('Subscribe')}
                       </Button>
                   </div>
-                  <div className={ProfileDisplayName()}>ばいそに</div>
+                  <div className={ProfileDisplayName({color:color})}>ばいそに</div>
                   <div className={ProfileHandle({isMobile:isMobile})}>created by @bisn.ucho-ten.net</div>
                   <div className={ProfileBio({isMobile:isMobile})}>あああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ</div>
               </div>

@@ -2,8 +2,8 @@ import { tv } from "@nextui-org/react";
 
 export const viewFeedPage = tv({
     slots: {
-        background: 'max-w-[500px] min-w-[350px]',
-        ProfileContainer: 'w-full h-full bg-white border-[#E3E3E3] border-bottom-[1px]',
+        background: 'max-w-[500px] min-w-[350px] w-full',
+        ProfileContainer: 'w-full h-full  border-[#E3E3E3] border-bottom-[1px]',
         HeaderImageContainer: 'w-full h-[130px] relative',
         ProfileHeaderImage: 'h-full w-full object-cover',
         ProfileInfoContainer: 'w-full h-full relative pl-[13px] pr-[8px] pb-[16px] pt-[21px]',
@@ -18,16 +18,20 @@ export const viewFeedPage = tv({
         PinButton: '',
         ShareButton: '',
         PostContainer: 'w-full h-full',
+        dropdown: '',
     },
     variants: {
         color:{
             light: {
-                background: 'bg-cover bg-[url("https://raw.githubusercontent.com/kawaikute-gomen/ucho-ten-images-repo/main/images/backgroundImages/light/sky_00421.jpg")]',
-                ShareButton: 'text-black'
+                ProfileContainer: 'bg-white',
+                ShareButton: 'text-black',
             },
             dark: {
-                background: 'bg-cover bg-[url("https://raw.githubusercontent.com/kawaikute-gomen/ucho-ten-images-repo/main/images/backgroundImages/dark/starry-sky-gf5ade6b4f_1920.jpg")]',
-                ShareButton: 'text-white'
+                ProfileContainer: 'bg-black',
+                ShareButton: 'text-white',
+                ProfileDisplayName: 'text-white',
+                dropdown: 'dark text-white',
+                FollowButton: 'dark text-white',
             },
         },
         isMobile: {
