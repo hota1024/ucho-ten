@@ -35,6 +35,7 @@ export const ViewProfilePage: React.FC<Props> = (props: Props) => {
     const [loading, setLoading] = useState(false)
     const { background, ProfileContainer, ProfileInfoContainer, HeaderImageContainer, ProfileHeaderImage,
         ProfileImage, ProfileDisplayName, ProfileHandle, ProfileCopyButton, ProfileActionButton,FollowButton,ProfileBio,Buttons, PropertyButton, PostContainer,
+        dropdown,
     } = viewProfilePage();
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
@@ -48,10 +49,10 @@ export const ViewProfilePage: React.FC<Props> = (props: Props) => {
               <div className={HeaderImageContainer()}>
                   <img className={ProfileHeaderImage()} src={'https://av-cdn.bsky.app/img/banner/plain/did:plc:txandrhc7afdozk6a2itgltm/bafkreih4ssgoypcz4l77de4lvdoxzpub52m7e6ugmg6c4uqp65uqubn4oa@jpeg'}></img>
               </div>
-              <div className={ProfileInfoContainer()}>
+              <div className={ProfileInfoContainer({color:color})}>
                   <img className={ProfileImage()} src={'https://av-cdn.bsky.app/img/avatar/plain/did:plc:txandrhc7afdozk6a2itgltm/bafkreihwad5kaujw2f6kbfg37zmkhclgd3ap7grixl6pusfb5b34s6jite@jpeg'}></img>
                   <div className={Buttons()}>
-                      <Dropdown>
+                      <Dropdown className={dropdown({color: color})}>
                           <DropdownTrigger>
                               <div className={ProfileCopyButton()}>
                                   <FontAwesomeIcon icon={faCopy} className={PropertyButton()}/>
@@ -77,7 +78,7 @@ export const ViewProfilePage: React.FC<Props> = (props: Props) => {
                           </DropdownMenu>
                       </Dropdown>
                       {!isProfileMine &&(
-                          <Dropdown>
+                          <Dropdown className={dropdown({color: color})}>
                               <DropdownTrigger>
                                   <div className={ProfileActionButton()}>
                                       <FontAwesomeIcon icon={faEllipsis} className={PropertyButton()}/>

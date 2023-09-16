@@ -2,7 +2,7 @@ import { tv } from "@nextui-org/react";
 
 export const viewProfilePage = tv({
     slots: {
-        background: 'max-w-[500px] min-w-[350px]',
+        background: 'max-w-[500px] min-w-[350px] w-full',
         ProfileContainer: 'w-full h-full bg-white border-[#E3E3E3] border-bottom-[1px]',
         HeaderImageContainer: 'w-full h-[130px] relative',
         ProfileHeaderImage: 'h-full w-full object-cover',
@@ -17,6 +17,8 @@ export const viewProfilePage = tv({
         Buttons: 'flex justify-end h-[56px] w-full flex items-center',
         PropertyButton: 'text-[#929292]',
         PostContainer: 'w-full h-full',
+
+        dropdown: '',
     },
     variants: {
         color:{
@@ -25,6 +27,9 @@ export const viewProfilePage = tv({
             },
             dark: {
                 background: 'bg-cover bg-[url("https://raw.githubusercontent.com/kawaikute-gomen/ucho-ten-images-repo/main/images/backgroundImages/dark/starry-sky-gf5ade6b4f_1920.jpg")]',
+                dropdown: 'dark text-white',
+                ProfileInfoContainer: 'text-white bg-black',
+                FollowButton: 'text-white dark'
             },
         },
         isMobile: {
