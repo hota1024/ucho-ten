@@ -27,31 +27,29 @@ export function CreateLoginPage() {
           } = createLoginPage();
 
     return (
-        <main className={background({color:'dark'})}>
-            <div className={LoginForm()}>
-                <div className={LoginFormConnectServer()}>
-                    <FontAwesomeIcon className={'ml-[4px] text-xl'} icon={faLink}/>
-                    <FontAwesomeIcon className={"absolute right-[10px] text-xl"} icon={faList}/>
-                    <input className={'h-full w-full bg-transparent ml-[12.5px] text-base font-bold outline-none'} placeholder={'bsky.social (default)'}></input>
-                </div>
-                <div className={LoginFormHandle()}>
-                    <FontAwesomeIcon className={'ml-[8px] text-xl'} icon={faUser}/>
-                    <input
-                        type={'text'}
-                        autoComplete={'username'}
-                        className={'h-full w-full bg-transparent ml-[16.5px] text-base font-bold outline-none'} placeholder={'handle, did, e-mail'}></input>
-                </div>
-                <div className={LoginFormHandle()}>
-                    <FontAwesomeIcon className={'ml-[8px] text-xl'} icon={faLock}/>
-                    <input
-                        type={'password'}
-                        autoComplete={'current-password'}
-                        className={'h-full w-full bg-transparent ml-[16.5px] text-base font-bold outline-none'} placeholder={'password'}></input>
-                </div>
-                <Button className={LoginFormLoginButton()}>
-                    <div className="text-zinc-400 text-xl font-bold">Sign In</div>
-                </Button>
+        <main className={LoginForm()}>
+            <div className={LoginFormConnectServer()}>
+                <FontAwesomeIcon className={'ml-[4px] text-xl'} icon={faLink}/>
+                <FontAwesomeIcon className={"absolute right-[10px] text-xl"} icon={faList}/>
+                <input className={'h-full w-full bg-transparent ml-[12.5px] text-base font-bold outline-none'} placeholder={'bsky.social (default)'}></input>
             </div>
+            <div className={LoginFormHandle()}>
+                <FontAwesomeIcon className={'ml-[8px] text-xl'} icon={faUser}/>
+                <input
+                    type={'text'}
+                    autoComplete={'username'}
+                    className={'h-full w-full bg-transparent ml-[16.5px] text-base font-bold outline-none'} placeholder={'handle, did, e-mail'}></input>
+            </div>
+            <div className={LoginFormHandle()}>
+                <FontAwesomeIcon className={'ml-[8px] text-xl'} icon={faLock}/>
+                <input
+                    type={'password'}
+                    autoComplete={'current-password'}
+                    className={'h-full w-full bg-transparent ml-[16.5px] text-base font-bold outline-none'} placeholder={'password'}></input>
+            </div>
+            <Button className={LoginFormLoginButton()}>
+                <div className="text-zinc-400 text-xl font-bold">Sign In</div>
+            </Button>
         </main>
     );
 }

@@ -3,7 +3,7 @@ import { tv } from "@nextui-org/react";
 export const createLoginPage = tv({
     slots: {
         background: 'w-[100svw] h-[100svh] fontFamily-[Noto Sans JP] text-white flex justify-center items-center',
-        LoginForm: 'w-80 h-72 left-0 top-0 relative',
+        LoginForm: 'w-80 h-72 ',
             LoginFormConnectServer: 'w-full h-[54px] flex items-center bg-neutral-700 bg-opacity-50 rounded-lg',
                 LoginFormConnectServerInputArea: '',
             LoginFormHandleInputArea: '',
