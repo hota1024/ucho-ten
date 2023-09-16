@@ -41,7 +41,7 @@ export const ViewPostCard: React.FC<Props> = (props: Props) => {
     const [loading, setLoading] = useState(false)
     const [isHover, setIsHover] = useState<boolean>(false)
     const { PostCard, PostAuthor, PostContent, PostReactionButtonContainer, PostCardContainer, PostReactionButton,
-        PostAuthorIcon, PostAuthorDisplayName, PostAuthorHandle, PostCreatedAt } = viewPostCard();
+        PostAuthorIcon, PostAuthorDisplayName, PostAuthorHandle, PostCreatedAt, dropdown } = viewPostCard();
 
   return (
       <main className={PostCard({color:color})}>
@@ -66,7 +66,7 @@ export const ViewPostCard: React.FC<Props> = (props: Props) => {
                   </div>
                   <div className={PostCreatedAt()} style={{fontSize:'12px'}}>
                       {isHover ? (
-                          <Dropdown>
+                          <Dropdown className={dropdown({color:color})}>
                               <DropdownTrigger>
                                   <FontAwesomeIcon icon={faEllipsis} className={'h-[20px] mb-[4px] cursor-pointer text-[#909090]'}/>
                               </DropdownTrigger>
