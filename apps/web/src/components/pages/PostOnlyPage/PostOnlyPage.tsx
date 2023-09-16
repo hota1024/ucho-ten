@@ -54,7 +54,7 @@ export const PostOnlyPage: React.FC<Props> = (props: Props) => {
     const [viewTranslatedText, setViewTranslatedText] = useState<boolean>(true)
     const [translateError, setTranslateError] = useState<boolean>(false)
 
-    const { background, Container,AuthorPost,Author, AuthorIcon, AuthorDisplayName,AuthorHandle,PostContent,PostCreatedAt,ReactionButtonContainer,ReactionButton,
+    const { Container,AuthorPost,Author, AuthorIcon, AuthorDisplayName,AuthorHandle,PostContent,PostCreatedAt,ReactionButtonContainer,ReactionButton,dropdown
     } = postOnlyPage();
 
     const leadingActions = () => (
@@ -76,133 +76,131 @@ export const PostOnlyPage: React.FC<Props> = (props: Props) => {
     );
 
     return (
-      <main className={background({color:color, isMobile:isMobile})}>
-          <div className={Container({color:color})}>
-              <div className={AuthorPost()}>
-                  <div className={Author()}>
-                      <div className={AuthorIcon()}></div>
-                      <div>
-                          <div className={AuthorDisplayName()}>ばいそに</div>
-                          <div className={AuthorHandle()}>@bisn.ucho-ten.net</div>
-                      </div>
-                  </div>
-                  <div className={PostContent()}>
-                      <SwipeableList>
-                          <SwipeableListItem
-                              maxSwipe={80} // ここに適切な maxSwipe の値を設定する
-                              leadingActions={leadingActions()}
-                              trailingActions={trailingActions()}
-                          >
-                              親譲りの無鉄砲で小供の時から損ばかりしている。小学校に居る時分学校の二階から飛び降りて一週間ほど腰を抜かした事がある。なぜそんな無闇をしたと聞く人があるかも知れぬ。別段深い理由でもない。新築の二階から首を出していたら、同級生の一人が冗談に、いくら威張っても、そこから飛び降りる事は出来まい。弱虫やーい。と囃たからである。小使に負ぶさって帰って来た時、おやじが大きな眼めをして二階ぐらいから飛び降りて腰を抜かす奴やつがあるかと云いったから、この次は抜かさずに飛んで見せますと答えた。
-                          </SwipeableListItem>
-                      </SwipeableList>
-                      {translateError && (
-                            <div className={'text-red-500'}>
-                                Translation error
+        <main className={Container({color:color})}>
+            <div className={AuthorPost()}>
+                <div className={Author()}>
+                    <div className={AuthorIcon()}></div>
+                    <div>
+                        <div className={AuthorDisplayName()}>ばいそに</div>
+                        <div className={AuthorHandle()}>@bisn.ucho-ten.net</div>
+                    </div>
+                </div>
+                <div className={PostContent()}>
+                    <SwipeableList>
+                        <SwipeableListItem
+                            maxSwipe={80} // ここに適切な maxSwipe の値を設定する
+                            leadingActions={leadingActions()}
+                            trailingActions={trailingActions()}
+                        >
+                            親譲りの無鉄砲で小供の時から損ばかりしている。小学校に居る時分学校の二階から飛び降りて一週間ほど腰を抜かした事がある。なぜそんな無闇をしたと聞く人があるかも知れぬ。別段深い理由でもない。新築の二階から首を出していたら、同級生の一人が冗談に、いくら威張っても、そこから飛び降りる事は出来まい。弱虫やーい。と囃たからである。小使に負ぶさって帰って来た時、おやじが大きな眼めをして二階ぐらいから飛び降りて腰を抜かす奴やつがあるかと云いったから、この次は抜かさずに飛んで見せますと答えた。
+                        </SwipeableListItem>
+                    </SwipeableList>
+                    {translateError && (
+                        <div className={'text-red-500'}>
+                            Translation error
+                        </div>
+                    )}
+                    {translatedText !== null && viewTranslatedText && (
+                        <>
+                            <div className={'select-none'}>
+                                Translated by Google
                             </div>
-                      )}
-                      {translatedText !== null && viewTranslatedText && (
-                          <>
-                              <div className={'select-none'}>
-                                  Translated by Google
-                              </div>
-                              <div>
-                                  {translatedText}
-                                  <span
-                                      onClick={() => {
-                                          setViewTranslatedText(false)
-                                      }}
-                                      className={'cursor-pointer'}
-                                  > - View original text </span>
-                              </div>
-                          </>
+                            <div>
+                                {translatedText}
+                                <span
+                                    onClick={() => {
+                                        setViewTranslatedText(false)
+                                    }}
+                                    className={'cursor-pointer'}
+                                > - View original text </span>
+                            </div>
+                        </>
 
-                      )}
-                  </div>
-                  <div className={PostCreatedAt()}>
-                        2021-09-01 12:00:00
-                  </div>
-                  <div className={ReactionButtonContainer()}>
-                      <FontAwesomeIcon icon={faComment} className={ReactionButton()}></FontAwesomeIcon>
-                      <FontAwesomeIcon icon={faQuoteLeft} className={ReactionButton()}></FontAwesomeIcon>
-                      <FontAwesomeIcon icon={faRetweet} className={ReactionButton()}></FontAwesomeIcon>
-                      <FontAwesomeIcon icon={!isLiked ? faRegularSquare : faSolidSquare} className={ReactionButton()}></FontAwesomeIcon>
-                      <FontAwesomeIcon icon={!isBookmarked ? faRegularBookmark: faSolidBookmark} className={ReactionButton()}></FontAwesomeIcon>
-                      <Dropdown>
-                            <DropdownTrigger>
-                                <FontAwesomeIcon icon={faEllipsis} className={ReactionButton()}/>
-                            </DropdownTrigger>
-                            <DropdownMenu>
-                                {/*@ts-ignore*/}
-                                <DropdownSection title="Actions" showDivider>
-                                    {!isPostMine && (
-                                        <DropdownItem key="report"
-                                                      startContent={<FontAwesomeIcon icon={faFlag} />}
-                                        >
-                                            Report
-                                        </DropdownItem>
-                                    )}
-                                    <DropdownItem key="share"
-                                                  startContent={<FontAwesomeIcon icon={faArrowUpFromBracket} />}
+                    )}
+                </div>
+                <div className={PostCreatedAt()}>
+                    2021-09-01 12:00:00
+                </div>
+                <div className={ReactionButtonContainer()}>
+                    <FontAwesomeIcon icon={faComment} className={ReactionButton()}></FontAwesomeIcon>
+                    <FontAwesomeIcon icon={faQuoteLeft} className={ReactionButton()}></FontAwesomeIcon>
+                    <FontAwesomeIcon icon={faRetweet} className={ReactionButton()}></FontAwesomeIcon>
+                    <FontAwesomeIcon icon={!isLiked ? faRegularSquare : faSolidSquare} className={ReactionButton()}></FontAwesomeIcon>
+                    <FontAwesomeIcon icon={!isBookmarked ? faRegularBookmark: faSolidBookmark} className={ReactionButton()}></FontAwesomeIcon>
+                    <Dropdown className={dropdown({color:color})}>
+                        <DropdownTrigger>
+                            <FontAwesomeIcon icon={faEllipsis} className={ReactionButton()}/>
+                        </DropdownTrigger>
+                        <DropdownMenu>
+                            {/*@ts-ignore*/}
+                            <DropdownSection title="Actions" showDivider>
+                                {!isPostMine && (
+                                    <DropdownItem key="report"
+                                                  startContent={<FontAwesomeIcon icon={faFlag} />}
                                     >
-                                        Share
+                                        Report
                                     </DropdownItem>
-                                    <DropdownItem key="translate"
-                                                  startContent={<FontAwesomeIcon icon={faLanguage} />}
-                                                  onClick={async() => {
-                                                      setIsTranslated(true)
-                                                      setViewTranslatedText(true)
-                                                      const res = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=auto&dt=t&q=' + encodeURIComponent('親譲の無鉄砲で小供の時から損ばかりしている。\n小学校に居る時分学校の二階から飛び降りて一週間ほど腰こしを抜ぬかした事がある。なぜそんな無闇むやみをしたと聞く人があるかも知れぬ。別段深い理由でもない。\n新築の二階から首を出していたら、同級生の一人が冗談に、いくら威張いばっても、そこから飛び降りる事は出来まい。\n弱虫やーい。\nと囃たからである。小使に負ぶさって帰って来た時、おやじが大きな眼めをして二階ぐらいから飛び降りて腰を抜かす奴やつがあるかと云いったから、この次は抜かさずに飛んで見せますと答えた。'))
-                                                      if(res.status === 200) {
-                                                          const json = await res.json()
-                                                          if(json[0] !== undefined) {
-                                                              const combinedText = json[0].reduce((acc: string, item: any[]) => {
-                                                                  if (item[0]) {
-                                                                      return acc + item[0];
-                                                                  }
-                                                                  return acc;
-                                                              }, '');
-                                                                setTranslatedText(combinedText)
-                                                          }
-
-                                                      } else {
-                                                          setTranslateError(true)
+                                )}
+                                <DropdownItem key="share"
+                                              startContent={<FontAwesomeIcon icon={faArrowUpFromBracket} />}
+                                >
+                                    Share
+                                </DropdownItem>
+                                <DropdownItem key="translate"
+                                              startContent={<FontAwesomeIcon icon={faLanguage} />}
+                                              onClick={async() => {
+                                                  setIsTranslated(true)
+                                                  setViewTranslatedText(true)
+                                                  const res = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=auto&dt=t&q=' + encodeURIComponent('親譲の無鉄砲で小供の時から損ばかりしている。\n小学校に居る時分学校の二階から飛び降りて一週間ほど腰こしを抜ぬかした事がある。なぜそんな無闇むやみをしたと聞く人があるかも知れぬ。別段深い理由でもない。\n新築の二階から首を出していたら、同級生の一人が冗談に、いくら威張いばっても、そこから飛び降りる事は出来まい。\n弱虫やーい。\nと囃たからである。小使に負ぶさって帰って来た時、おやじが大きな眼めをして二階ぐらいから飛び降りて腰を抜かす奴やつがあるかと云いったから、この次は抜かさずに飛んで見せますと答えた。'))
+                                                  if(res.status === 200) {
+                                                      const json = await res.json()
+                                                      if(json[0] !== undefined) {
+                                                          const combinedText = json[0].reduce((acc: string, item: any[]) => {
+                                                              if (item[0]) {
+                                                                  return acc + item[0];
+                                                              }
+                                                              return acc;
+                                                          }, '');
+                                                          setTranslatedText(combinedText)
                                                       }
-                                                  }}
-                                    >
-                                        Translate
-                                    </DropdownItem>
-                                </DropdownSection>
-                                <DropdownSection title="Copy" showDivider={isPostMine}>
-                                    <DropdownItem key="json" startContent={<FontAwesomeIcon icon={faCode} />}
-                                    >
-                                        JSON
-                                    </DropdownItem>
-                                    <DropdownItem key="uri" startContent={<FontAwesomeIcon icon={faU} />}
-                                    >
-                                        Post URI
-                                    </DropdownItem>
-                                    <DropdownItem key="did" startContent={<FontAwesomeIcon icon={faUser} />}
-                                    >
-                                        Author DID
-                                    </DropdownItem>
-                                </DropdownSection>
-                                <DropdownSection title="Danger zone">
-                                    <DropdownItem
-                                        key="delete"
-                                        className="text-danger"
-                                        color="danger"
-                                        startContent={<FontAwesomeIcon icon={faTrash} />}
-                                    >
-                                        Delete post
-                                    </DropdownItem>
-                                </DropdownSection>
-                            </DropdownMenu>
-                      </Dropdown>
-                  </div>
-              </div>
-          </div>
-      </main>
+
+                                                  } else {
+                                                      setTranslateError(true)
+                                                  }
+                                              }}
+                                >
+                                    Translate
+                                </DropdownItem>
+                            </DropdownSection>
+                            <DropdownSection title="Copy" showDivider={isPostMine}>
+                                <DropdownItem key="json" startContent={<FontAwesomeIcon icon={faCode} />}
+                                >
+                                    JSON
+                                </DropdownItem>
+                                <DropdownItem key="uri" startContent={<FontAwesomeIcon icon={faU} />}
+                                >
+                                    Post URI
+                                </DropdownItem>
+                                <DropdownItem key="did" startContent={<FontAwesomeIcon icon={faUser} />}
+                                >
+                                    Author DID
+                                </DropdownItem>
+                            </DropdownSection>
+                            <DropdownSection title="Danger zone">
+                                <DropdownItem
+                                    key="delete"
+                                    className="text-danger"
+                                    color="danger"
+                                    startContent={<FontAwesomeIcon icon={faTrash} />}
+                                >
+                                    Delete post
+                                </DropdownItem>
+                            </DropdownSection>
+                        </DropdownMenu>
+                    </Dropdown>
+                </div>
+            </div>
+        </main>
   );
 }
 

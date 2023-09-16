@@ -2,7 +2,6 @@ import { tv } from "@nextui-org/react";
 
 export const postOnlyPage = tv({
     slots: {
-        background: 'w-[100svw] h-[100svh]',
         Container: 'h-full min-w-[350px] max-w-[500px]',
         AuthorPost: 'w-full border-b-[1px] border-[#AAAAAA]',
         Author: 'flex items-center pt-[10px] pl-[14px] pr-[24px] pb-[9px]',
@@ -13,32 +12,28 @@ export const postOnlyPage = tv({
         PostCreatedAt: 'pl-[14px] text-[#AAAAAA] text-[12px]',
         ReactionButtonContainer: 'mt-[16px] pl-[40px] pr-[40px] mb-[16px] flex justify-between ',
         ReactionButton: 'text-[20px] text-[#AAAAAA] cursor-pointer',
+        dropdown: '',
 
 
     },
     variants: {
         color:{
             light: {
-                background: 'bg-cover bg-[url("https://raw.githubusercontent.com/kawaikute-gomen/ucho-ten-images-repo/main/images/backgroundImages/light/sky_00421.jpg")]',
                 Container: 'bg-white text-black',
                 PostContent: 'text-black',
                 PostCreatedAt: 'text-black',
             },
             dark: {
-                background: 'bg-cover bg-[url("https://raw.githubusercontent.com/kawaikute-gomen/ucho-ten-images-repo/main/images/backgroundImages/dark/starry-sky-gf5ade6b4f_1920.jpg")]',
                 Container: 'bg-black text-white',
                 PostContent: 'text-white',
-                PostCreatedAt: 'text-white'
+                PostCreatedAt: 'text-white',
+                dropdown: 'dark text-white',
             },
         },
         isMobile: {
             true: {
-                PostModal: "rounded-none",
-                background: "",
             },
             false: {
-                PostModal: "rounded-[10px] overflow-hidden min-h-[400px]",
-                background: "relative flex justify-center items-center",
             },
         },
     }
