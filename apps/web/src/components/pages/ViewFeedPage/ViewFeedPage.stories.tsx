@@ -3,11 +3,11 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { BrowserView, MobileView, isMobile } from "react-device-detect"
 
 
-import { ViewProfilePage } from "./ViewProfilePage";
+import {ViewFeedPage} from "./ViewFeedPage";
 
 const meta = {
-  title: "Pages/ViewProfilePage",
-  component: ViewProfilePage,
+  title: "Pages/ViewFeedPage",
+  component: ViewFeedPage,
   parameters: {
     layout: "fullscreen",
   },
@@ -18,13 +18,13 @@ const meta = {
     isMobile: isMobile,
     isProfileMine: false,
   }
-} satisfies Meta<typeof ViewProfilePage>;
+} satisfies Meta<typeof ViewFeedPage>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const Template: ComponentStory<typeof ViewProfilePage> = (props:any) => {
-  return <ViewProfilePage {...props} />
+const Template: ComponentStory<typeof ViewFeedPage> = (props:any) => {
+  return <ViewFeedPage {...props} />
 }
 
 export const Default = Template.bind({})
