@@ -1,10 +1,9 @@
 import { tv } from "@nextui-org/react";
 
-export const otherSettingsPage = tv({
+export const settingContentFilteringPage = tv({
     slots: {
         background: 'w-[100svw] min-w-[350px] max-w-[500px] h-[100svh]',
         table :'',
-        dropdown: '',
 
     },
     variants: {
@@ -16,7 +15,6 @@ export const otherSettingsPage = tv({
             dark: {
                 background: 'bg-black',
                 table: 'dark text-white',
-                dropdown: 'dark text-white',
             },
         },
         isMobile: {
@@ -24,7 +22,7 @@ export const otherSettingsPage = tv({
                 background: "",
             },
             false: {
-                background: "",
+                background: "relative flex justify-center items-center",
             },
         },
     }
