@@ -2,7 +2,7 @@ import { tv } from "@nextui-org/react";
 
 export const settingContentFilteringPage = tv({
     slots: {
-        background: 'w-[100svw] h-[100svh]',
+        background: 'w-[100svw] min-w-[350px] max-w-[500px] h-[100svh]',
         table :'',
 
     },
@@ -10,11 +10,11 @@ export const settingContentFilteringPage = tv({
         color:{
             light: {
                 background: 'bg-white',
-                table: 'bg-white',
+                table: '',
             },
             dark: {
                 background: 'bg-black',
-                table: 'bg-black',
+                table: 'dark text-white',
             },
         },
         isMobile: {
