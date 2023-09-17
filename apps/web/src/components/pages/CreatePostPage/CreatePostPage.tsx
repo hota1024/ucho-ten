@@ -59,12 +59,14 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
             PostModal,
             header, headerTitle, headerPostButton, headerCancelButton,
             content, contentLeft, contentLeftAuthorIcon, contentLeftAuthorIconImage,
-                     contentRight, contentRightContainer, contentRightTextArea, contentRightImagesContainer, contentRightUrlsContainer,
+                     contentRight, contentRightTextArea, contentRightImagesContainer, contentRightUrlsContainer,
                      contentRightUrlCard, contentRightUrlCardDeleteButton,
                      URLCard, URLCardThumbnail, URLCardDetail, URLCardDetailContent, URLCardTitle, URLCardDescription, URLCardLink,
             footer, footerTooltip,
                     footerCharacterCount, footerCharacterCountText, footerCharacterCountCircle,
-                    footerTooltipStyle,
+                    footerTooltipStyle,dropdown,popover,
+
+            ImageDeleteButton, ImageAddALTButton, ImageEditButton,
     } = createPostPage();
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
@@ -213,7 +215,7 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
           {isOpen && (
               window.prompt("Please enter link", "Harry Potter")
           )}
-          <div className={PostModal({color:AppearanceColor, isMobile:isMobile})}>
+          <div className={PostModal({color:color, isMobile:isMobile})}>
               <div className={header()}>
                   <Button
                       variant="light"
@@ -236,7 +238,7 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
               <div className={content({isDragActive:isDragActive})} {...getRootProps({ onDrop: handleDrop, onDragOver: handleDragOver })}>
                   <div className={contentLeft()}>
                       <div className={contentLeftAuthorIcon()}>
-                          <Dropdown placement="right-start">
+                          <Dropdown placement="right-start" className={dropdown({color:color})}>
                               <DropdownTrigger>
                                   <img className={contentLeftAuthorIconImage()}
                                        alt={"author icon"}
@@ -262,13 +264,10 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
                       <Textarea className={contentRightTextArea()}
                                 aria-label="post input area"
                                 placeholder={"Yo, Do you do Brusco?"}
-                                rows={contentText.split('\n').length}
-                                maxLength={10000}
                                 value={contentText}
+                                maxLength={10000}
                                 autoFocus={true}
-                                minRows={3}
                                 onChange={(e) => {
-                                    if (hiddenInput.current) hiddenInput.current.textContent = e.target.value + '\u200b'
                                     setContentText(e.target.value)
                                     detectURL(e.target.value)
                                 }}
@@ -287,13 +286,7 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
                                       />
                                       <div style={{ zIndex:'10', position: 'absolute', top: 5, left: 5 }}>
                                           <button
-                                              style={{
-                                                  height: '20px',
-                                                  width: '20px',
-                                                  padding: '0px',
-                                                  borderRadius: '50%',
-                                                  backgroundColor: 'rgba(0,0,0,0.3)',
-                                              }}
+                                              className={ImageDeleteButton()}
                                               onClick={() => handleOnRemoveImage(index)}
                                           >
                                               <FontAwesomeIcon icon={faXmark} size="sm" className={' mb-[2px]'}/>
@@ -301,13 +294,7 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
                                       </div>
                                       <div style={{ zIndex:'10', position: 'absolute', bottom: 5, left: 5 }}>
                                           <button
-                                              style={{
-                                                  height: '20px',
-                                                  width: '100%',
-                                                  padding: '0px',
-                                                  borderRadius: '12.5%',
-                                                  backgroundColor: 'rgba(0,0,0,0.3)',
-                                              }}
+                                              className={ImageAddALTButton()}
                                               onClick={() => handleOnRemoveImage(index)}
                                           >
                                               ALT
@@ -315,13 +302,7 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
                                       </div>
                                       <div style={{ zIndex:'10', position: 'absolute', bottom: 5, right: '20px' }}>
                                           <button
-                                              style={{
-                                                  height: '20px',
-                                                  width: '20px',
-                                                  padding: '0px',
-                                                  borderRadius: '50%',
-                                                  backgroundColor: 'rgba(0,0,0,0.3)',
-                                              }}
+                                              className={ImageEditButton()}
                                               onClick={() => handleOnRemoveImage(index)}
                                           >
                                               <FontAwesomeIcon icon={faPen} size="sm" className={' mb-[2px]'}/>
@@ -329,35 +310,6 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
                                       </div>
                                   </div>
                               ))}
-                          </div>
-                      )}
-                      {isDetectedURL && !isSetURLCard && contentImage.length == 0 && (
-                          <div style={{overflowX:'scroll'}}>
-                              <div style={{textAlign:'left', }}
-                                   className={contentRightUrlsContainer()}
-                              >
-                                  {detectedURLs.map((url, index) => (
-                                      <button
-                                          style={{
-                                              flex: '0 1 calc(100%)',
-                                              boxSizing: 'border-box',
-                                              textOverflow: 'ellipsis',
-                                              overflow: 'hidden',
-                                              whiteSpace: 'nowrap',
-                                              textAlign:'left',
-                                              marginRight:'10px',
-                                          }}
-                                          onClick={() => {
-                                               setIsSetURLCard(true)
-                                               setIsGetOGPFetchError(false)
-                                               setSelectedURL(url)
-                                               getOGP(url)
-                                               }
-                                          }
-                                          key={index}
-                                      >Add: {url}</button>
-                                  ))}
-                              </div>
                           </div>
                       )}
                       {isOGPGetProcessing && (
@@ -448,7 +400,6 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
                       <div className={footerTooltipStyle()}>
                           <label htmlFor={inputId}>
                               <Button
-                                  as='span'
                                   isIconOnly
                                   variant="light"
                                   className={'h-[24px] text-white'}
@@ -468,7 +419,7 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
                           </label>
                       </div>
                       <div className={footerTooltipStyle()} style={{bottom:'5%'}}>
-                          <Dropdown backdrop="blur">
+                          <Dropdown backdrop="blur" className={dropdown({color:color})}>
                               <DropdownTrigger>
                                   {`lang:${Array.from(PostContentLanguage).join(",")}`}
                               </DropdownTrigger>
@@ -497,7 +448,7 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
                           </Dropdown>
                       </div>
                       <div className={footerTooltipStyle()}>
-                          <Dropdown backdrop="blur">
+                          <Dropdown backdrop="blur" className={dropdown({color:color})}>
                               <DropdownTrigger>
                                   <FontAwesomeIcon icon={faCirclePlus} className={'h-[20px] mb-[4px] text-white'}/>
                               </DropdownTrigger>
@@ -517,16 +468,15 @@ export const CreatePostPage: React.FC<Props> = (props: Props) => {
                                       key='linkcard'
                                       onPress={() => {
                                             window.prompt("Please enter link", "")
-                                      }
-                                  }>リンクカードを追加する</DropdownItem>
-                                  <DropdownItem key='de'>Deutsch</DropdownItem>
-                                  <DropdownItem key='it'>Italiano</DropdownItem>
+                                      }}>
+                                      リンクカードを追加する
+                                  </DropdownItem>
                               </DropdownMenu>
                           </Dropdown>
                       </div>
                       <BrowserView>
                           <div className={footerTooltipStyle()}>
-                              <Popover placement="right-end">
+                              <Popover placement="right-end" className={popover({color:color})}>
                                   <PopoverTrigger>
                                       <Button
                                           isIconOnly
