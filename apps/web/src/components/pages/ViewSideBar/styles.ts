@@ -2,7 +2,8 @@ import { tv } from "@nextui-org/react";
 
 export const viewSideBar = tv({
     slots: {
-        background: 'w-[70svw] min-w-[210px] max-w-[350px] h-[100svh] select-none ',
+        bg: 'w-full min-w-[350px] max-w-[600px] h-full bg-black bg-opacity-80 ',
+        background: 'w-[70svw] min-w-[210px] max-w-[350px] h-[100svh] select-none absolute z-10',
         AuthorIconContainer: 'h-[20%] w-full border-b-[1px] border-[#E3E3E3] pl-[18px] pb-[18px] pt-[80px] bg-white bg-opacity-40 flex items-center',
         AuthorDisplayName: 'font-black font-[16px]',
         AuthorHandle: '',
@@ -10,6 +11,7 @@ export const viewSideBar = tv({
             NavBarIcon: 'h-[28px] w-[28px] mr-[17px]',
             NavBarItem: 'h-[28px] w-full mb-[20px] flex items-center font-bold cursor-pointer',
         Footer: 'h-[20%] w-full pl-[18px] pt-[24px] border-t-[1px] border-[#E3E3E3] pb-[75px] bg-white bg-opacity-40',
+        isBarOpen: '',
 
     },
     variants: {
@@ -29,5 +31,14 @@ export const viewSideBar = tv({
             false: {
             },
         },
+        isBarOpen: {
+            true: {
+
+            },
+            false: {
+                background: 'hidden',
+                bg: 'hidden',
+            }
+        }
     }
 });

@@ -28,13 +28,15 @@ interface Props {
     open?: boolean
     page: 'single' | 'profile' | 'home' | 'post' | 'search'
     isNextPage? : boolean
+    setValue?: any
+    selectedTab: string
 }
 export const ViewHeader: React.FC<Props> = (props: Props) => {
-    const {className, color, isMobile, open, page, isNextPage} = props;
+    const {className, color, isMobile, open, page, isNextPage, setValue, selectedTab} = props;
     const reg = /^[\u0009-\u000d\u001c-\u0020\u11a3-\u11a7\u1680\u180e\u2000-\u200f\u202f\u205f\u2060\u3000\u3164\ufeff\u034f\u2028\u2029\u202a-\u202e\u2061-\u2063\ufeff]*$/;
     const [searchText, setSearchText] = useState("");
-    const [selectedTab, setSelectedTab] = useState<"Posts" | "Feeds" | "Users">("Posts");
     const [loading, setLoading] = useState(false)
+    const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false)
     const {Header, HeaderContentTitleContainer, HeaderContentTitle,
             top,
             bottom,
@@ -63,8 +65,13 @@ export const ViewHeader: React.FC<Props> = (props: Props) => {
                     startContent={<FontAwesomeIcon
                         className={'h-[20px]'}
                         icon={isNextPage ? faChevronLeft : faBars}/>}
+                    onClick={() => {
+                        setIsSideBarOpen(!isSideBarOpen)
+                        //console.log(setValue)
+                        props.setValue(true)
+                    }}
                 />
-                {page === 'search' ? (
+                {selectedTab === 'search' ? (
                     <div
                         className={'h-[40px] w-[60%] rounded-[10px] overflow-hidden text-black relative'}
 
@@ -94,7 +101,7 @@ export const ViewHeader: React.FC<Props> = (props: Props) => {
                         className={'h-[100%] w-[145px]'}
                         src={'https://raw.githubusercontent.com/hota1024/ucho-ten/190ebcbd9619eb94c85d81d64285b16f36508a47/public/images/Logo/ucho-ten.svg'}/>
                 )}
-                {page === 'single' && (
+                {selectedTab === 'single' && (
                     <Button
                         variant="light"
                         className={'absolute right-[0px] p-[20px] text-white'}
@@ -112,7 +119,7 @@ export const ViewHeader: React.FC<Props> = (props: Props) => {
                           style={{overflowX:'scroll', overflowY:'hidden'}}
                           orientation="horizontal"
                           hideScrollBar>
-                {page === 'home'  && (
+                {selectedTab === 'home'  && (
                     <Tabs
                         aria-label="Options"
                         color="primary"
@@ -169,10 +176,10 @@ export const ViewHeader: React.FC<Props> = (props: Props) => {
                         />
                     </Tabs>
                 )}
-                {page === 'single' && (
+                {selectedTab === 'single' && (
                     <div className={HeaderContentTitle({page:page})}>Bookmark</div>
                 )}
-                {page === 'post' && (
+                {selectedTab === 'post' && (
                     <Tabs
                         aria-label="Options"
                         color="primary"
@@ -200,7 +207,7 @@ export const ViewHeader: React.FC<Props> = (props: Props) => {
                         />
                     </Tabs>
                 )}
-                {page === 'search'  && (
+                {selectedTab === 'search'  && (
                     <Tabs
                         aria-label="Options"
                         color="primary"
@@ -235,7 +242,7 @@ export const ViewHeader: React.FC<Props> = (props: Props) => {
                         />
                     </Tabs>
                 )}
-                {page === 'profile'  && (
+                {selectedTab === 'profile'  && (
                     <Tabs
                         aria-label="Options"
                         color="primary"

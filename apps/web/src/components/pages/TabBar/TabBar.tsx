@@ -16,6 +16,7 @@ interface Props {
     isDragActive?: boolean
     open?: boolean
     selected: 'home' | 'search' | 'inbox' | 'post'
+    setValue?: any
 }
 export const TabBar: React.FC<Props> = (props: Props) => {
     const {className, color, isMobile, uploadImageAvailable, open, selected} = props;
@@ -29,6 +30,7 @@ export const TabBar: React.FC<Props> = (props: Props) => {
           <div className={Container({selected:selected==='home'})}
                onClick={() => {
                     setSelectedTab('home')
+                    props.setValue('home')
                }}
           >
               <FontAwesomeIcon icon={faHome} className={Icon({color:color, selected:selected})}/>
@@ -36,6 +38,7 @@ export const TabBar: React.FC<Props> = (props: Props) => {
           <div className={Container({selected:selected==='search'})}
                onClick={() => {
                    setSelectedTab('search')
+                   props.setValue('search')
                }}
           >
                 <FontAwesomeIcon icon={faSearch} className={Icon({color:color, selected:selected})}/>
@@ -43,6 +46,7 @@ export const TabBar: React.FC<Props> = (props: Props) => {
           <div className={Container({selected:selected==='inbox'})}
                onClick={() => {
                    setSelectedTab('inbox')
+                   props.setValue('inbox')
                }}
           >
                 <FontAwesomeIcon icon={faInbox} className={Icon({color:color, selected:selected})}/>
@@ -50,6 +54,7 @@ export const TabBar: React.FC<Props> = (props: Props) => {
           <div className={Container({selected:selected==='post'})}
                onClick={() => {
                    setSelectedTab('post')
+                   props.setValue('post')
                }}
           >
                 <FontAwesomeIcon icon={faPenToSquare} className={Icon({color:color, selected:selected})}/>
