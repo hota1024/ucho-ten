@@ -70,16 +70,16 @@ export const ViewHeader: React.FC<Props> = (props: Props) => {
 
                     >
                         <input
-                            className={'h-full w-full outline-none text-black'}
+                            className={'h-full w-full outline-none text-black pl-[20px]'}
                             value={searchText}
                             autoFocus={true}
                             onChange={(e) => {setSearchText(e.target.value)}}
-                            placeholder={'  search word'}
+                            placeholder={'search word'}
                         />
                         {searchText.length > 0 && (
                             <Button
                                 className={'absolute right-[0px] top-[0px] p-[10px]'}
-                                as="span"
+                                isIconOnly
                                 startContent={
                                     <FontAwesomeIcon className={'h-[20px]'} icon={faXmark}/>
                                 }

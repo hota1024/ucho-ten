@@ -2,7 +2,7 @@ import { tv } from "@nextui-org/react";
 
 export const tabBar = tv({
     slots: {
-        TabBar: 'w-[100svw] max-w-[500px] h-[75px] flex',
+        TabBar: 'w-full min-w-[350px] h-[50px] flex',
         Container: 'h-full w-[25%] flex justify-center items-center cursor-pointer',
         Icon: 'w-[20px] h-[20px] ',
 

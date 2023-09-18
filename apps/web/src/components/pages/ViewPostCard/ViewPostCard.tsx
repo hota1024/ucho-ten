@@ -34,15 +34,17 @@ interface Props {
     isDragActive?: boolean
     open?: boolean
     numbersOfImage: 0 | 1 | 2 | 3 | 4,
+    postJson?: any
 }
 export const ViewPostCard: React.FC<Props> = (props: Props) => {
-    const {className, color, isMobile, uploadImageAvailable, open, numbersOfImage} = props;
+    const {className, color, isMobile, uploadImageAvailable, open, numbersOfImage, postJson} = props;
     const reg = /^[\u0009-\u000d\u001c-\u0020\u11a3-\u11a7\u1680\u180e\u2000-\u200f\u202f\u205f\u2060\u3000\u3164\ufeff\u034f\u2028\u2029\u202a-\u202e\u2061-\u2063\ufeff]*$/;
     const [loading, setLoading] = useState(false)
     const [isHover, setIsHover] = useState<boolean>(false)
     const { PostCard, PostAuthor, PostContent, PostReactionButtonContainer, PostCardContainer, PostReactionButton,
         PostAuthorIcon, PostAuthorDisplayName, PostAuthorHandle, PostCreatedAt, dropdown } = viewPostCard();
 
+    console.log(postJson)
   return (
       <main className={PostCard({color:color})}>
           <div className={PostCardContainer()}
@@ -62,7 +64,7 @@ export const ViewPostCard: React.FC<Props> = (props: Props) => {
                   </div>
                   <div className={'text-[#BABABA]'}>&nbsp;-&nbsp;</div>
                   <div className={PostAuthorHandle()}>
-                      <div>{"bisn.ucho-ten.net"}</div>
+                      <div>{postJson.user.handle}</div>
                   </div>
                   <div className={PostCreatedAt()} style={{fontSize:'12px'}}>
                       {isHover ? (
@@ -86,7 +88,7 @@ export const ViewPostCard: React.FC<Props> = (props: Props) => {
                   </div>
               </div>
               <div className={PostContent({isMobile:isMobile})} style={{}}>
-                  <div className={''}>あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモリーオ市、郊外のぎらぎらひかる草の波。</div>
+                  <div className={''}>{postJson.post?.text}</div>
                   {numbersOfImage > 0 && (
                       <div className={'mt-[10px] mb-[10px] rounded-[7.5px] overflow-hidden'}>
                           {numbersOfImage === 1 && (
@@ -96,7 +98,7 @@ export const ViewPostCard: React.FC<Props> = (props: Props) => {
                   )}
               </div>
               <div className={PostReactionButtonContainer()} style={{}}>
-                  <div className={'mr-[12px]'}>
+                  <div className={`mr-[12px] ${!isHover && !isMobile && 'hidden'}`}>
                       <FontAwesomeIcon icon={faComment} className={PostReactionButton()}></FontAwesomeIcon>
                       <FontAwesomeIcon icon={faRetweet} className={PostReactionButton()}></FontAwesomeIcon>
                       <FontAwesomeIcon icon={faHeartRegular} className={PostReactionButton()}></FontAwesomeIcon>

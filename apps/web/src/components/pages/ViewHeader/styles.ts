@@ -2,7 +2,7 @@ import { tv } from "@nextui-org/react";
 
 export const viewHeader = tv({
     slots: {
-        Header:'h-[100px] w-full min-w-[300px] max-w-[500px] text-white backdrop-blur-[1px] bg-black/40',
+        Header:'h-[100px] w-full min-w-[350px] max-w-[600px] text-white backdrop-blur-[1px] bg-black/40 absolute z-10',
             HeaderContentTitleContainer: '',
             HeaderContentTitle: '',
             HeaderContent: 'w-full h-[100%-86px] max-h-[400px] relative flex items-center flex-wrap overflow-y-scroll',
