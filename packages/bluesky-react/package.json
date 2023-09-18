@@ -19,7 +19,6 @@
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
   },
   "devDependencies": {
-    "@atproto/dev-env": "^0.2.2",
     "@jest/globals": "^29.6.2",
     "@testing-library/jest-dom": "latest",
     "@testing-library/react": "latest",
