@@ -4,7 +4,7 @@ export const viewScreen = tv({
     slots: {
         background: 'w-[100svw] h-[100svh] justify-center items-center flex ',
         backgroundColor: 'w-full h-full bg-[#000000] bg-opacity-10 absolute',
-        tabbar: 'absolute bottom-0 w-full',
+        tabbar: '',
     },
     variants: {
         color:{

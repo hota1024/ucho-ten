@@ -5,7 +5,7 @@ import { TabBar } from "../TabBar";
 import {ViewPostCard} from "../ViewPostCard";
 import {Spinner} from "@nextui-org/react";
 import {ViewSideBar} from "../ViewSideBar";
-import {Skeleton} from "@nextui-org/react";
+import {Navbar} from "@nextui-org/react";
 
 interface Props {
     className?: string;
@@ -23,13 +23,16 @@ export const ViewScreen: React.FC<Props> = (props: Props) => {
     const [searchResult, setSearchResult] = useState<any[]>([]);
     const [value, setValue] = useState(false)
     const [selectedTab, setSelectedTab] = useState<"home" | "search" | "inbox" | "post">("search");
+    const [searchText, setSearchText] = useState("");
 
 
-    const fetchResult = async () => {
+    const fetchResult = async (query:string) => {
         try {
-            const res = await fetch('https://search.bsky.social/search/posts?q=a')
+            if(query === '') return;
+            const res = await fetch(`https://search.bsky.social/search/posts?q=${query}`)
             const json = await res.json()
             setSearchResult(json);
+            console.log(json)
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -38,32 +41,33 @@ export const ViewScreen: React.FC<Props> = (props: Props) => {
     };
     useEffect(() => {
 
-        fetchResult();
-    }, []);
+        fetchResult(searchText);
+    }, [searchText]);
 
     return (
         <main className={background({ color: color, isMobile: isMobile })}>
-            <div className={'h-full max-w-[600px] min-w-[350px] w-full'}>
+            <div className={'h-full max-w-[600px] min-w-[350px] w-full overflow-y-scroll'}>
                 <ViewSideBar color={color} isBarOpen={value} />
-                <ViewHeader color={color} page={"search"} setValue={setValue} selectedTab={selectedTab}/>
-                <div className={'h-[calc(100svh-150px)] overflow-scroll'}>
+                <div className={''}>
+                    <ViewHeader color={color} page={"search"} setValue={setValue} setSearchText={setSearchText} selectedTab={selectedTab}/>
+                    <div className={'pt-[100px] h-full'}></div>
                     {selectedTab === 'search' && (
                         loading ? (
-                                Array.from({ length: 15 }, (_, index) => (
-                                    <ViewPostCard
-                                        key={`skeleton-${index}`}
-                                        color={color}
-                                        numbersOfImage={0}
-                                        postJson={null}
-                                        isMobile={isMobile}
-                                        isSkeleton={true}
-                                    />
-                                ))
-                            ) : (
-                                searchResult.map((post) => (
-                                    <ViewPostCard color={color} numbersOfImage={0} postJson={post} isMobile={isMobile}/>
-                                ))
-                            )
+                            Array.from({ length: 15 }, (_, index) => (
+                                <ViewPostCard
+                                    key={`skeleton-${index}`}
+                                    color={color}
+                                    numbersOfImage={0}
+                                    postJson={null}
+                                    isMobile={isMobile}
+                                    isSkeleton={true}
+                                />
+                            ))
+                        ) : (
+                            searchResult.map((post) => (
+                                <ViewPostCard color={color} numbersOfImage={0} postJson={post} isMobile={isMobile}/>
+                            ))
+                        )
                     )}
                 </div>
                 <TabBar

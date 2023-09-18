@@ -30,6 +30,7 @@ interface Props {
     isNextPage? : boolean
     setValue?: any
     selectedTab: string
+    setSearchText?: any
 }
 export const ViewHeader: React.FC<Props> = (props: Props) => {
     const {className, color, isMobile, open, page, isNextPage, setValue, selectedTab} = props;
@@ -37,6 +38,7 @@ export const ViewHeader: React.FC<Props> = (props: Props) => {
     const [searchText, setSearchText] = useState("");
     const [loading, setLoading] = useState(false)
     const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false)
+    const [isComposing, setComposing] = useState(false);
     const {Header, HeaderContentTitleContainer, HeaderContentTitle,
             top,
             bottom,
@@ -77,23 +79,31 @@ export const ViewHeader: React.FC<Props> = (props: Props) => {
 
                     >
                         <input
-                            className={'h-full w-full outline-none text-black pl-[20px]'}
+                            className={'h-full w-full outline-none text-black pl-[20px] pr-[40px]'}
                             value={searchText}
                             autoFocus={true}
-                            onChange={(e) => {setSearchText(e.target.value)}}
+                            onChange={(e) => {
+                                setSearchText(e.target.value)
+                            }}
                             placeholder={'search word'}
+                            onKeyDown={(e) => {
+                                if (e.key !== "Enter" || isComposing) return; //1
+                                props.setSearchText(searchText)
+                                console.log(searchText)
+                            }}
+                            onCompositionStart={() => setComposing(true)}
+                            onCompositionEnd={() => setComposing(false)}
                         />
                         {searchText.length > 0 && (
-                            <Button
-                                className={'absolute right-[0px] top-[0px] p-[10px]'}
-                                isIconOnly
-                                startContent={
-                                    <FontAwesomeIcon className={'h-[20px]'} icon={faXmark}/>
-                                }
-                                onClick={() => {setSearchText("")}}
+                            <button
+                                className={'absolute right-[8px] top-[8px] bg-black bg-opacity-30 rounded-full h-[25px] w-[25px] flex items-center justify-center'}
+                                onClick={() => {
+                                    setSearchText("")
+                                    props.setSearchText("")
+                                }}
                             >
-
-                            </Button>
+                                <FontAwesomeIcon className={'h-[20px]'} icon={faXmark}/>
+                            </button>
                         )}
                     </div>
                 ) : (
@@ -176,8 +186,8 @@ export const ViewHeader: React.FC<Props> = (props: Props) => {
                         />
                     </Tabs>
                 )}
-                {selectedTab === 'single' && (
-                    <div className={HeaderContentTitle({page:page})}>Bookmark</div>
+                {selectedTab === 'inbox' && (
+                    <div className={HeaderContentTitle({page:page})}>Inbox</div>
                 )}
                 {selectedTab === 'post' && (
                     <Tabs
