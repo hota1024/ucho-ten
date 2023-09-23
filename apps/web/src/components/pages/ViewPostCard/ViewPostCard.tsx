@@ -50,7 +50,7 @@ export const ViewPostCard: React.FC<Props> = (props: Props) => {
     const [loading, setLoading] = useState(false)
     const [isHover, setIsHover] = useState<boolean>(false)
     const { PostCard, PostAuthor, PostContent, PostReactionButtonContainer, PostCardContainer, PostReactionButton,
-        PostAuthorIcon, PostAuthorDisplayName, PostAuthorHandle, PostCreatedAt, dropdown,skeleton } = viewPostCard();
+        PostAuthorIcon, PostAuthorDisplayName, PostAuthorHandle, PostCreatedAt, dropdown,skeletonIcon, skeletonName, skeletonHandle, skeletonText1line, skeletonText2line } = viewPostCard();
 
     const [isLiked, setIsLiked] = useState<boolean>(false)
     const [isRetweeted, setIsRetweeted] = useState<boolean>(false)
@@ -103,8 +103,8 @@ export const ViewPostCard: React.FC<Props> = (props: Props) => {
       >
           <SwipeableList>
               <SwipeableListItem
-                  leadingActions={isMobile && leadingActions()}
-                  trailingActions={isMobile && trailingActions()}
+                  //leadingActions={isMobile && leadingActions()}
+                  //trailingActions={isMobile && trailingActions()}
                   maxSwipe={70}
               >
 
@@ -119,7 +119,7 @@ export const ViewPostCard: React.FC<Props> = (props: Props) => {
                       <div className={PostAuthor()}>
                           <div className={PostAuthorIcon()}>
                               {isSkeleton ? (
-                                  <Skeleton className={skeleton({color:color})}/>
+                                  <Skeleton className={skeletonIcon({color:color})}/>
                               ) : (
                                   <img src={'https://av-cdn.bsky.app/img/avatar/plain/did:plc:txandrhc7afdozk6a2itgltm/bafkreihwad5kaujw2f6kbfg37zmkhclgd3ap7grixl6pusfb5b34s6jite@jpeg'}></img>
 
@@ -127,7 +127,7 @@ export const ViewPostCard: React.FC<Props> = (props: Props) => {
                           </div>
                           <div className={PostAuthorDisplayName()} style={{fontSize:'13px'}}>
                                 {isSkeleton ? (
-                                    <Skeleton className="h-3 w-2/5 rounded-lg dark "/>
+                                    <Skeleton className={skeletonName({color:color})}/>
                                     ) : (
                                     <div>ばいそに</div>
                                 )}
@@ -135,7 +135,7 @@ export const ViewPostCard: React.FC<Props> = (props: Props) => {
                           <div className={'text-[#BABABA]'}>&nbsp;-&nbsp;</div>
                           <div className={PostAuthorHandle()}>
                               {isSkeleton ? (
-                                      <Skeleton className="h-3 w-3/5 rounded-lg dark"/>
+                                      <Skeleton className={skeletonHandle({color: color})}/>
                               ) : (
                                   <div>{postJson?.user?.handle}</div>
                               )}
@@ -176,8 +176,8 @@ export const ViewPostCard: React.FC<Props> = (props: Props) => {
                       <div className={PostContent({isMobile:isMobile})}>
                           {isSkeleton ? (
                                   <div className="w-full flex flex-col gap-2">
-                                      <Skeleton className="h-3 w-3/5 rounded-lg dark"/>
-                                      <Skeleton className="h-3 w-4/5 rounded-lg dark"/>
+                                      <Skeleton className={skeletonText1line({color: color})}/>
+                                      <Skeleton className={skeletonText2line({color: color})}/>
                                   </div>
                           ) : (
                               <div className={''}>{postJson.post?.text}</div>

@@ -15,7 +15,13 @@ export const viewPostCard = tv({
             PostReactionButtonContainer: 'w-full h-[20px] text-right right-[17px] ',
             PostReactionButton: 'h-[16px] pl-[8px] pr-[8px] ml-[60px] text-[#909090] text-[12px] cursor-pointer select-none',
         dropdown: '',
-        skeleton: 'h-full w-full',
+        skeletonIcon: 'h-full w-full',
+        skeletonName: 'h-3 w-2/5 rounded-lg ',
+        skeletonHandle: 'h-3 w-3/5 rounded-lg ',
+        skeletonTime: '',
+        skeletonText1line: 'h-3 w-3/5 rounded-lg ',
+        skeletonText2line: 'h-3 w-4/5 rounded-lg ',
+
     },
     variants: {
         color:{
@@ -28,7 +34,11 @@ export const viewPostCard = tv({
                 PostAuthorHandle: 'text-[#BABABA]',
                 PostCreatedAt: 'text-[#B8B8B8]',
                 dropdown: 'dark text-white',
-                skeleton: 'dark text-white',
+                skeletonIcon: 'dark text-white',
+                skeletonName: 'dark text-white',
+                skeletonHandle: 'dark text-white',
+                skeletonText1line: 'dark text-white',
+                skeletonText2line: 'dark text-white',
             },
         },
         isMobile: {

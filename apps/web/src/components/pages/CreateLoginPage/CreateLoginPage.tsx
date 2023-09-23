@@ -27,8 +27,8 @@ export function CreateLoginPage() {
           } = createLoginPage();
 
     return (
-        <div className={background()}>
-            <main className={LoginForm()}>
+        <main className={background()}>
+            <div className={LoginForm()}>
                 <div className={LoginFormConnectServer()}>
                     <FontAwesomeIcon className={'ml-[4px] text-xl'} icon={faLink}/>
                     <FontAwesomeIcon className={"absolute right-[10px] text-xl"} icon={faList}/>
@@ -39,6 +39,7 @@ export function CreateLoginPage() {
                     <input
                         type={'text'}
                         autoComplete={'username'}
+                        onChange={(e) => {}}
                         className={'h-full w-full bg-transparent ml-[16.5px] text-base font-bold outline-none'} placeholder={'handle, did, e-mail'}></input>
                 </div>
                 <div className={LoginFormHandle()}>
@@ -51,8 +52,8 @@ export function CreateLoginPage() {
                 <Button className={LoginFormLoginButton()}>
                     <div className="text-zinc-400 text-xl font-bold">Sign In</div>
                 </Button>
-            </main>
-        </div>
+            </div>
+        </main>
 
     );
 }

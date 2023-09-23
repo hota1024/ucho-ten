@@ -1,14 +1,5 @@
 import React, {useState, useRef, useCallback} from "react";
 import { searchTabPage } from "./styles";
-import { BrowserView, MobileView, isMobile } from "react-device-detect"
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { faImage, faTrashCan } from '@fortawesome/free-regular-svg-icons'
-import { faCirclePlus, faXmark, faPen, faFaceLaughBeam, faLink } from '@fortawesome/free-solid-svg-icons'
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import { useDropzone, FileWithPath } from 'react-dropzone'
-import 'react-circular-progressbar/dist/styles.css';
-import data from '@emoji-mart/data'
-import Picker from '@emoji-mart/react'
 import {
     Dropdown,
     DropdownTrigger,
@@ -22,9 +13,6 @@ import {
     Popover, PopoverTrigger, PopoverContent,
 } from "@nextui-org/react";
 
-import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure} from "@nextui-org/react";
-
-import Textarea from 'react-textarea-autosize'; // 追加
 
 interface Props {
     className?: string
@@ -39,7 +27,7 @@ export const SearchTabtPage: React.FC<Props> = (props: Props) => {
     } = searchTabPage();
 
   return (
-      <main className={background({color:color, isMobile:isMobile})}>
+      <main className={''}>
           <div className={Container()}>
               <div className={RecommendContainer()}>
                   <div>他ユーザーを見つけよう</div>

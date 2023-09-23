@@ -6,7 +6,8 @@ import {ViewPostCard} from "../ViewPostCard";
 import {Spinner} from "@nextui-org/react";
 import {ViewSideBar} from "../ViewSideBar";
 import {Navbar} from "@nextui-org/react";
-
+import {SearchTabtPage} from "../SearchTabPage";
+import {Swiper} from "swiper/react"
 interface Props {
     className?: string;
     color: "light" | "dark";
@@ -28,6 +29,7 @@ export const ViewScreen: React.FC<Props> = (props: Props) => {
 
     const fetchResult = async (query:string) => {
         try {
+            setLoading(true);
             if(query === '') return;
             const res = await fetch(`https://search.bsky.social/search/posts?q=${query}`)
             const json = await res.json()
@@ -50,25 +52,29 @@ export const ViewScreen: React.FC<Props> = (props: Props) => {
                 <ViewSideBar color={color} isBarOpen={value} />
                 <div className={''}>
                     <ViewHeader color={color} page={"search"} setValue={setValue} setSearchText={setSearchText} selectedTab={selectedTab}/>
-                    <div className={'pt-[100px] h-full'}></div>
-                    {selectedTab === 'search' && (
-                        loading ? (
-                            Array.from({ length: 15 }, (_, index) => (
-                                <ViewPostCard
-                                    key={`skeleton-${index}`}
-                                    color={color}
-                                    numbersOfImage={0}
-                                    postJson={null}
-                                    isMobile={isMobile}
-                                    isSkeleton={true}
-                                />
-                            ))
-                        ) : (
-                            searchResult.map((post) => (
-                                <ViewPostCard color={color} numbersOfImage={0} postJson={post} isMobile={isMobile}/>
-                            ))
-                        )
-                    )}
+                    <div className={'pt-[100px] h-full'}>
+                        {selectedTab === 'search' && searchText !== '' && (
+                            loading ? (
+                                Array.from({ length: 15 }, (_, index) => (
+                                    <ViewPostCard
+                                        key={`skeleton-${index}`}
+                                        color={color}
+                                        numbersOfImage={0}
+                                        postJson={null}
+                                        isMobile={isMobile}
+                                        isSkeleton={true}
+                                    />
+                                ))
+                            ) : (
+                                searchResult.map((post) => (
+                                    <ViewPostCard color={color} numbersOfImage={0} postJson={post} isMobile={isMobile}/>
+                                ))
+                            )
+                        )}
+                        {selectedTab === 'search' && searchText === '' && (
+                            <SearchTabtPage color={color} isMobile={isMobile} />
+                        )}
+                    </div>
                 </div>
                 <TabBar
                     className={tabbar()}
